@@ -19,3 +19,11 @@ SENDIM = {
     'smtp-port':25
 
 }
+
+What must include in urls.py :
+
+urlpatterns = patterns('',
+   ...
+   url(r'^event', include('sendim.urls')),
+   ...
+)
