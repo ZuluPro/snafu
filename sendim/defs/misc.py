@@ -46,6 +46,11 @@ def sendMail(POST) :
 			msg.attach( MIMEImage( pagehandle2 ) )
 
 	smtpObj = smtplib.SMTP(settings.SENDIM['smtp-server'] , settings.SENDIM['smtp-port'] )
+	if 'smtp-password' in settings.SENDIM.keys() :
+		smtpObj.ehlo()
+		smtpObj.starttls()
+		smtpObj.ehlo()
+		smtpObj.login(settings.SENDIM['smtp-from'], settings.SENDIM['smtp-password'])
 	smtpObj.sendmail( msg['From'] , ( msg['To'], msg['Cc'] ), msg.as_string() )
 
 	E.mail = True
