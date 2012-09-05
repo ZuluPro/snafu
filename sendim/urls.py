@@ -11,7 +11,4 @@ urlpatterns = patterns('',
 
     (r'^s/filter$', 'sendim.views.eventsFiltered'),
     (r'^mail$', 'sendim.views.createMail'),
-
-    (r'^alerts$', 'sendim.views.alerts'),
-    (r'^alerts/(?P<page>\d*)$', 'sendim.views.alerts'),
 )
