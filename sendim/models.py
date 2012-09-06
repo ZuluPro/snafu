@@ -4,6 +4,9 @@ from django.db import models
 from referentiel.models import Host, Status, Service
 from referentiel.defs import *
 
+from re import match
+
+
 class Event(models.Model) :
     element = models.ForeignKey(Host)
     date = models.DateTimeField()
@@ -13,7 +16,7 @@ class Event(models.Model) :
     mail = models.BooleanField(default=False)
 
     def __unicode__(self) :
-        return self.element.host+': '+self.message
+        return str(self.pk)+':'+self.element.host+' - '+self.message
 
     def getLastAlert(self, isUp=False):
         return Alert.objects.filter(
@@ -36,36 +39,44 @@ class Alert(models.Model) :
         return self.host.host+':'+self.service.service
 
     def link(self) :
-        if self.event : E = self.event ; print 123
+        if self.event : E = self.event
         else : 
-            R = getReference(self)
-            T = getTraduction(self)
-
-            if not Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk) :
-                E = Event (
-                    element = self.host,
-                    date = self.date,
-                    criticity = R.mail_criticity,
-                    message = T.traduction
-                )
-	        E.save()
+            if match(r"^(UP|OK)$", self.status.status ) :
+                E = Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None).order_by('-pk')[0].event
                 self.event = E
                 self.save()
-
+                
             else :
-                lastA = Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk).order_by('-pk')[0]
-                if lastA.status in ( Status.objects.get(status='OK'), Status.objects.get(status='UP') ) :
+                R = getReference(self)
+                if R == None : return None
+                T = getTraduction(self)
+                if T == None : return None
+
+                if not Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk) :
                     E = Event (
                         element = self.host,
                         date = self.date,
                         criticity = R.mail_criticity,
                         message = T.traduction
                     )
-                    E.save()
+	            E.save()
                     self.event = E
                     self.save()
-                else : 
-                    E = lastA.event
-                    self.event = E
-                    self.save()
+
+                else :
+                    lastA = Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None).order_by('-pk')[0]
+                    if lastA.status in ( Status.objects.get(status='OK'), Status.objects.get(status='UP') ) :
+                        E = Event (
+                            element = self.host,
+                            date = self.date,
+                            criticity = R.mail_criticity,
+                            message = T.traduction
+                        )
+                        E.save()
+                        self.event = E
+                        self.save()
+                    else : 
+                        E = lastA.event
+                        self.event = E
+                        self.save()
         return E
