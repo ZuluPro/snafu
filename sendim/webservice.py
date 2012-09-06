@@ -55,7 +55,7 @@ def pushAlert(host,service,status,info,date=datetime.now()):
         service = Service.objects.get(service=service),
         status = Status.objects.get(status=status),
         info = info,
-        date = date
+        date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S' )
     )
     A.save()
     return A
