@@ -33,3 +33,11 @@ class Alert(models.Model) :
 
     def __unicode__(self) :
         return self.host.host+':'+self.service.service
+
+    def link(self) :
+        if Alert.event : return A.event
+        if not Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk) :
+            E = Event (
+                element=self.host,
+                date=self.date,
+	)	

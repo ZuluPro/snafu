@@ -28,20 +28,23 @@ class Command(BaseCommand) :
                 try:
                         H = Host(host=host['name'], glpi_id=host['id'], host_type='computer' )
                         H.save()
-                except IntegrityError : print logprint(H.host.host+ ' already exists'
+			print logprint('Add computer : '+H.host, 'green')
+                except IntegrityError : print logprint('Computer ' +H.host+ ' already exists', 'yellow')
 
         netcomputers = ws.glpi.listObjects( { 'session': ws_session['session'], 'itemtype': 'networkequipment', 'limit': 2000 } )
         for host in netcomputers :
                 try:
                         H = Host(host=host['name'], glpi_id=host['id'], host_type='networkequipment' )
                         H.save()
-                except : pass
+			print logprint('Add network equipement '+H.host, 'green')
+                except IntegrityError : print logprint('Network equipement ' +H.host+ ' already exists', 'yellow')
 
         for user in ws.glpi.listUsers( { 'session': ws_session['session'] } ) :
                 try:
-                        H = GlpiUser(glpi_user=user['name'], glpi_id=user['id'] )
-                        H.save()	
-                except : pass
+                        GU = GlpiUser(glpi_user=user['name'], glpi_id=user['id'] )
+                        GU.save()	
+			print logprint('Add GLPI user : '+GU.glpi_user, 'green')
+                except IntegrityError : print logprint('User ' +GU.glpi_user+ ' already exists', 'yellow')
 
         for group in ws.glpi.listGroups( { 'session': ws_session['session'] } ) :
             group['name'] = group['name'].replace(u'\xc3\xa9', u'\xe9')
@@ -50,37 +53,38 @@ class Command(BaseCommand) :
             try:
                 H = GlpiGroup(glpi_group=group['name'], glpi_id=group['id'] )
                 H.save()	
-            except : pass
+		print logprint('Add GLPI group : '+GU.glpi_group, 'green')
+            except IntegrityError : print logprint('Group ' +GU.glpi_group+ ' already exists', 'yellow')
 
         for status in ['WARNING','CRITICAL','OK', 'DOWN','UP', 'UNKNOWN' ] :
                 try:
-                        H = Status(status=status)
-                        H.save()
-                except : pass
+                        S = Status(status=status)
+                        S.save()
+                except IntegrityError : pass
 
         for urg in urgency :
                 try:
                         H = GlpiUrgency(glpi_urgency=urg, glpi_id=urgency[urg] )
                         H.save()
-                except : pass
+                except IntegrityError : pass
 
         for imp in impact :
                 try:
                         H = GlpiImpact(glpi_impact=imp, glpi_id=impact[imp] )
                         H.save()
-                except : pass
+                except IntegrityError : pass
                 
         for prio in urgency :
                 try:
                         H = GlpiPriority(glpi_priority=prio, glpi_id=urgency[prio] )
                         H.save()
-                except : pass
+                except IntegrityError : pass
 
         for criticity in ['Mineur','Majeur'] :
                 try:
-                        H = MailCriticity(mail_criticity=criticity)
-                        H.save()	
-                except : pass
+                        C = MailCriticity(mail_criticity=criticity)
+                        C.save()	
+                except IntegrityError : pass
 
 #        for cat in categories :
 #                try:
