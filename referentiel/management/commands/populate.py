@@ -5,6 +5,7 @@ from django.db.utils import IntegrityError
 
 from referentiel.models import *
 
+from common import logprint
 import os,sys,re
 import sqlite3
 import xmlrpclib
@@ -27,7 +28,7 @@ class Command(BaseCommand) :
                 try:
                         H = Host(host=host['name'], glpi_id=host['id'], host_type='computer' )
                         H.save()
-                except IntegrityError : print
+                except IntegrityError : print logprint(H.host.host+ ' already exists'
 
         netcomputers = ws.glpi.listObjects( { 'session': ws_session['session'], 'itemtype': 'networkequipment', 'limit': 2000 } )
         for host in netcomputers :
