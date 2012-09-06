@@ -51,11 +51,11 @@ def test(test="Ok"):
 
 def pushAlert(host,service,status,info,date=datetime.now()):
     A = Alert(
-        host=
-        service=
-        status=
-        info=
-        date=
+        host = Host.objects.get(host=host),
+        service = Service.objects.get(service=service),
+        status = Status.objects.get(status=status),
+        info = info,
+        date = date
     )
     A.save()
     return A
