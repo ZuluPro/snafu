@@ -2,13 +2,13 @@ from django.conf import settings
 
 from sendim.models import *
 from referentiel.models import *
+from sendim.defs import addMail,opengraph
 
 import re
 import smtplib
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from sendim.defs import addMail,opengraph
 
 def sendMail(POST) :
 	E = Event.objects.get(pk=POST['eventPk'])
@@ -28,10 +28,11 @@ def sendMail(POST) :
 	mailText = POST['body']
 	mailText = re.sub( r"\$HOST\$" , A.host.host, mailText )
 	mailText = re.sub( r"\$GLPI\$" , str(E.glpi) , mailText )
+	mailText = re.sub( r"\$GLPI-URL\$" , settings.SENDIM['glpi-url']+'front/ticket.form.php?id=' , mailText)
 	mailText = re.sub( r"\$TRADUCTION\$" , E.message , mailText)
 	mailText = re.sub( r"\$JOUR\$" , E.date.strftime('%d/%m/%y') , mailText)
 	mailText = re.sub( r"\$HEURE\$" , E.date.strftime('%H:%M:%S') ,  mailText)
-	mailText = re.sub( r"\$LOG\$" , '\n'.join( [ alert.date.strftime('%d/%m/%y %H:%M:%S - ')+alert.service.service+' - '+alert.info for alert in Alert.objects.filter(event__pk=E.pk) ] ),  mailText)
+	mailText = re.sub( r"\$LOG\$" , '\n'.join( [ alert.date.strftime('%d/%m/%y %H:%M:%S - ')+alert.service.service+' en ' +alert.status.status+' - '+alert.info for alert in Alert.objects.filter(event__pk=E.pk) ] ),  mailText)
 	msg.attach( MIMEText( mailText.encode('utf8') , 'plain' ) )
 	
 	# Ajout des graphs slelectinnes
