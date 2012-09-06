@@ -9,16 +9,21 @@ INSTALLED_APPS = (
 
 SENDIM = {
     'nagios-url': 'http://nagios/',
+    'nagios-history': 'http://nagios/cgi-bin/nagios3/history.cgi',
     'nagios-login': 'foo',
     'nagios-password': 'b@r',
     'glpi-url':'https://glpi/plugins/webservices/xmlrpc.php',
     'glpi-login':'Foo',
-    'glpi-password':'B@r'
+    'glpi-password':'B@r',
     'smtp-from':"foobar@raboof.com",
+#    If you need a password 
+#   'smtp-password':"r@b0OF"
     'smtp-server':'12.3.19.83',
     'smtp-port':25
 
 }
+
+BASEDIR = "/path/to/your/project"
 
 What must include in urls.py :
 
