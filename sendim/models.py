@@ -36,14 +36,19 @@ class Alert(models.Model) :
         return self.host.host+':'+self.service.service
 
     def link(self) :
-        if Alert.event : return A.event
-        if not Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk) :
-            R = getRefence(self)
+        if self.event : E = self.event ; print 123
+        else : 
+            R = getReference(self)
             T = getTraduction(self)
+            if not Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk) :
 
-            E = Event (
-                element = self.host,
-                date = self.date,
-                criticity = R.mail_criticity,
-                message = T.traduction
-            ).save()
+                E = Event (
+                    element = self.host,
+                    date = self.date,
+                    criticity = R.mail_criticity,
+                    message = T.traduction
+                )
+	        E.save()
+                self.event = E
+                self.save()
+        return E
