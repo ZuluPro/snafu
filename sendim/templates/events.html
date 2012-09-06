@@ -124,7 +124,7 @@
                                                     $('#infoModal').modal('toggle')
                                                     });">Reference</a></li>
 
-                                            <li><a href="http://nagios.eqx.sup.autolib.eu/nagios/cgi-bin/status.cgi?host={{ event.element }}">Vision Nagios</a></li>
+                                            <li><a href="{{ nagios.host_status_url }}{{ event.element }}">Vision Nagios</a></li>
                                             <!--li><a href="#">Something else here</a></li>
                                             <li class="divider"></li>
                                             <li><a href="#">Separated link</a></li-->
