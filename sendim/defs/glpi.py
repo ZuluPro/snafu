@@ -5,7 +5,7 @@ from referentiel.models import *
 
 import xmlrpclib
 
-serverUrl = settings.SENDIM['glpi-url']
+serverUrl = settings.SENDIM['glpi-xmlrpc']
 server = xmlrpclib.Server(serverUrl, verbose=False, allow_none=True)
 loginData = { 'login_name':settings.SENDIM['glpi-login'], 'login_password':settings.SENDIM['glpi-password'] }
 loginInfo = server.glpi.doLogin( loginData )

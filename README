@@ -1,18 +1,28 @@
 What must include in settings.py :
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'referentiel.context_processors.glpi',
+)
+
 INSTALLED_APPS = (
     ...
+    'django.contrib.admin',
     sendim,
     referentiel,
     ...
 )
 
 SENDIM = {
-    'nagios-url': 'http://nagios/',
-    'nagios-history': 'http://nagios/cgi-bin/nagios3/history.cgi',
+    'nagios-url': 'http://mywebsite/nagios/',
+    'nagios-history': 'http://mywebsite/nagios/cgi-bin/nagios3/history.cgi',
     'nagios-login': 'foo',
     'nagios-password': 'b@r',
-    'glpi-url':'https://glpi/plugins/webservices/xmlrpc.php',
+    'glpi-url':'https://mywebiste/glpi/',
+    'glpi-xmlrpc':'https://mywebsite/glpi/plugins/webservices/xmlrpc.php',
     'glpi-login':'Foo',
     'glpi-password':'B@r',
     'smtp-from':"foobar@raboof.com",

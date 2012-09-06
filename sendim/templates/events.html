@@ -83,7 +83,7 @@
                                                 <button class="btn btn-primary" name="treatment_q"><i class="icon-envelope icon-white"></i> {{ event.glpi }}</button>
 					</form>
                                 {% else %}
-                                    <a class="btn btn-primary" href="https://helpdesk.autolib.eu/glpi/front/ticket.form.php?id={{ event.glpi }}">{{ event.glpi }}</a>
+                                    <a class="btn btn-primary" href="{{ glpi.ticket_url }}{{ event.glpi }}">{{ event.glpi }}</a>
                                 {% endif %}{% endif %}{% endif %}
 
 				</td>
