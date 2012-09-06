@@ -1,3 +1,4 @@
+Need django 1.4.x and python2.7.x
 What must include in settings.py :
 
 TEMPLATE_CONTEXT_PROCESSORS = (

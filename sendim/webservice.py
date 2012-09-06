@@ -49,8 +49,10 @@ def webservice(request):
 def test(test="Ok"):
     return test
 
-def pushAlert(host,service,status,info,date=datetime.now()):
-    if type(date) == type('') : date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S' )
+def pushAlert(host,service,status,info,date=None):
+    if not date : date = datetime.now()
+    elif type(date) == type('') : date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S' )
+    
     A = Alert(
         host = Host.objects.get(host=host),
         service = Service.objects.get(service=service),
