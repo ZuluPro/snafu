@@ -1,4 +1,4 @@
-from referentiel.models import Reference, Host, Service, Status
+from referentiel.models import Reference, Traduction, Host, Service, Status
 
 def getReference(A, byHost=True, byService=True, byStatus=True ) :
     Rs = Reference.objects.all()
@@ -10,3 +10,12 @@ def getReference(A, byHost=True, byService=True, byStatus=True ) :
     else : R = Rs[0]
 
     return R
+
+def getTraduction(A, byStatus=True ) :
+    Ts = Traduction.objects.all()
+    if byStatus : Ts = Ts.filter(status=A.status)
+
+    if not Ts : T = None
+    else : T = Ts[0]
+
+    return T

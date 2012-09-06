@@ -2,6 +2,7 @@ from django.db.models import Q
 from django.db import models
 
 from referentiel.models import Host, Status, Service
+from referentiel.defs import *
 
 class Event(models.Model) :
     element = models.ForeignKey(Host)
@@ -37,7 +38,12 @@ class Alert(models.Model) :
     def link(self) :
         if Alert.event : return A.event
         if not Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk) :
+            R = getRefence(self)
+            T = getTraduction(self)
+
             E = Event (
-                element=self.host,
-                date=self.date,
-	)	
+                element = self.host,
+                date = self.date,
+                criticity = R.mail_criticity,
+                message = T.traduction
+            ).save()
