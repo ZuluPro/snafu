@@ -40,8 +40,8 @@ class Alert(models.Model) :
         else : 
             R = getReference(self)
             T = getTraduction(self)
-            if not Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk) :
 
+            if not Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk) :
                 E = Event (
                     element = self.host,
                     date = self.date,
@@ -51,4 +51,21 @@ class Alert(models.Model) :
 	        E.save()
                 self.event = E
                 self.save()
+
+            else :
+                lastA = Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk).order_by('-pk')[0]
+                if lastA.status in ( Status.objects.get(status='OK'), Status.objects.get(status='UP') ) :
+                    E = Event (
+                        element = self.host,
+                        date = self.date,
+                        criticity = R.mail_criticity,
+                        message = T.traduction
+                    )
+                    E.save()
+                    self.event = E
+                    self.save()
+                else : 
+                    E = lastA.event
+                    self.event = E
+                    self.save()
         return E
