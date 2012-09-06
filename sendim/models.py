@@ -80,3 +80,27 @@ class Alert(models.Model) :
                         self.event = E
                         self.save()
         return E
+
+class MailSubject(models.Model) :
+    subject = models.CharField(max_length=200)
+    comment = models.CharField(max_length=300, blank=True,null=True)
+    choiced = models.BooleanField(default=False)
+
+    def setOn():
+        previousMS = self.objects.get(choiced=True)
+        previousMS.choiced = False
+        previousMS.save()
+        self.choiced = True
+        self.save()
+
+class MailBody(models.Model) :
+    body = models.CharField(max_length=1000)
+    comment = models.CharField(max_length=300, blank=True,null=True)
+    choiced = models.BooleanField(default=False)
+
+    def setOn():
+        previousMB = self.objects.get(choiced=True)
+        previousMB.choiced = False
+        previousMB.save()
+        self.choiced = True
+        self.save()
