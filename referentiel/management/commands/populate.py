@@ -1,4 +1,8 @@
 from django.core.management.base import BaseCommand, CommandError
+from django.conf import settings
+
+from django.db.utils import IntegrityError
+
 from referentiel.models import *
 
 import os,sys,re
@@ -13,7 +17,7 @@ ws_session = ws.glpi.doLogin(loginData)
 
 impact = { 'Bas':2, 'Moyen':3, 'Haut':4, u'Tr\xe8s haut':5 }
 urgency = { 'Basse':2, 'Moyenne':3, 'Haute':4, u'Tr\xe8s haute':5 }
-                                }
+                                
 class Command(BaseCommand) :
     args = None
     def handle(self, *args, **options) :
@@ -23,7 +27,7 @@ class Command(BaseCommand) :
                 try:
                         H = Host(host=host['name'], glpi_id=host['id'], host_type='computer' )
                         H.save()
-                except : pass
+                except IntegrityError : print
 
         netcomputers = ws.glpi.listObjects( { 'session': ws_session['session'], 'itemtype': 'networkequipment', 'limit': 2000 } )
         for host in netcomputers :
@@ -77,14 +81,14 @@ class Command(BaseCommand) :
                         H.save()	
                 except : pass
 
-        for cat in categories :
-                try:
-                        H = GlpiCategory(glpi_category=cat, glpi_id=categories[cat] )
-                        H.save()	
-                except : pass
+#        for cat in categories :
+#                try:
+#                        H = GlpiCategory(glpi_category=cat, glpi_id=categories[cat] )
+#                        H.save()	
+#                except : pass
 
-        for sup in suppliers :
-                try:
-                        H = GlpiSupplier(glpi_supplier=sup, glpi_id=suppliers[sup] )
-                        H.save()	
-                except : pass
+#        for sup in suppliers :
+#                try:
+#                        H = GlpiSupplier(glpi_supplier=sup, glpi_id=suppliers[sup] )
+#                        H.save()	
+#                except : pass
