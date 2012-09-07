@@ -30,9 +30,9 @@ def events(request, page=0) :
             default_data = { 'host':A.host.pk, 'service':A.service.pk, 'status':A.status.pk, 'mail_criticity':1,
                     'glpi_priority':4, 'glpi_urgency':4, 'glpi_impact':2, 'glpi_source':'Supervision'  }
             form = ReferenceForm(default_data, auto_id=False)
-            return HttpResponse( loader.get_template('reference.form.html').render( RequestContext(request, {
+            return render(request, 'reference.form.html', {
                 'form':form, 'alert':A, 'event':E
-            } ) ) )
+            } )
             
 
         elif "sendmail_q" in request.POST :

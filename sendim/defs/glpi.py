@@ -8,7 +8,11 @@ import xmlrpclib
 serverUrl = settings.SENDIM['glpi-xmlrpc']
 server = xmlrpclib.Server(serverUrl, verbose=False, allow_none=True)
 loginData = { 'login_name':settings.SENDIM['glpi-login'], 'login_password':settings.SENDIM['glpi-password'] }
+
+#try :
 loginInfo = server.glpi.doLogin( loginData )
+#except xmlrpclib.Fault as inst : print 123
+
 idSession=loginInfo['session']
 
 def createTicket(eventPk, alertPk) :
