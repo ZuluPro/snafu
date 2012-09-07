@@ -1,9 +1,6 @@
 {% extends 'base.html' %}
 
 {% block body %}
-{% load getLastAlert %}
-{% load getAlertColor %}
-{% load getProcedure %}
  <div class="span2">
   <div class="sidebar-nav well" style="position: relative">
    <ul class="nav nav-list">
@@ -50,70 +47,7 @@
     </tr>
    </thead>
    <tbody>
-   {% for event in events %}
-    <tr id="Event{{ event.pk }}" element="{{ event.element.host }}" criticty="{{ event.criticity }}" mail="{{ event.mail }}" glpi="{{ event.glpi }}" style="background-color:{{ event.pk|getAlertColor:"event" }} ;">
-     <td><input type="checkbox" value="{{ event.pk }}"></td>
-     <td>{{ event.pk }}</td>
-     <td>{{ event.date|date:"Y/m/d - G:i:s" }}</td>
-     <td>{{ event.element }}</td>
-     <td>{{ event.criticity }}</td>
-     <td>{{ event.message }}</td>
-
-     <td>
-     {% if event.criticity = '?' %}
-      <form method="POST" action="/events" style="margin: 0px 0px 0px">{% csrf_token %}
-       <input type="hidden" name="alertPk" value="{{ event.pk|getLastAlert }}">
-       <input type="hidden" name="eventPk" value="{{ event.pk }}">
-       <button class="btn btn-primary" name="add_ref_q"><i class="icon-comment icon-white"></i></button>
-      </form>
-     {% else %}{% if not event.glpi %}
-      <form method="POST" action="/events" style="margin: 0px 0px 0px">{% csrf_token %}
-       <input type="hidden" name="alertPk" value="{{ event.pk|getLastAlert }}">
-       <input type="hidden" name="eventPk" value="{{ event.pk }}">
-       <button class="btn btn-primary" name="treatment_q"><i class="icon-pencil icon-white"></i><i class="icon-envelope icon-white"></i></button>
-      </form>
-     {% else %}{% if not event.mail %}
-      <form method="POST" action="/events" style="margin: 0px 0px 0px">{% csrf_token %}
-       <input type="hidden" name="alertPk" value="{{ event.pk|getLastAlert }}">
-       <input type="hidden" name="eventPk" value="{{ event.pk }}">
-       <button class="btn btn-primary" name="treatment_q"><i class="icon-envelope icon-white"></i> {{ event.glpi }}</button>
-      </form>
-     {% else %}
-      <a class="btn btn-primary" href="{{ glpi.ticket_url }}{{ event.glpi }}">{{ event.glpi }}</a>
-     {% endif %}{% endif %}{% endif %}
-     </td>
-
-     <td>
-      <div class="btn-group">
-       <button class="btn btn-info {% if not event.pk|getProcedure %}disabled{% endif %}">
-       {% if event.pk|getProcedure %}
-        <a href="{{ event.pk|getProcedure }}"><i class="icon-globe icon-white"></i></a>
-       {% else %}Info
-       {% endif %}
-       </button>
-       <button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-       <ul class="dropdown-menu">
-        <li><a onclick="$.get('/eventAlerts',{ eventPk: '{{ event.pk }}' }, function(data) {
-          $('#infoModal').html( data );
-          $('#infoModal').modal('toggle')
-        });">Alerts de l'Event</a></li>
-        
-        <li><a onclick="$.get('/eventHistory',{ eventPk: '{{ event.pk }}' }, function(data) {
-          $('#infoModal').html( data );
-          $('#infoModal').modal('toggle')
-        });">Historique</a></li>
-        
-        <li><a onclick="$.get('/eventReference',{ eventPk: '{{ event.pk }}' },function(data) {
-          $('#infoModal').html( data );
-          $('#infoModal').modal('toggle')
-        });">Reference</a></li>
-        
-        <li><a href="{{ nagios.host_status_url }}{{ event.element }}">Vision Nagios</a></li>
-       </ul>
-      </div>
-     </td>
-    </tr>
-   {% endfor %}
+   {% include 'events-li.html' %}
    </tbody>
   </table>
 
