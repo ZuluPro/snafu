@@ -4,8 +4,7 @@ from sendim.defs import *
 from sendim.models import *
 from referentiel.models import *
 
-def events(request, page=0) :
-    page = int(page) # Le num de page peut etre passe en argument via l'URL
+def events(request) :
     contentMsg = ''
     if request.method == 'POST' :
 
@@ -65,12 +64,10 @@ def events(request, page=0) :
                     'graphList':graphList
             })
     return render(request, 'events.html', {
-        'events':Event.objects.order_by('-pk')[0+50*page:50+50*page],
+        'events':Event.objects.order_by('-pk'),
         'alerts':Alert.objects.all(),
         'title':'Snafu - Events',
         'msg' : contentMsg,
-        'page':page,
-        'numPage':range(Event.objects.count()/50+1)
     })
 
 
