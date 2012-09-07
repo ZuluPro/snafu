@@ -1,6 +1,7 @@
 {% load getAlertColor %}
 {% load getLastAlert %}
 {% load getProcedure %}
+{% load getEscalation %}
 
 {% for event in events %}
  <tr id="Event{{ event.pk }}" element="{{ event.element.host }}" criticty="{{ event.criticity }}" mail="{{ event.mail }}" glpi="{{ event.glpi }}" style="background-color:{{ event.pk|getAlertColor:"event" }} ;">
@@ -37,7 +38,10 @@
 
   <td>
    <div class="btn-group">
-    <button class="btn btn-info {% if not event.pk|getProcedure %}disabled{% endif %}">
+    <button class="btn 
+     {% if event.pk|getEscalation %}btn-danger{% else %}btn-info{% endif %}
+     {% if not event.pk|getProcedure %} disabled{% endif %}
+    ">
     {% if event.pk|getProcedure %}
      <a href="{{ event.pk|getProcedure }}"><i class="icon-globe icon-white"></i></a>
     {% else %}Info

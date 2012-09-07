@@ -1,6 +1,7 @@
+from django import template
+
 from sendim.models import *
 from referentiel.models import Reference
-from django import template
 
 register = template.Library()
 
