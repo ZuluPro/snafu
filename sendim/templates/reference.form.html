@@ -11,35 +11,34 @@
 
   <ul id="alertTab" class="nav nav-tabs nav-stacked">
   {% for num,F in Forms.items %}
-   <li{% if forloop.counter == 1 %} id="R{{ num }}Tab" class="active"{% endif %}><a href="#R{{ num }}" data-toggle="tab">Ref {{ num }}</a></li>
+   <li id="R{{ num }}Tab"{% if forloop.counter == 1 %} class="active"{% endif %}><a href="#R{{ num }}" data-toggle="tab">Ref {{ num }}</a></li>
   {% endfor %}
   </ul>
  
+  <div class="tab-content">
   {% for num,Form in Forms.items %}
+   <div class="tab-pane fade{% if forloop.counter == 1 %} in active{% endif %}" id="R{{ num }}">
   <form id="R{{ num }}Form" class="form-horizontal" action="/events/configuration" method="post">
    {% csrf_token %}
    <input type="hidden" name="action" value="addRef">
 
-   <div id="R{{ num }}Content" class="tab-content">
-     <div class="tab-pane fade{% if forloop.counter == 1 %} in active{% endif %}" id="R{{ num }}">
-      <h3>Formulaire pour {{ num }}</h3>
-      <fieldset>
-      {% for field in Form.all %}
-       <div class="control-group">
-        <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
-        <div class="controls">
-         {{ field }}
-        </div>
-       </div>
-      {% endfor %}
+    <h3>Formulaire pour {{ num }}</h3>
+    <fieldset>
+    {% for field in Form.all %}
+     <div class="control-group">
+      <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
+      <div class="controls">
+       {{ field }}
+      </div>
+     </div>
+    {% endfor %}
+    </fieldset>
 
-      </fieldset>
-    </div>
-   </div>
-
-   <button type="submit" class="btn btn-primary">Enregister</button>
+   <button class="btn btn-primary" num="{{ num }}">Soumettre</button>
   </form>
+   </div>
   {% endfor %}
+  </div>
 
  </div>
 

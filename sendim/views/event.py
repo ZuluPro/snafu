@@ -113,12 +113,9 @@ def createMail(request):
 	})
 
 def eventsAgr(request) :
-    events = [ Event.objects.get(pk=pk) for pk in request.GET.getlist('events[]') ]
-    alerts = []
-    for event in events :
-        alerts.append( (event.pk, Alert.objects.filter(event=event.pk).order_by('-date') ) )
 
     return render(request, 'events-agr.html', {
-        'events':events[::-1], 'alerts':alerts
+        'events': [ Event.objects.get(pk=pk) for pk in request.GET.getlist('events[]') ][::-1],
+        'alerts': Alert.objects.order_by('-date')
     })
 

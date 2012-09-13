@@ -51,7 +51,7 @@ class Alert(models.Model) :
     def __unicode__(self) :
         return self.host.host+' : '+self.service.service+' - '+ self.status.status
 
-    def setPrimary():
+    def setPrimary(self):
         old_A = self.event.getPrimaryAlert()
         old_A.isPrimary = False
         old_A.save()

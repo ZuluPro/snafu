@@ -89,31 +89,36 @@ def addRef(POST):
 
 def makeMail(E):
     R = E.getPrimaryAlert().reference
-    msg = {} 
+    MT = MailTemplate.objects.get(choiced=True)
+    msg = {}
     msg['from'] = settings.SNAFU['smtp-from']
     msg['to'] = R.mail_group.to
     if E.criticity == 'Majeur' : msg['to'] += ', '+ R.mail_group.ccm
     msg['cc'] = ' ,'.join( [  settings.SNAFU['smtp-from'], R.mail_group.cc] )
-    msg['subject'] = '[Incident '+R.mail_type.mail_type+' - '+E.criticity+'] '+E.date.strftime('%d/%m/%y')+' - '+ E.message +' sur ' +E.element.host +' - GLPI '+str(E.glpi)
-    with open('./mailforhost.txt' , 'r') as mailFile : msg['body'] = mailFile.read()
+    msg['subject'] = MT.subject 
+    msg['body'] = MT.body
     
     return msg
 
-def agregate(eventsPk, choicedEvent, message, glpi=None, mail=False) :
+def agregate(eventsPk, choicedEvent, message, glpi=None, mail=False, criticity='Mineur') :
     if len(eventsPk) < 2 : return None
     for eventPk in eventsPk :
-        if Event.objects.get(pk=eventPk).glpi : glpi= Event.objects.get(pk=eventPk).glpi
-        if Event.objects.get(pk=eventPk).mail : mail= True
+        E = Event.objects.get(pk=eventPk)
+        if E.glpi : glpi = E.glpi
+        if E.mail : mail= True
+        if E.criticity == 'Majeur' : criticity= 'Majeur'
         if eventPk == choicedEvent: continue
-        for alert in Alert.objects.filter(event=eventPk) :
+        for alert in E.getAlerts :
+            alert.isPrimary = False
             alert.event = Event.objects.get(pk=choicedEvent)
             alert.save()
             logprint("Add Alert #" +str(alert.pk)+ " to Event #" +str(choicedEvent) )
-        Event.objects.get(pk=eventPk).delete()
+        E.delete()
         logprint("Delete Event #" +eventPk, 'pink')
 
         E = Event.objects.get(pk=choicedEvent)
         E.message = message
         E.glpi = glpi
         E.mail = mail
+        E.criticity = crititicy
         E.save()

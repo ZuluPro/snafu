@@ -20,10 +20,8 @@
         <li><input type="checkbox" checked name="toAgr" value="{{ event.pk }}"></input>{{ event }}</li>
             <ul>
             {% for alert in alerts %}
-            {% if alert.0 == event.pk %}
-                {% for alert in alert.1 %}
+            {% if alert.event.pk == event.pk %}
                 <li>{{ alert.date|date:"Y/m/d - G:i:s" }} - {{ alert.service }} {{ alert.info|addFontColor:alert.status.status|safe }}</li>
-                {% endfor %}
             {% endif %}
             {% endfor %}
             </ul>
