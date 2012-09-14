@@ -68,7 +68,6 @@ def configuration(request) :
                         A.linkToReference()
 
 	    if 'treatment_q' in request.POST :
-		    print request.POST
                     E = Event.objects.get(pk=request.POST['eventPk'])
                     E.criticity = R.mail_criticity.mail_criticity
                     E.save()

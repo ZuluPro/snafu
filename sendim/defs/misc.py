@@ -1,7 +1,9 @@
+from django.forms.formsets import formset_factory
 from django.conf import settings
 
 from referentiel.models import *
 from referentiel.defs import getReference 
+from sendim.forms import *
 from sendim.models import *
 from sendim.defs import addMail,opengraph
 
@@ -124,10 +126,28 @@ def agregate(eventsPk, choicedEvent, message, glpi=None, mail=False, criticity='
         E.save()
 
 
-createServiceList(As):
+def createServiceList(As):
     hosts = {}
     for A in As :
         if not A.host.host in hosts : hosts[A.host.host] = []
         if not A.service.service in hosts[A.host.host] : hosts[A.host.host].append(A.service.service)
 
     return hosts
+
+def makeMultipleForm(hosts):
+    ReferenceBigFormSet = formset_factory(ReferenceBigForm)
+    data = {
+       'glpi_source':'Supervision',
+       'form-TOTAL_FORMS' : sum( [ len(v) for v in hosts.values() ] ), 
+       'form-INITIAL_FORMS': sum( [ len(v) for v in hosts.values() ] )
+    }
+    count = 0
+
+    for host,services in hosts.items() :
+        for service in services :
+            print host,service
+            data['form-'+str(count)+'-host'] = Host.objects.get(host=host)
+            data['form-'+str(count)+'-service'] = Service.objects.get(service=service)
+            count += 1
+       
+    return ReferenceBigFormSet(data)

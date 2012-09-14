@@ -32,12 +32,12 @@ def events(request) :
             logprint("Add ticket #" +str(ticketId)+ "to Event #" +str(eventPk), 'green')
 
         elif "add_ref_q" in request.POST :
-		ReferenceBigFormSet = formset_factory(ReferenceBigForm, extra=0 )
-		Forms = ReferenceBigFormSet(initial= [{
-		   'host':E.element.pk, 'service':E.getPrimaryAlert().service,
-				'glpi_source':'Supervision'
-		}])
-                for i,F in enumerate(Forms) : print i
+		#ReferenceBigFormSet = formset_factory(ReferenceBigForm, extra=0 )
+		#Forms = ReferenceBigFormSet(initial= [{
+		#   'host':E.element.pk, 'service':E.getPrimaryAlert().service,
+		#		'glpi_source':'Supervision'
+		#}])
+		Forms = makeMultipleForm( createServiceList(E.getAlerts() ) )#ReferenceBigFormSet(initial= [{
 		return render(request, 'reference.form.html', {
 			'Forms':Forms, 'E':E
 		} )
@@ -51,12 +51,11 @@ def events(request) :
         elif "treatment_q" in request.POST :
 	    if E.criticity == '?' or not E.getPrimaryAlert().reference : 
 		
-		ReferenceBigFormSet = formset_factory(ReferenceBigForm, extra=0 )
-		Forms = ReferenceBigFormSet(initial= [{
-		   'host':E.element.pk, 'service':E.getPrimaryAlert().service,
-				'glpi_source':'Supervision'
-		}])
-                for i,F in enumerate(Forms) : print i
+#		ReferenceBigFormSet = formset_factory(ReferenceBigForm, extra=0 )
+		Forms = makeMultipleForm( createServiceList(E.getAlerts() ) )#ReferenceBigFormSet(initial= [{
+#		   'host':E.element.pk, 'service':E.getPrimaryAlert().service,
+#				'glpi_source':'Supervision'
+#		}])
 		return render(request, 'reference.form.html', {
 			'Forms':Forms, 'E':E
 		} )

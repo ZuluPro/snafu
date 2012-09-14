@@ -7,14 +7,14 @@ $(document).ready(function() {
 
   $.fn.validRef = function(refId){
 
-    var R = { treatment_q:true };
+    var R = { treatment_q:true, eventPk:$('input[name=eventPk]').val() };
     var form = $('#R'+refId+'Form')
     var tab = $('#R'+refId+'Tab')
 
-    $('form input').each(function(index) {
+    $('div[class*="active"] input').each(function(index) {
       R[$(this).attr('name')] = $(this).val();
     });
-    $('form select').each(function(index) {
+    $('div[class*="active"] select').each(function(index) {
       R[$(this).attr('name')] = $(this).val();
     });
 
