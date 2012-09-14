@@ -122,3 +122,12 @@ def agregate(eventsPk, choicedEvent, message, glpi=None, mail=False, criticity='
         E.mail = mail
         E.criticity = criticity
         E.save()
+
+
+createServiceList(As):
+    hosts = {}
+    for A in As :
+        if not A.host.host in hosts : hosts[A.host.host] = []
+        if not A.service.service in hosts[A.host.host] : hosts[A.host.host].append(A.service.service)
+
+    return hosts
