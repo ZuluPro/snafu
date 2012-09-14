@@ -1,3 +1,4 @@
+from django.forms.formsets import formset_factory
 from django.shortcuts import render
 
 from sendim.defs import *
@@ -31,28 +32,16 @@ def events(request) :
             logprint("Add ticket #" +str(ticketId)+ "to Event #" +str(eventPk), 'green')
 
         elif "add_ref_q" in request.POST :
-	    A_S = []
-	    Forms = dict()
-	    As = E.getAlerts()
-	    for num,A in enumerate(As) :
-		if not A.host.host+'_'+A.service.service in A_S :
-		    default_data = { 'host':A.host.pk, 'service':A.service.pk }
-
-		    for status in Status.objects.exclude(Q(status='DOWN') | Q(status='UP') | Q(status='DOWN')) :
-			if Reference.objects.filter(host=A.host, service=A.service, status=status) :
-			    R = Reference.objects.filter(host=A.host, service=A.service, status=status)[0]
-			    default_data = dict( default_data.items() + {
-				status.status.lower()+'_criticity':R.mail_criticity.pk,
-				status.status.lower().lower()+'_priority':R.glpi_priority.pk, status.status.lower()+'_urgency':R.glpi_urgency.pk, status.status.lower()+'_impact':R.glpi_impact.pk,
+		ReferenceBigFormSet = formset_factory(ReferenceBigForm, extra=0 )
+		Forms = ReferenceBigFormSet(initial= [{
+		   'host':E.element.pk, 'service':E.getPrimaryAlert().service,
 				'glpi_source':'Supervision'
-			    }.items() )
-		    F = ReferenceBigForm(default_data, auto_id=False)
-		    A_S.append(A.host.host+'_'+A.service.service)
-		if not F in [ F for F in Forms.values() ] : Forms[num] = F
+		}])
+                for i,F in enumerate(Forms) : print i
+		return render(request, 'reference.form.html', {
+			'Forms':Forms, 'E':E
+		} )
 
-	    return render(request, 'reference.form.html', {
-                'Forms':Forms, 'E':E
-            } )
             
 
         elif "sendmail_q" in request.POST :
@@ -60,9 +49,17 @@ def events(request) :
             logprint("Mail sent for Event #"+str(eventPk) )
 
         elif "treatment_q" in request.POST :
-	    if E.criticity == '?' : 
-		E.criticity = A.reference.mail_criticity.mail_criticity
-		E.save()
+	    if E.criticity == '?' or not E.getPrimaryAlert().reference : 
+		
+		ReferenceBigFormSet = formset_factory(ReferenceBigForm, extra=0 )
+		Forms = ReferenceBigFormSet(initial= [{
+		   'host':E.element.pk, 'service':E.getPrimaryAlert().service,
+				'glpi_source':'Supervision'
+		}])
+                for i,F in enumerate(Forms) : print i
+		return render(request, 'reference.form.html', {
+			'Forms':Forms, 'E':E
+		} )
 
             if not E.glpi : E.glpi = createTicket(eventPk)
 

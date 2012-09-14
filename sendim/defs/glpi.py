@@ -18,10 +18,11 @@ idSession=loginInfo['session']
 
 def createTicket(eventPk) :
 	E = Event.objects.get(pk=eventPk)
+	R = E.getPrimaryAlert().reference
 	############ PROVISOIR ############
-        for A in E.getAlerts(isUp=False) :
-            R = getReference(A)
-            if R : break
+        #for A in E.getAlerts(isUp=False) :
+        #    R = getReference(A)
+        #    if R : break
         ##################################
 
 	# Creation du 1er contenu du ticket

@@ -85,8 +85,11 @@ class Alert(models.Model) :
                     return None
             else :
                 if not self.reference : R = getReference(self)
-		if R == None : mail_criticity='?'
-		else : mail_criticy = R.mail_criticiry
+
+		if not R : mail_criticity='?'
+		else :
+                    mail_criticity = R.mail_criticity
+                    self.reference = R
 
                 if not self.traduction : T = getTraduction(self)
                 if T == None : traduction=self.info

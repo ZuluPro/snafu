@@ -1,6 +1,7 @@
+from django import forms
+
 from referentiel.models import *
 from sendim.models import *
-from django import forms
 
 class TraductionBigForm(forms.Form):
 	service = forms.ModelChoiceField(Service.objects.all() )

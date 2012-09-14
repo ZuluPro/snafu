@@ -7,7 +7,7 @@ $(document).ready(function() {
 
   $.fn.validRef = function(refId){
 
-    var R = {}
+    var R = { treatment_q:true };
     var form = $('#R'+refId+'Form')
     var tab = $('#R'+refId+'Tab')
 

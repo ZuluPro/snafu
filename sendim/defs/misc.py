@@ -108,7 +108,7 @@ def agregate(eventsPk, choicedEvent, message, glpi=None, mail=False, criticity='
         if E.mail : mail= True
         if E.criticity == 'Majeur' : criticity= 'Majeur'
         if eventPk == choicedEvent: continue
-        for alert in E.getAlerts :
+        for alert in E.getAlerts() :
             alert.isPrimary = False
             alert.event = Event.objects.get(pk=choicedEvent)
             alert.save()
@@ -120,5 +120,5 @@ def agregate(eventsPk, choicedEvent, message, glpi=None, mail=False, criticity='
         E.message = message
         E.glpi = glpi
         E.mail = mail
-        E.criticity = crititicy
+        E.criticity = criticity
         E.save()
