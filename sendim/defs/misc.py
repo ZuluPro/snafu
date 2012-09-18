@@ -8,7 +8,7 @@ import smtplib
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from sendim.defs import addMail
+from sendim.defs import addMail,opengraph
 
 def sendMail(POST) :
 	E = Event.objects.get(pk=POST['eventPk'])
@@ -18,11 +18,11 @@ def sendMail(POST) :
 
 	msg = MIMEMultipart()
 	msg['From'] = settings.SENDIM['smtp-from']
-#        msg['To'] = 'anthony.monthe@polyconseil.fr'
-#        msg['Cc'] = 'anthony.monthe@polyconseil.fr'
-        msg['To'] = POST['to']
-	if POST['ccm'] : msg['To'] += ', '+ R.mail_group.ccm
-	msg['Cc'] = POST['cc']
+        msg['To'] = 'anthony.monthe@polyconseil.fr'
+        msg['Cc'] = 'anthony.monthe@polyconseil.fr'
+#        msg['To'] = POST['to']
+#	if POST['ccm'] : msg['To'] += ', '+ R.mail_group.ccm
+#	msg['Cc'] = POST['cc']
 	msg['Subject'] = POST['subject']
 
 	mailText = POST['body']
@@ -40,8 +40,8 @@ def sendMail(POST) :
                 graphList = POST.getlist('graphList')
 		for i in range(len(graphList)) :
                         print "Ajout d'un graph pour "+graphList[i]
-			pagehandle = opener.open(www+'pnp4nagios/image?host='+A.host.host+'&srv='+A.service.service.replace(' ' , '+')+'&view=1&source='+str(int(graphList[i][0]) ) ).read()
-			pagehandle2 = opener.open(www+'pnp4nagios/image?host='+A.host.host+'&srv='+A.service.service.replace(' ' , '+')+'&view=2&source='+str(int(graphList[i][0]) ) ).read()
+			pagehandle = opengraph(A, graphList[i][0])
+			pagehandle2 = opengraph(A, graphList[i][0])
 			msg.attach( MIMEImage( pagehandle ) )
 			msg.attach( MIMEImage( pagehandle2 ) )
 
