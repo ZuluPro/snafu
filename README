@@ -1,0 +1,21 @@
+What must include in settings.py :
+
+INSTALLED_APPS = (
+    ...
+    sendim,
+    referentiel,
+    ...
+)
+
+SENDIM = {
+    'nagios-url': 'http://nagios/',
+    'nagios-login': 'foo',
+    'nagios-password': 'b@r',
+    'glpi-url':'https://glpi/plugins/webservices/xmlrpc.php',
+    'glpi-login':'Foo',
+    'glpi-password':'B@r'
+    'smtp-from':"foobar@raboof.com",
+    'smtp-server':'12.3.19.83',
+    'smtp-port':25
+
+}
