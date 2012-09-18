@@ -1,0 +1,22 @@
+{% extends 'base.html' %}	
+
+<h2>Pas de traduction pour {{ alert.service }} en {{ alert.status }}</h2>
+
+{% block body %}
+	<form class="form-horizontal" action="alerts" method="post">{% csrf_token %}
+	<fieldset>
+		<input type="hidden" name="action" value="addTrad">
+		<input type="hidden" name="alert_pk" value="{{ alert.pk }}">
+		{% for field in form %}
+		<div class="control-group">
+			<label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
+			<div class="controls">
+				{{ field }}
+			</div>
+		</div>
+		{% endfor %}
+	</fieldset>
+	<button type="submit" class="btn btn-primary" name="add_trad_q">Enregister</button>
+	<button type="submit" class="btn" name="cancel_q">Annuler</button>
+	</form>
+{% endblock %}

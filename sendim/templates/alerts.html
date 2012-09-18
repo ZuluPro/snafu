@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block body %}
+        {% load getAlertColor %}	
+        <script type="text/javascript">
+            (function($) {
+                 Filters = function() {
+                    var All = $("input:checkbox").wrap('<span></span>').parent().css({background:"yellow", border:"3px red solid"});
+                };
+            })(jQuery)
+        </script>
+	<div class="row-fluid">
+	<div class="span2">
+		<div class="sidebar-nav well">
+		<ul class="nav nav-list">
+			<li class="nav-header">Event:</li>
+				<li class="active form-inline">
+					<label> 
+					<input type="checkbox" id="eventFilter" onclick="$('tr:not([event*='+$('#eventTextFilter').val()+'])').toggle();"> 
+					</label>
+					<input type="text" class="input-small" id="eventTextFilter" placeholder="event..."> 
+				</li>
+			<li class="nav-header">Status:</li>
+				<li class="active">
+					<label class="checkbox">
+					<input type="checkbox" checked id="unknownFilter" onclick="$().Filters();"><span class="label">UNKNOWN</span> 
+					</label>
+				</li>
+				<li class="active">
+					<label class="checkbox">
+					<input type="checkbox" checked id="upFilter" onclick="$('tr[status^=UP]').toggle();"><span class="label label-success">UP</span> 
+					</label>
+				</li>
+				<li class="active">
+					<label class="checkbox">
+					<input type="checkbox" checked id="okFilter" onclick="$('tr[status^=OK]').toggle();"><span class="label label-success">OK</span> 
+					</label>
+				</li>
+				<li class="active">
+					<label class="checkbox">
+					<input type="checkbox" checked id="warningFilter" onclick="$('tr[status^=WARNING]').toggle();"><span class="label label-warning">WARNING</span> 
+					</label>
+				</li>
+				<li class="active">
+					<label class="checkbox">
+					<input type="checkbox" checked id="criticalFilter" onclick="$('tr[status^=CRITICAL]').toggle();"><span class="label label-important">CRITICAL</span> 
+					</label>
+				</li>
+				<li class="active">
+					<label class="checkbox">
+					<input type="checkbox" checked id="downFilter" onclick="$('tr[status^=DOWN]').toggle();"><span class="label label-important">DOWN</span> 
+					</label>
+				</li>
+			<li class="nav-header">Host:</li>
+				<li class="active form-inline">
+					<label> 
+					<input type="checkbox" id="hostFilter" onclick="$('tr:not([host*='+$('#hostTextFilter').val()+'])').toggle();"> 
+					</label>
+					<input type="text" class="input-small" id="hostTextFilter" placeholder="host..."> 
+				</li>
+			<li class="nav-header">Service:</li>
+				<li class="active form-inline">
+					<label> 
+					<input type="checkbox" id="serviceFilter" onclick="$('tr:not([service*='+$('#serviceTextFilter').val()+'])').toggle();"> 
+					</label>
+					<input type="text" class="input-small" id="serviceTextFilter" placeholder="service..."> 
+				</li>
+			<li class="nav-header">Date:</li>
+				<li class="active form-inline">
+					<label> 
+					<input type="checkbox" id="dateFilter" onclick="$('tr:not([date*='+$('#datepicker').val()+'])').toggle();"> 
+					</label>
+                                        <input type="text" class="input-small" id="datepicker" placeholder="date..." onclick="$(this).datepicker({dateFormat: 'mm-dd-yy'});"> 
+				</li>
+            </ul>
+	</div>
+	</div>
+
+	<div class="span10">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Host</th>
+				<th>Service</th>
+				<th>Status</th>
+				<th>Date</th>
+				<th>Info</th>
+                                <th><a href="/events" >Event</a></th>
+				<th>
+					<form action"." method=POST style="margin: 0px 0px 0px">{% csrf_token %}
+						<button class="btn btn-primary" type="submit" name="reloadAlert_q"><i class="icon-refresh icon-white"></i></button>
+					</form>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for alert in alerts %}
+                        <tr status="{{ alert.status.status }}" host="{{ alert.host.host}}" service="{{ alert.service.service }}" date="{{ alert.date|date:'m-d-Y' }}" event="{{ alert.event.pk }}" style="background-color:{{ alert.status.status|getAlertColor }} ;">
+				<td>{{ alert.pk }}</td>
+				<td>{{ alert.host }}</td>
+				<td>{{ alert.service }}</td>
+				<td>{{ alert.status }}</td>
+                                <td>{{ alert.date|date:'m-d-Y' }}<br>{{ alert.date|date:'G:i:s' }}</td>
+				<td>{{ alert.info }}</td>
+				<td>
+					<form action"." method=POST>{% csrf_token %}
+					{% if alert.event == None %}
+                                                <input type="hidden" name="action" value="event">
+						<button class="btn btn-primary" type="submit" name="alert_pk" value="{{ alert.pk }}"><i class="icon-plus icon-white"></i></button>
+					{% else %}
+                                        <a class="btn btn-primary" href="/events#Event{{ alert.event.pk }}">{{ alert.event.pk }}</button>
+					{% endif %}
+					</form>
+				</td>
+				<td></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+</table>
+	            <div class="well">
+<div class="btn-group">
+{% for npage in numPage %}
+<a class="btn" href="/alerts/{{ npage }}">{{ npage }}</a>
+{% endfor %}
+</div>
+                {{ msg|safe }}
+            </div>
+	</div>
+	</div>
+{% endblock %}

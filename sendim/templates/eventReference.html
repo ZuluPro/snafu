@@ -1,0 +1,55 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h4>Référence pour {{ event.message }} sur {{ event.element.host }} : </h4>
+</div>
+<div class="modal-body" id="referenceModalBody">
+    <dl class="dl-horizontal">
+        <dt>Host</dt>
+        <dd>{{ alert.host.host }}</dt>
+
+        <dt>Service</dt>
+        <dd>{{ alert.service }}</dt>
+
+        <dt>Status</dt>
+        <dd>{{ alert.status }}</dt>
+
+        <dt>Contact d'escalade</dt>
+        <dd>{{ reference.escalation_contact }}</dt>
+
+        <dt>Tendance</dt>
+        <dd>{{ reference.tendancy }}</dt>
+
+        <dt>Outage</dt>
+        <dd>{{ reference.outage }}</dt>
+
+        <dt>Explanation</dt>
+        <dd>{{ reference.explanation }}</dt>
+
+        <dt>Origin</dt>
+        <dd>{{ reference.origin }}</dt>
+
+        <dt>Procédure</dt>
+        <dd>{{ reference.procedure }}</dt>
+
+        <dt>Criticité</dt>
+        <dd>{{ reference.criticity }}</dt>
+
+        <dt>Mail Group</dt>
+        <dd>
+            <li>To  : {{ reference.mail_group.to }}</li>
+            <li>Cc  : {{ reference.mail_group.cc }}</li>
+            <li>Ccm : {{ reference.mail_group.ccm }}</li>
+        </dt>
+
+        <dt>GLPI</dt>
+        <dd>
+            <li>Categorie : {{ reference.glpi_category }}</li>
+            <li>Groupe destination : {{ reference.glpi_dst_group }}</li>
+            <li>Fournisseur : {{ reference.glpi_supplier }}</li>
+        </dt>
+
+    </dl>
+</div>
+<div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Fermer</a>
+</div>

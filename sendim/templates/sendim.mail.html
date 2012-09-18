@@ -1,0 +1,61 @@
+{% extends 'base.html' %}	
+
+<h2>Prévisualisation du mail :</h2> 
+
+{% block body %}
+	<form class="form-horizontal" action="/events" method="post">{% csrf_token %}
+	<input type="hidden" name="alertPk" value="{{ alert.pk }}">
+	<input type="hidden" name="eventPk" value="{{ event.pk }}">
+	<fieldset>
+	<div class="control-group">
+		<label class="control-label" for="to">To</label>
+		<div class="controls">
+			<input type="text" style=width:100%;" name="to" id="to" value="{{ msg.to }}">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="cc">Cc</label>
+		<div class="controls">
+			<input type="text" style=width:100%;" name="cc" id="cc" value="{{ msg.cc }}">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="ccm">Ccm</label>
+		<div class="controls">
+			<input type="text" style=width:100%;" name="ccm" id="ccm" value="{{ msg.ccm }}">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="subject">Sujet</label>
+		<div class="controls">
+			<input type="text" style=width:100%;" name="subject" id="subject" value="{{ msg.subject }}">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="body">Corps</label>
+		<div class="controls">
+			<textarea type="textarea" style=width:100%;" rows="15" name="body" id="body">{{ msg.body }}</textarea>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="graphList">Selection de graph</label>
+		<div class="controls">
+			<select multiple="multiple" name="graphList" id="graphList" style=width:100%;">
+				{% for graph in graphList %}
+                                <option>{{ graph.0 }}: {{ graph.1 }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div>
+		<button type="submit" class="btn btn-primary" name="sendmail_q">Envoyer</button>
+		<button type="submit" class="btn" name="cancel_q">Annuler</button>
+	</div>
+	</fieldset>
+	</form>
+{% endblock %}

@@ -1,0 +1,10 @@
+Bonjour,
+
+Nos systèmes de supervision ont détécté une anomalie sur l'équipement $HOST$ le $JOUR$ à $HEURE$ : $TRADUCTION$
+
+Un ticket GLPI a été ouvert au lien suivant : https://glpi/front/ticket.form.php?id=$GLPI$
+
+Log Nagios correspondant :
+$LOG$
+
+Cordialement,
