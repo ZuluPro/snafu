@@ -6,7 +6,6 @@ class HostAdmin(admin.ModelAdmin):
 	search_fields = ('host','host_type')
 	list_filter = ('host_type',)
         list_editable = ('glpi_id', )
-	#inlines = [HostInline]
 
 class TraductionAdmin(admin.ModelAdmin):
 	list_display = ('service','traduction')
@@ -19,7 +18,6 @@ class ReferenceAdmin(admin.ModelAdmin):
                 ('host__host'),
                 ('service__service'),
                 )
-#	list_filter = ('status','mail_type', 'mail_criticity','glpi_category', 'glpi_supplier',)
 	list_editable = ('host','mail_type','mail_group','status','mail_criticity', 'procedure', 'glpi_category', 'glpi_dst_group', 'glpi_supplier')
  
 class GlpiSupplierAdmin(admin.ModelAdmin) :
@@ -29,8 +27,6 @@ class GlpiSupplierAdmin(admin.ModelAdmin) :
 class MailGroupAdmin(admin.ModelAdmin) :
     list_display = ( 'mail_group', 'to', 'cc', 'ccm' )
     list_editable = ('to', 'cc', 'ccm' )
-
-################################################
 
 admin.site.register(Host,HostAdmin)
 admin.site.register(Service)
@@ -50,8 +46,3 @@ admin.site.register(GlpiImpact)
 
 admin.site.register(Reference , ReferenceAdmin)
 admin.site.register(Traduction,TraductionAdmin)
-
-#admin.site.register(MyModelForm)
-#admin.site.register(MyModelAdmin)
-#admin.site.register(Host,HostAdmin)
-
