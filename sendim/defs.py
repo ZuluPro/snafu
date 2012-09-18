@@ -6,7 +6,6 @@ from referentiel.models import *
 import exceptions
 import codecs,locale
 import sys, os , datetime, time, re
-from glpidict import *
 import smtplib
 from time import strftime
 from email.mime.image import MIMEImage
@@ -15,15 +14,12 @@ from email.mime.text import MIMEText
 import urllib2, HTMLParser
 import xmlrpclib
 
-#import djcelery
-#from sendim.celery import celery 
-
 # Connexion a glpi
 serverUrl = settings.SENDIM['glpi-url']
 server = xmlrpclib.Server(serverUrl, verbose=False, allow_none=True)
 loginData = { 'login_name':settings.SENDIM['glpi-login'], 'login_password':settings.SENDIM['glpi-password'] }
-loginInfo = server.glpi.doLogin( loginData )
-idSession=loginInfo['session']
+#loginInfo = server.glpi.doLogin( loginData )
+#idSession=loginInfo['session']
 
 # Connexion a Nagios
 www = settings.SENDIM['nagios-url']

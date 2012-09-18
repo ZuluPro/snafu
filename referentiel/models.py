@@ -1,11 +1,6 @@
 from django.db import models
-#-*- coding: utf-8 -*-
-# Create your models here.
-#
-#CREATE TABLE referentiel (id INTEGER NOT NULL, host VARCHAR(100), service VARCHAR(100), status VARCHAR(100), escalation VARCHAR(100), escalation_contact VARCHAR(100), tendancy VARCHAR(100), outage VARCHAR(10), explanation VARCHAR(100), impact VARCHAR(100), origin VARCHAR(100), procedure VARCHAR(100), mail_type VARCHAR(100), mail_group VARCHAR(100), mail_criticity VARCHAR(100), glpi_urgency VARCHAR(100), glpi_impact VARCHAR(100), glpi_priority VARCHAR(100), glpi_category VARCHAR(100), glpi_source VARCHAR(100), glpi_src_user VARCHAR(100), glpi_src_group VARCHAR(100), glpi_dst_group VARCHAR(100), glpi_supplier VARCHAR(100), PRIMARY KEY(id));
-#CREATE TABLE traductions (id INTEGER NOT NULL, service VARCHAR(100), status VARCHAR(10), traduction VARCHAR(300), PRIMARY KEY(id));
 
-#Tables créees : 
+#Tables creees : 
 # - host
 # - statut
 # - impact
@@ -67,7 +62,7 @@ class MailGroup(models.Model):
 	def __unicode__(self):
 		return self.mail_group
 
-#definition de la classe "criticité":
+#definition de la classe "criticite":
 class MailCriticity(models.Model):
 	mail_criticity = models.CharField(max_length=128, unique=True)
 
