@@ -18,6 +18,9 @@ class Event(models.Model) :
     def __unicode__(self) :
         return str(self.pk)+':'+self.element.host+' - '+self.message
 
+    def getAlerts(self):
+        return Alert.objects.filter(event=self)
+
     def getLastAlert(self, isUp=False):
         return Alert.objects.filter(
             Q(event__pk=self.pk),
