@@ -22,6 +22,7 @@ def opengraph(alert, graph) :
 
 def readNagios() :
         pagehandle = opener.open(settings.SENDIM['nagios-history']+'?host=all&archive=0&statetype=2&type=0&noflapping=on')
+	print settings.SENDIM['nagios-history']+'?host=all&archive=0&statetype=2&type=0&noflapping=on'
 	problemlist = []
 	for line in pagehandle.readlines()[::-1] :
 		if re.search( r"<img align='left'" , line ) :
