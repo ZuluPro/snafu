@@ -1,9 +1,11 @@
 from django.conf import settings
 
-from sendim.models import *
 from referentiel.models import *
+from referentiel.defs import getReference 
+from sendim.models import *
 from sendim.defs import addMail,opengraph
 
+from common import logprint
 import re
 import smtplib
 from email.mime.image import MIMEImage
@@ -18,11 +20,9 @@ def sendMail(POST) :
 
 	msg = MIMEMultipart()
 	msg['From'] = settings.SENDIM['smtp-from']
-        msg['To'] = 'anthony.monthe@polyconseil.fr'
-        msg['Cc'] = 'anthony.monthe@polyconseil.fr'
-#        msg['To'] = POST['to']
-#	if POST['ccm'] : msg['To'] += ', '+ R.mail_group.ccm
-#	msg['Cc'] = POST['cc']
+        msg['To'] = POST['to']
+	if POST['ccm'] : msg['To'] += ', '+ R.mail_group.ccm
+	msg['Cc'] = POST['cc']
 	msg['Subject'] = POST['subject']
 
 	mailText = POST['body']
@@ -36,15 +36,14 @@ def sendMail(POST) :
 	msg.attach( MIMEText( mailText.encode('utf8') , 'plain' ) )
 	
 	# Ajout des graphs slelectinnes
-        print POST.getlist('graphList')
 	if 'graphList' in POST :
                 graphList = POST.getlist('graphList')
 		for i in range(len(graphList)) :
-                        print "Ajout d'un graph pour "+graphList[i]
 			pagehandle = opengraph(A, graphList[i][0])
 			pagehandle2 = opengraph(A, graphList[i][0])
 			msg.attach( MIMEImage( pagehandle ) )
 			msg.attach( MIMEImage( pagehandle2 ) )
+			logprint("Add " +graphList[i]+ "to mail" )
 
 	smtpObj = smtplib.SMTP(settings.SENDIM['smtp-server'] , settings.SENDIM['smtp-port'] )
 	if 'smtp-password' in settings.SENDIM.keys() :
@@ -56,7 +55,6 @@ def sendMail(POST) :
 
 	E.mail = True
 	E.save()
-	print "Mail envoye pour l'evenement #"+str(E.pk)
         msg['body'] = mailText
         addMail(E.glpi, msg)
 
@@ -101,6 +99,7 @@ def makeMail(R,E,A,ticketId):
     return msg
 
 def agregate(eventsPk, choicedEvent, message, glpi=None, mail=False) :
+    if len(eventsPk) < 2 : return None
     for eventPk in eventsPk :
         if Event.objects.get(pk=eventPk).glpi : glpi= Event.objects.get(pk=eventPk).glpi
         if Event.objects.get(pk=eventPk).mail : mail= True
@@ -108,9 +107,9 @@ def agregate(eventsPk, choicedEvent, message, glpi=None, mail=False) :
         for alert in Alert.objects.filter(event=eventPk) :
             alert.event = Event.objects.get(pk=choicedEvent)
             alert.save()
-            print "Alert #" +str(alert.pk)+" associe a l'Event #" +str(choicedEvent)
+            logprint("Add Alert #" +str(alert.pk)+ " to Event #" +str(choicedEvent) )
         Event.objects.get(pk=eventPk).delete()
-        print "Suppression de l'Event #" +eventPk
+        logprint("Delete Event #" +eventPk, 'pink')
 
         E = Event.objects.get(pk=choicedEvent)
         E.message = message
