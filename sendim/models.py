@@ -22,10 +22,9 @@ class Event(models.Model) :
         return Alert.objects.filter(event=self)
 
     def getLastAlert(self, isUp=False):
-        return Alert.objects.filter(
-            Q(event__pk=self.pk),
-            Q(status__status__exact='OK') | Q(status__status__exact='UP')
-        ).order_by('-pk')[0]
+        As = Alert.objects.filter(event=self).order_by('-pk')
+	if not isUp : As = As.exclude( Q(status__status__exact='OK') | Q(status__status__exact='UP') )
+        return As[0]
 
     def openTicket(self) :
     	pass
