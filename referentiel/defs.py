@@ -6,7 +6,7 @@ def getReference(A, byHost=True, byService=True, byStatus=True ) :
     if byService : Rs = Rs.filter(service=A.service)
     if byStatus : Rs = Rs.filter(status=A.status)
 
-    if not Rs : R = None
+    if not Rs : R = None ; logprint('No Reference for Alert #'+str(self.pk), 'red')
     else : R = Rs[0]
 
     return R

@@ -4,6 +4,7 @@ from django.db import models
 from referentiel.models import Host, Status, Service
 from referentiel.defs import *
 
+from common import *
 from re import match
 
 
@@ -18,8 +19,10 @@ class Event(models.Model) :
     def __unicode__(self) :
         return str(self.pk)+':'+self.element.host+' - '+self.message
 
-    def getAlerts(self):
-        return Alert.objects.filter(event=self)
+    def getAlerts(self, isUp=True):
+        As = Alert.objects.filter(event=self).order_by('-pk')
+	if not isUp : As = As.exclude( Q(status__status__exact='OK') | Q(status__status__exact='UP') )
+        return As
 
     def getLastAlert(self, isUp=False):
         As = Alert.objects.filter(event=self).order_by('-pk')
@@ -41,25 +44,27 @@ class Alert(models.Model) :
     def __unicode__(self) :
         return self.host.host+':'+self.service.service
 
-    def linkToReference(self, force=False):
+    def linkToReference(self, force=False, byHost=True, byService=True, byStatus=True):
         if ( self.reference and force ) or not self.reference : 
-            self.reference = getReference(self)
+            self.reference = getReference(self, byHost, byService, byStatus)
             self.save()
         return self.reference
 
     def link(self) :
         if self.event : E = self.event
+
         else : 
             if match(r"^(UP|OK)$", self.status.status ) :
+                print Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None).order_by('-pk')
                 E = Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None).order_by('-pk')[0].event
                 self.event = E
                 self.save()
                 
             else :
-                R = getReference(self)
-                if R == None : return None
+                if not self.reference : R = getReference(self)
+                elif R == None : logprint('No Reference for Alert #'+str(self.pk), 'red') ; return None
                 T = getTraduction(self)
-                if T == None : return None
+                if T == None : logprint('No Traduction for Alert #'+str(self.pk), 'red') ; return None
 
                 if not Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk) :
                     E = Event (

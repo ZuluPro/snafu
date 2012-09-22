@@ -2,6 +2,7 @@ from django.conf import settings
 
 from sendim.models import *
 from referentiel.models import *
+from referentiel.defs import getReference
 
 import xmlrpclib
 
@@ -17,9 +18,11 @@ idSession=loginInfo['session']
 
 def createTicket(eventPk, alertPk) :
 	E = Event.objects.get(pk=eventPk)
-	A = Alert.objects.get(pk=alertPk)
-	# Recherche de la reference
-	R = Reference.objects.filter(host__host__exact=A.host.host, service__service__exact=A.service.service, status__status__exact=A.status.status )[0]
+	############ PROVISOIR ############
+        for A in E.getAlerts(isUp=False) :
+            R = getReference(A)
+            if R : break
+        ##################################
 
 	# Creation du 1er contenu du ticket
 	content = "Descriptif : "+ E.message +"\nImpact :\nDate et heure : " +str(E.date)+ u"\nV\xe9rification : "
