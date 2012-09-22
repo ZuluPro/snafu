@@ -39,6 +39,12 @@ class Alert(models.Model) :
     def __unicode__(self) :
         return self.host.host+':'+self.service.service
 
+    def linkToReference(self, force=False):
+        if ( self.reference and force ) or not self.reference : 
+            self.reference = getReference(self)
+            self.save()
+        return self.reference
+
     def link(self) :
         if self.event : E = self.event
         else : 
