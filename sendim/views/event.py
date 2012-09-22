@@ -4,8 +4,9 @@ from sendim.defs import *
 from sendim.models import *
 from referentiel.models import *
 
+from common import logprint
+
 def events(request) :
-    contentMsg = ''
     if request.method == 'POST' :
 
         if 'reloadAlert_q' in request.POST :
@@ -23,7 +24,7 @@ def events(request) :
 
         if "create_ticket_q" in request.POST :
             ticketId = createTicket( eventPk, alertPk )
-            contentMsg += u"Cr\xe9ation de Du ticket #" +ticketId+ " pour l'Event #" +str(eventPk) +"<br>"
+            logprint("Add ticket #" +str(ticketId)+ "to Event #" +str(eventPk), 'green')
 
         elif "add_ref_q" in request.POST :
             default_data = { 'host':A.host.pk, 'service':A.service.pk, 'status':A.status.pk, 'mail_criticity':1,
@@ -36,14 +37,13 @@ def events(request) :
 
         elif "sendmail_q" in request.POST :
             sendMail( request.POST )
-            contentMsg += u"Envoi du mail pour l'Event #" +str(eventPk) +"<br>"
+            logprint("Mail sent for Event #"+str(eventPk) )
 
         elif "treatment_q" in request.POST :
             if 'addRef' in request.POST :
                 addRef(request.POST) # Fonction dans defs
                 E.criticity = MailCriticity.objects.get(pk=request.POST['mail_criticity']).mail_criticity
                 E.save()
-                print "Enregistrement de "+request.POST['host']	
 
             if not E.glpi : ticketId = createTicket( eventPk, alertPk )
             else : ticketId = E.glpi
@@ -66,8 +66,7 @@ def events(request) :
     return render(request, 'events.html', {
         'events':Event.objects.order_by('-pk'),
         'alerts':Alert.objects.all(),
-        'title':'Snafu - Events',
-        'msg' : contentMsg,
+        'title':'Snafu - Events'
     })
 
 

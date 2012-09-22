@@ -9,4 +9,4 @@ def logprint(string='', color='default') :
         'pink' : "0;35"
     }
   
-    return '\033['+colors[color]+'m'+ datetime.strftime(datetime.now(), '[%d/%b/%Y %X] ')+string+ '\033[0m'
+    print '\033['+colors[color]+'m'+ datetime.strftime(datetime.now(), '[%d/%b/%Y %X] ')+string+ '\033[0m'

@@ -86,6 +86,7 @@ def addRef(POST):
             glpi_supplier = GlpiSupplier.objects.get(pk=POST['glpi_supplier'])
     )
     R.save()
+    logprint('Reference #' +str(R.pk)+ ' saved', 'green')
 
 
 def makeMail(R,E,A,ticketId):
