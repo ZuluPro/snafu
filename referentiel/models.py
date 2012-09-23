@@ -9,6 +9,11 @@ class Host(models.Model):
 	glpi_id = models.IntegerField( blank=True, null=True,  default=None)
 	host_type = models.CharField(max_length=16, blank=True, choices=HOST_TYPE_CHOICES)
 
+	def save(self, *args, **kwargs):
+		if not alert.pk :
+			pass
+		super(Host, self).save(*args, **kwargs)
+
 	def __unicode__(self):
 		return self.host
 
