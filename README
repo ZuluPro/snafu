@@ -18,7 +18,7 @@ INSTALLED_APPS = (
     ...
 )
 
-SENDIM = {
+SNAFU = {
     'nagios-url': 'http://mywebsite/nagios/',
     'nagios-status': 'http://192.168.100.52/cgi-bin/nagios3/status.cgi',
     'nagios-history': 'http://mywebsite/nagios/cgi-bin/nagios3/history.cgi',
