@@ -19,7 +19,7 @@ def sendMail(POST) :
 	R = Reference.objects.filter(host__host__exact=A.host.host, service__service__exact=A.service.service, status__status__exact=A.status.status )[0]
 
 	msg = MIMEMultipart()
-	msg['From'] = settings.SENDIM['smtp-from']
+	msg['From'] = settings.SNAFU['smtp-from']
         msg['To'] = POST['to']
 	if POST['ccm'] : msg['To'] += ', '+ R.mail_group.ccm
 	msg['Cc'] = POST['cc']
@@ -28,7 +28,7 @@ def sendMail(POST) :
 	mailText = POST['body']
 	mailText = re.sub( r"\$HOST\$" , A.host.host, mailText )
 	mailText = re.sub( r"\$GLPI\$" , str(E.glpi) , mailText )
-	mailText = re.sub( r"\$GLPI-URL\$" , settings.SENDIM['glpi-url']+'front/ticket.form.php?id=' , mailText)
+	mailText = re.sub( r"\$GLPI-URL\$" , settings.SNAFU['glpi-url']+'front/ticket.form.php?id=' , mailText)
 	mailText = re.sub( r"\$TRADUCTION\$" , E.message , mailText)
 	mailText = re.sub( r"\$JOUR\$" , E.date.strftime('%d/%m/%y') , mailText)
 	mailText = re.sub( r"\$HEURE\$" , E.date.strftime('%H:%M:%S') ,  mailText)
@@ -45,12 +45,12 @@ def sendMail(POST) :
 			msg.attach( MIMEImage( pagehandle2 ) )
 			logprint("Add " +graphList[i]+ "to mail" )
 
-	smtpObj = smtplib.SMTP(settings.SENDIM['smtp-server'] , settings.SENDIM['smtp-port'] )
-	if 'smtp-password' in settings.SENDIM.keys() :
+	smtpObj = smtplib.SMTP(settings.SNAFU['smtp-server'] , settings.SNAFU['smtp-port'] )
+	if 'smtp-password' in settings.SNAFU.keys() :
 		smtpObj.ehlo()
 		smtpObj.starttls()
 		smtpObj.ehlo()
-		smtpObj.login(settings.SENDIM['smtp-from'], settings.SENDIM['smtp-password'])
+		smtpObj.login(settings.SNAFU['smtp-from'], settings.SNAFU['smtp-password'])
 	smtpObj.sendmail( msg['From'] , ( msg['To'], msg['Cc'] ), msg.as_string() )
 
 	E.mail = True
@@ -89,10 +89,10 @@ def addRef(POST):
 
 def makeMail(R,E,A,ticketId):
     msg = {} 
-    msg['from'] = settings.SENDIM['smtp-from']
+    msg['from'] = settings.SNAFU['smtp-from']
     msg['to'] = R.mail_group.to
     if E.criticity == 'Majeur' : msg['to'] += ', '+ R.mail_group.ccm
-    msg['cc'] = ' ,'.join( [  settings.SENDIM['smtp-from'], R.mail_group.cc] )
+    msg['cc'] = ' ,'.join( [  settings.SNAFU['smtp-from'], R.mail_group.cc] )
     msg['subject'] = '[Incident '+R.mail_type.mail_type+' Autolib\' - '+E.criticity+'] '+E.date.strftime('%d/%m/%y')+' - '+ E.message +' sur ' +E.element.host +' - GLPI '+str(ticketId)
     with open('./mailforhost.txt' , 'r') as mailFile : msg['body'] = mailFile.read()
     

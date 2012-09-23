@@ -6,9 +6,9 @@ from referentiel.defs import getReference
 
 import xmlrpclib
 
-serverUrl = settings.SENDIM['glpi-xmlrpc']
+serverUrl = settings.SNAFU['glpi-xmlrpc']
 server = xmlrpclib.Server(serverUrl, verbose=False, allow_none=True)
-loginData = { 'login_name':settings.SENDIM['glpi-login'], 'login_password':settings.SENDIM['glpi-password'] }
+loginData = { 'login_name':settings.SNAFU['glpi-login'], 'login_password':settings.SNAFU['glpi-password'] }
 
 #try :
 loginInfo = server.glpi.doLogin( loginData )
@@ -52,7 +52,7 @@ def createTicket(eventPk, alertPk) :
         return ticketInfo['id']
 
 def addMail(ticketId, msg) :
-	content = """from: """ +settings.SENDIM['smtp-from']+ """
+	content = """from: """ +settings.SNAFU['smtp-from']+ """
 to: """+msg['To']+"""
 cc: """+msg['Cc']+"""
 subject: """+msg['Subject']+"""

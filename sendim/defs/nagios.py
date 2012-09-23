@@ -7,9 +7,9 @@ from common import *
 import urllib2, HTMLParser
 import re, time, datetime
 
-www = settings.SENDIM['nagios-url']
-username = settings.SENDIM['nagios-login']
-password = settings.SENDIM['nagios-password']
+www = settings.SNAFU['nagios-url']
+username = settings.SNAFU['nagios-login']
+password = settings.SNAFU['nagios-password']
 htmlparser = HTMLParser.HTMLParser()
 
 passman = urllib2.HTTPPasswordMgrWithDefaultRealm()
@@ -22,8 +22,8 @@ def opengraph(alert, graph) :
     return opener.open(www+'pnp4nagios/image?host='+alert.host.host+'&srv='+alert.service.service.replace(' ','+')+'&view=1&source='+str(int(graph) ) ).read()
 
 def readNagios() :
-        pagehandle = opener.open(settings.SENDIM['nagios-history']+'?host=all&archive=0&statetype=2&type=0&noflapping=on')
-	print settings.SENDIM['nagios-history']+'?host=all&archive=0&statetype=2&type=0&noflapping=on'
+        pagehandle = opener.open(settings.SNAFU['nagios-history']+'?host=all&archive=0&statetype=2&type=0&noflapping=on')
+	print settings.SNAFU['nagios-history']+'?host=all&archive=0&statetype=2&type=0&noflapping=on'
 	problemlist = []
 	for line in pagehandle.readlines()[::-1] :
 		if re.search( r"<img align='left'" , line ) :

@@ -84,7 +84,12 @@ class ReferenceBigForm(forms.Form):
         ]
 
 class MailTemplateForm(forms.Form):
-	subject = forms.CharField(max_length=300, required=True, initial=MailTemplate.objects.get(pk=1).subject )
-	body = forms.CharField(max_length=3000, required=True, initial=MailTemplate.objects.get(pk=1).body, widget=forms.Textarea() )
-	comment = forms.CharField(max_length=3000, widget=forms.Textarea() )
-	choiced = forms.BooleanField()
+    subject = forms.CharField(max_length=300, required=True, initial=MailTemplate.objects.get(pk=1).subject )
+    body = forms.CharField(max_length=3000, required=True, initial=MailTemplate.objects.get(pk=1).body, widget=forms.Textarea() )
+    comment = forms.CharField(max_length=3000, widget=forms.Textarea() )
+    choiced = forms.BooleanField()
+
+    def __init__(self, *args, **kwargs):
+        super(MailTemplateForm, self).__init__(*args, **kwargs)
+        [ self.fields[key].widget.attrs.update({'style' : 'width:100%;'}) for key in self.fields.keys() ]
+

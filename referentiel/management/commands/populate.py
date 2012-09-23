@@ -11,8 +11,8 @@ import sqlite3
 import xmlrpclib
 
 
-serverUrl = settings.SENDIM['glpi-xmlrpc']
-loginData = { 'login_name':settings.SENDIM['glpi-login'], 'login_password':settings.SENDIM['glpi-password'] }
+serverUrl = settings.SNAFU['glpi-xmlrpc']
+loginData = { 'login_name':settings.SNAFU['glpi-login'], 'login_password':settings.SNAFU['glpi-password'] }
 ws = xmlrpclib.Server(serverUrl, verbose=False, allow_none=True)
 ws_session = ws.glpi.doLogin(loginData)
 
