@@ -108,3 +108,6 @@ class MailTemplate(models.Model) :
         previousMT.save()
         self.choiced = True
         self.save()
+
+    def getOn():
+        return self.objects.get(choiced=True)
