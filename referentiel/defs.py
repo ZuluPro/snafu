@@ -14,7 +14,7 @@ def getReference(A, byHost=True, byService=True, byStatus=True ) :
 
 def getTraduction(A, byStatus=True ) :
     Ts = Traduction.objects.all()
-    if byStatus : Ts = Ts.filter(status=A.status)
+    if byStatus : Ts = Ts.filter(service=A.service, status=A.status)
 
     if not Ts : T = None ; logprint('No Translation for Alert #'+str(A.pk), 'yellow')
     else : T = Ts[0]

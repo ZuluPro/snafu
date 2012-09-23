@@ -51,6 +51,12 @@ class Alert(models.Model) :
             self.save()
         return self.reference
 
+    def linkToTraduction(self, force=False, byStatus=True):
+        if ( self.traduction and force ) or not self.traduction : 
+            self.traduction = getTraduction(self, byStatus)
+            self.save()
+        return self.reference
+
     def link(self) :
         if self.event : E = self.event
 
