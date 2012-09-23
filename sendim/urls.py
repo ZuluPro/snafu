@@ -13,4 +13,6 @@ urlpatterns = patterns('',
     (r'^mail$', 'sendim.views.createMail'),
 
     (r'^s/webservice$', 'sendim.webservice.webservice'),
+
+    (r'^s/configuration$', 'sendim.views.configuration'),
 )

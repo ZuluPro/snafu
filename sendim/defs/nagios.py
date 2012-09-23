@@ -3,7 +3,7 @@ from django.conf import settings
 from sendim.models import *
 from referentiel.models import *
 
-from common import $
+from common import *
 import urllib2, HTMLParser
 import re, time, datetime
 

@@ -9,8 +9,10 @@ from common import logprint
 
 def configuration(request) :
 
-    return render(request, 'configuation.html', {
-        'subjects':MailSubject.objects.all()
-        'bodies':MailBody.objects.all()
+    return render(request, 'configuration.html', {
+        'references':Reference.objects.all(),
+        'traductions':Traduction.objects.all(),
+        'subjects':MailSubject.objects.all(),
+        'bodies':MailBody.objects.all(),
         'title':'Snafu - Configuration'
     })
