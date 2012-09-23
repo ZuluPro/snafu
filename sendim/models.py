@@ -69,16 +69,19 @@ class Alert(models.Model) :
                 
             else :
                 if not self.reference : R = getReference(self)
-                elif R == None : logprint('No Reference for Alert #'+str(self.pk), 'red') ; return None
-                T = getTraduction(self)
-                if T == None : logprint('No Traduction for Alert #'+str(self.pk), 'red') ; return None
+		if R == None : mail_criticity='?'
+		else : mail_criticy = R.mail_criticiry
+
+                if not self.traduction : T = getTraduction(self)
+                if T == None : traduction=self.info
+		else : traduction = T.traduction
 
                 if not Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk) :
                     E = Event (
                         element = self.host,
                         date = self.date,
-                        criticity = R.mail_criticity,
-                        message = T.traduction
+                        criticity = mail_criticity,
+                        message = traduction
                     )
 	            E.save()
                     self.event = E

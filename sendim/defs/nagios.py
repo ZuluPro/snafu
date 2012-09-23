@@ -58,40 +58,30 @@ def readGraphs(host,service=None):
                 count+=1
         return graphList
 
-def reloadAlert(contentMsg='') :
-        print 'Insertion des alerts'
+def reloadAlert() :
+	logprint('Insert alerts :','pink')
 	for host,service,status,info,date in readNagios() :
 		# Conversion de la date nagios en object datetime
                 try : date = datetime.datetime.fromtimestamp( time.mktime( time.strptime(date, "%Y-%m-%d %H:%M:%S")) )
-                except : print u"Date invalide: "+date; date = time.strftime("%Y-%m-%d %H:%M:%S")
-		# Compare la liste a la BDD, si ya pas une ligne avec le meme host,service,date
-		# Cause une erreur si non trouve
+                except ValueError:
+			logprint("Nagios parsing failed on date "+date, 'yellow' )
+			date = datetime.datetime.now()
 
-		# Recherche de l'hote dans BDD
-		try : Host.objects.get(host=host)
-		except : Host(host=host).save();
-
-		# Recherche du service dans BDD
-		try : Service.objects.get(service=service)
-		except : Service(service=service).save() ; print "Ajout du service "+service
-
-		# Recherche si l'alerte existe deja
-		try : Alert.objects.get(host__host__exact=host, service__service__exact=service, date=date )
-		except :
-			alert = Alert(
+		if not Alert.objects.filter(host__host__exact=host, service__service__exact=service, date=date ) :
+			if not Host.objects.filter(host=host) : Host(host=host).save();
+			if not Service.objects.filter(service=service) : Service(service=service).save()
+			A = Alert(
 				host = Host.objects.get(host=host),
 				service = Service.objects.get(service=service),
 				status = Status.objects.get(status=status),
 				info=info,
 				date=date
 			)
-			alert.save() ; print "Creation de l'Alert #"+str(alert.pk)
-                        contentMsg += u"Cr\xe9ation de l'Alert #"+str(alert.pk)+" : " +alert.service.service+ " sur " +alert.host.host+ '<br>'
-        return contentMsg
+			A.save() 
+        return None
 
 
-def treatAlerts(contentMsg='') :
-    contentMsg += reloadAlert() # reloadAlert retourne un message en HTML
+def treatAlerts() :
     ## Recherche des alerts n'ayant pas d'Event
     for alert in Alert.objects.filter(event=None) :
         try : # Execept Si pas d'alerte trouve
@@ -120,4 +110,4 @@ def treatAlerts(contentMsg='') :
             alert.event = E
             alert.save()
             logprint("Link Alert #"+str(alert.pk)+" To Event #"+str(E.pk), "green")
-    return contentMsg
+    return None

@@ -29,11 +29,11 @@ class Host(models.Model):
 				glpi_supplier = GlpiSupplier.objects.get(pk=1)
 			)
 			R.save()
-			logprint("Add Reference #"+str(R.pk), 'green')			
+			logprint("Add Reference #"+str(R.pk)+ ' for Host' +self, 'green')			
 			self.reference = R
 		super(Host, self).save(*args, **kwargs)
 		logprint("Add automaticaly Host "+self.host, 'green')			
-
+			
 	def __unicode__(self):
 		return self.host
 
@@ -42,6 +42,11 @@ class Service(models.Model):
 
 	def __unicode__(self):
 		return self.service
+
+	def save(self, *args, **kwargs):
+		if not self.pk :
+			super(Host, self).save(*args, **kwargs)
+			logprint('Add automaticaly service : '+self, 'green')
 
 class Status(models.Model):
 	status = models.CharField(max_length=10, unique=True)
