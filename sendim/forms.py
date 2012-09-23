@@ -11,13 +11,14 @@ class TraductionBigForm(forms.Form):
 class ReferenceBigForm(forms.Form):
     host = forms.ModelChoiceField(Host.objects.all().order_by('host'), required=True )
     service = forms.ModelChoiceField(Service.objects.all(), required=True  )
+    apply = forms.BooleanField()
 
-    escalation_contact = forms.CharField(widget=forms.HiddenInput())
-    tendancy = forms.CharField(widget=forms.HiddenInput())
-    outage = forms.CharField(widget=forms.HiddenInput())
-    explanation = forms.CharField(widget=forms.HiddenInput())
-    origin = forms.CharField(widget=forms.HiddenInput())
-    procedure = forms.CharField(widget=forms.HiddenInput())
+    escalation_contact = forms.CharField()
+    tendancy = forms.CharField()
+    outage = forms.CharField()
+    explanation = forms.CharField()
+    origin = forms.CharField()
+    procedure = forms.CharField()
 
     mail_type = forms.ModelChoiceField(MailType.objects.all(), required=True  )
     mail_group = forms.ModelChoiceField(MailGroup.objects.all(), required=True  )
@@ -42,3 +43,46 @@ class ReferenceBigForm(forms.Form):
     glpi_dst_group = forms.ModelChoiceField(GlpiGroup.objects.all() ) 
     glpi_supplier = forms.ModelChoiceField(GlpiSupplier.objects.all())
 
+    def warning(self):
+        return [ self.__getitem__(label) for label,field in self.fields.items() if 'warning_' in label ]
+
+    def critical(self):
+        return [ self.__getitem__(label) for label,field in self.fields.items() if 'critical_' in label ]
+
+    def unknown(self):
+        return [ self.__getitem__(label) for label,field in self.fields.items() if 'unknown_' in label ]
+
+    def all(self):
+        return [ self.__getitem__(label) for label,field in self.fields.items() ]
+
+    def alertFields(self) : 
+        return [ 
+        self.__getitem__('host'),
+        self.__getitem__('service'),
+        self.__getitem__('apply'),
+        ]
+
+    def glpiFields(self) : 
+        return [ 
+        self.__getitem__('glpi_category'),
+        self.__getitem__('glpi_source'),
+        self.__getitem__('glpi_dst_group'),
+        self.__getitem__('glpi_supplier')
+        ]
+
+    def commonFields(self) : 
+        return [ 
+        self.__getitem__('escalation_contact'),
+        self.__getitem__('tendancy'),
+        self.__getitem__('outage'),
+        self.__getitem__('explanation'),
+        self.__getitem__('origin'),
+        self.__getitem__('procedure'),
+        self.__getitem__('mail_type'),
+        self.__getitem__('mail_group'),
+        ]
+#        warn = self.warning()
+#        crit = self.critical()
+#        unkn = self.unknown()
+#        print self.warning()
+#        print [ field for field in self.all() if field in warn ]
