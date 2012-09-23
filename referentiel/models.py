@@ -11,9 +11,28 @@ class Host(models.Model):
 	host_type = models.CharField(max_length=16, blank=True, choices=HOST_TYPE_CHOICES)
 
 	def save(self, *args, **kwargs):
-		if not alert.pk :
-			logprint("Add Host"+self.host, 'green')			
+		if not self.pk :
+			R = Reference(
+				host = self,
+				service = Service.objects.get(service='Host status'),
+				status = Status.objects.get(status='UP'),
+				escalation_contact = POST['escalation_contact'],
+				mail_type = MailType.objects.get(pk=1),
+				mail_group = MailGroup.objects.get(pk=1),
+				mail_criticity = MailCriticity.objects.get(pk=1),
+				glpi_urgency = GlpiUrgency.objects.get(pk=1),
+				glpi_priority = GlpiPriority.objects.get(pk=1),
+				glpi_impact = GlpiImpact.objects.get(pk=1),
+				glpi_category = GlpiCategory.objects.get(pk=1),
+				glpi_source = 'Supervision',
+				glpi_dst_group = GlpiGroup.objects.get(pk=1),
+				glpi_supplier = GlpiSupplier.objects.get(pk=1)
+			)
+			R.save()
+			logprint("Add Reference #"+str(R.pk), 'green')			
+			self.reference = R
 		super(Host, self).save(*args, **kwargs)
+		logprint("Add automaticaly Host "+self.host, 'green')			
 
 	def __unicode__(self):
 		return self.host
