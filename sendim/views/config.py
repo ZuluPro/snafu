@@ -15,7 +15,6 @@ def configuration(request) :
         'alertsWithoutTrad':Alert.objects.filter(traduction=None),
         'references':Reference.objects.all(),
         'traductions':Traduction.objects.all(),
-        'subjects':MailSubject.objects.all(),
-        'bodies':MailBody.objects.all(),
+        'mailTemplates':MailTemplate.objects.all(),
         'title':'Snafu - Configuration'
     })
