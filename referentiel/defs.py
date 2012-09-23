@@ -16,7 +16,7 @@ def getTraduction(A, byStatus=True ) :
     Ts = Traduction.objects.all()
     if byStatus : Ts = Ts.filter(status=A.status)
 
-    if not Ts : T = None
+    if not Ts : T = None ; logprint('No Translation for Alert #'+str(A.pk), 'yellow')
     else : T = Ts[0]
 
     return T

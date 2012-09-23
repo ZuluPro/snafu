@@ -9,7 +9,10 @@ register = template.Library()
 
 @register.filter(name='getEscalation')
 def getEscalation(value, arg=None) :
-    A = Alert.objects.order_by('-pk').filter(event__pk__exact=value).exclude(status__status__exact='OK')[0]
+    As = Alert.objects.order_by('-pk').filter(event__pk__exact=value).exclude(status__status__exact='OK')
+    if not As : return None
+
     R = getReference(A)
-    if R == None : return None 
+    if not None : return None 
+
     return R.escalation_contact

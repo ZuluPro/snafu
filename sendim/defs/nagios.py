@@ -3,6 +3,7 @@ from django.conf import settings
 from sendim.models import *
 from referentiel.models import *
 
+from common import $
 import urllib2, HTMLParser
 import re, time, datetime
 
@@ -92,13 +93,13 @@ def reloadAlert(contentMsg='') :
 def treatAlerts(contentMsg='') :
     contentMsg += reloadAlert() # reloadAlert retourne un message en HTML
     ## Recherche des alerts n'ayant pas d'Event
-    for alert in Alert.objects.filter(event=None, date__gte=datetime.datetime(2012, 8, 24, 18, 19, 6, 957325)) :
+    for alert in Alert.objects.filter(event=None) :
         try : # Execept Si pas d'alerte trouve
           lastAlert = Alert.objects.filter( Q(host=alert.host) & Q(service=alert.service) & ~Q(date__gt=alert.date) & ~Q(event=None) ).order_by('-pk')[0]
           lastEvent = lastAlert.event
           if not re.search( r"(OK|UP)", lastAlert.status.status ):
               alert.event = lastEvent ; alert.save()
-              print "Ajout automatique de l'alert #" +str(alert.pk)+ "a l'Event #" +str(lastEvent.pk)
+              logprint("Add automaticaly Alert #" +str(alert.pk)+ " to Event #" +str(lastEvent.pk), "green")
           else : raise exceptions.StandardError
         except : 
             E = Event()
@@ -116,9 +117,7 @@ def treatAlerts(contentMsg='') :
             
             E.element=alert.host; E.date=alert.date
             E.save()
-            print "Creation de l'Event "+str(E.pk)
             alert.event = E
             alert.save()
-            # contentMsg += "Association de l'Alert #" +str(alert.pk)+ u" \xe0  l'Event #" +str(E.pk)+ "<br>"
-            print "Modification de l'alert #"+str(alert.pk)+" : Associe a l'Event #"+str(E.pk)
+            logprint("Link Alert #"+str(alert.pk)+" To Event #"+str(E.pk), "green")
     return contentMsg
