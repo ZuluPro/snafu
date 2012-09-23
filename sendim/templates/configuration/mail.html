@@ -1,0 +1,21 @@
+<div class="tabbable tabs-left">
+ <ul id="Tab" class="nav nav-tabs nav-stacked">
+  <li class="active"><a href="#referenceList" data-toggle="tab">{{ references.count }} référence(s)</a></li>
+  <li><a href="#alertWithoutRef" data-toggle="tab">{{ alertsWithoutRef.count }} alerte(s) sans référence</a></li>
+ </ul>
+ 
+ <div id="referenceTabContent" class="tab-content">
+  <div class="tab-pane fade in active" id="referenceList">
+  {% for reference in references %}
+   <p>{{ reference }}</p>
+  {% endfor %}
+  </div>
+  <div class="tab-pane fade" id="alertWithoutRef">
+  {% for alert in alertsWithoutRef %}
+   <p>{{ alert }}</p>
+  {% endfor %}
+  </div>
+ </div>
+
+</div> 
+

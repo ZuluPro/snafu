@@ -1,0 +1,20 @@
+<div class="tabbable tabs-left">
+ <ul id="traductionTab" class="nav nav-tabs nav-stacked">
+  <li class="active"><a href="#traductionList" data-toggle="tab">{{ traductions.count }} traduction(s)</a></li>
+  <li><a href="#alertsWithoutTrad" data-toggle="tab">{{ alertsWithoutTrad.count }} alerte(s) sans traduction</a></li>
+ </ul>
+ 
+ <div id="traductionTabContent" class="tab-content">
+  <div class="tab-pane fade in active" id="traductionList">
+  {% for traduction in traductions %}
+   <p>{{ traduction }}</p>
+  {% endfor %}
+  </div>
+  <div class="tab-pane fade" id="alertsWithoutTrad">
+  {% for alert in alertsWithoutTrad %}
+   <p>{{ alert }}</p>
+  {% endfor %}
+  </div>
+ </div>
+
+</div> 
