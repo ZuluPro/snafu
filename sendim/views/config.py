@@ -71,5 +71,6 @@ def configuration(request) :
         'traductionForm':TraductionForm,
         'traductionBigForm':TraductionBigForm,
         'mailTemplates':MailTemplate.objects.all(),
+        'mailTemplateForm':MailTemplateForm,
         'title':'Snafu - Configuration'
     })

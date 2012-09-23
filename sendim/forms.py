@@ -1,4 +1,5 @@
 from referentiel.models import *
+from sendim.models import *
 from django import forms
 
 class TraductionBigForm(forms.Form):
@@ -84,6 +85,6 @@ class ReferenceBigForm(forms.Form):
 
 class MailTemplateForm(forms.Form):
 	subject = forms.CharField(max_length=300, required=True, initial=MailTemplate.objects.get(pk=1).subject )
-	body = forms.Textarea(max_length=3000, required=True, initial=MailTemplate.objects.get(pk=1).body ) 
-	comment = forms.Textarea(max_length=3000, initial=MailTemplate.objects.get(pk=1)[0] ) 
+	body = forms.CharField(max_length=3000, required=True, initial=MailTemplate.objects.get(pk=1).body, widget=forms.Textarea() )
+	comment = forms.CharField(max_length=3000, widget=forms.Textarea() )
 	choiced = forms.BooleanField()
