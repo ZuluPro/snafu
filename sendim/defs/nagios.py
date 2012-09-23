@@ -69,7 +69,7 @@ def reloadAlert(contentMsg='') :
 
 		# Recherche de l'hote dans BDD
 		try : Host.objects.get(host=host)
-		except : Host(host=host).save() ; print "Ajout de l'Host "+host
+		except : Host(host=host).save();
 
 		# Recherche du service dans BDD
 		try : Service.objects.get(service=service)

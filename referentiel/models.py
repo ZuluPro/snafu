@@ -1,4 +1,5 @@
 from django.db import models
+from common import *
 
 class Host(models.Model):
 	HOST_TYPE_CHOICES = (
@@ -11,7 +12,7 @@ class Host(models.Model):
 
 	def save(self, *args, **kwargs):
 		if not alert.pk :
-			pass
+			logprint("Add Host"+self.host, 'green')			
 		super(Host, self).save(*args, **kwargs)
 
 	def __unicode__(self):
