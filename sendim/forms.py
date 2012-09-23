@@ -81,8 +81,9 @@ class ReferenceBigForm(forms.Form):
         self.__getitem__('mail_type'),
         self.__getitem__('mail_group'),
         ]
-#        warn = self.warning()
-#        crit = self.critical()
-#        unkn = self.unknown()
-#        print self.warning()
-#        print [ field for field in self.all() if field in warn ]
+
+class MailTemplateForm(forms.Form):
+	subject = forms.CharField(max_length=300, required=True, initial=MailTemplate.objects.get(pk=1).subject )
+	body = forms.Textarea(max_length=3000, required=True, initial=MailTemplate.objects.get(pk=1).body ) 
+	comment = forms.Textarea(max_length=3000, initial=MailTemplate.objects.get(pk=1)[0] ) 
+	choiced = forms.BooleanField()
