@@ -9,7 +9,8 @@ from common import logprint
 
 def configuration(request) :
 
-    return render(request, 'configuration.html', {
+    return render(request, 'configuration/index.html', {
+        'alertsWithoutRef':Alert.objects.filter(reference=None),
         'references':Reference.objects.all(),
         'traductions':Traduction.objects.all(),
         'subjects':MailSubject.objects.all(),

@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django.db import models
 
-from referentiel.models import Host, Status, Service
+from referentiel.models import Host, Status, Service, Reference, Traduction
 from referentiel.defs import *
 
 from common import *
@@ -40,6 +40,7 @@ class Alert(models.Model) :
     info = models.CharField(max_length=300)
     event = models.ForeignKey(Event, blank=True, null=True)
     reference = models.ForeignKey(Reference, blank=True, null=True, on_delete=models.SET_NULL)
+    traduction = models.ForeignKey(Traduction, blank=True, null=True, on_delete=models.SET_NULL)
 
     def __unicode__(self) :
         return self.host.host+':'+self.service.service
