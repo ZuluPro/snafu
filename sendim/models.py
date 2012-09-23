@@ -93,8 +93,8 @@ class Alert(models.Model) :
                         E = Event (
                             element = self.host,
                             date = self.date,
-                            criticity = R.mail_criticity,
-                            message = T.traduction
+                            criticity = mail_criticity,
+                            message = traduction
                         )
                         E.save()
                         self.event = E
