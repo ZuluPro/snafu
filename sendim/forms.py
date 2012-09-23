@@ -9,9 +9,6 @@ class TraductionBigForm(forms.Form):
 	apply = forms.BooleanField()
 
 class ReferenceBigForm(forms.Form):
-    minorCriticity = MailCriticity.object.get(pk=1)
-    majorCriticity = MailCriticity.object.get(pk=2)
-
     host = forms.ModelChoiceField(Host.objects.all().order_by('host'), required=True )
     service = forms.ModelChoiceField(Service.objects.all(), required=True  )
 

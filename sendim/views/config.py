@@ -32,6 +32,7 @@ def configuration(request) :
         'alertsWithoutTrad':Alert.objects.filter(traduction=None),
         'references':Reference.objects.all(),
         'referenceForm':ReferenceForm,
+        'referenceBigForm':ReferenceBigForm,
         'traductions':Traduction.objects.all(),
         'traductionForm':TraductionForm,
         'traductionBigForm':TraductionBigForm,

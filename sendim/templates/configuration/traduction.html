@@ -16,8 +16,8 @@
    <p>{{ alert }}</p>
   {% endfor %}
   </div>
-  <div class="tab-pane fade" id="addTrad">
 
+  <div class="tab-pane fade" id="addTrad">
    <form class="form-horizontal" action="/events/configuration" method="post">
     {% csrf_token %}
     <input type="hidden" name="action" value="addTrad">
@@ -34,6 +34,6 @@
     <button type="submit" class="btn btn-primary">Enregister</button>
    </form>
    </div>
- </div>
 
+ </div>
 </div> 
