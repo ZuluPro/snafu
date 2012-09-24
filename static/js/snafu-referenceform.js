@@ -11,13 +11,18 @@
      R[$(this).attr('name')] = $(this).val();
    });
 
-   $.post('events/configuration',R, function(data) {} ).error(function() { alert("error"); })
-   
+   $.post('events/configuration',R, function(data) {} )
+    .error(function() { alert("error"); })
+    .complete(function() {
    if ( $('form:not([style*="display: none"])').size() == 1 ) {
-    window.location.replace("/events");
+   form.hide();
+   tab.hide();
+   $('#submit').submit();
+  //  window.location.replace("/events");
    } else {
    form.hide();
    tab.hide();
-   }
+    }
+   })
   }
 

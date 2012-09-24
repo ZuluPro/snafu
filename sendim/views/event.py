@@ -34,7 +34,6 @@ def events(request) :
 	    Forms = dict()
 	    As = E.getAlerts()
 	    for num,A in enumerate(As) :
-		print A.reference, A.pk
 		if not A.host.host+'_'+A.service.service in A_S :
 		    default_data = { 'host':A.host.pk, 'service':A.service.pk }
 
@@ -46,13 +45,12 @@ def events(request) :
 				status.status.lower().lower()+'_priority':R.glpi_priority.pk, status.status.lower()+'_urgency':R.glpi_urgency.pk, status.status.lower()+'_impact':R.glpi_impact.pk,
 				'glpi_source':'Supervision'
 			    }.items() )
-			print ReferenceBigForm(default_data, auto_id=False)
 		    F = ReferenceBigForm(default_data, auto_id=False)
 		    A_S.append(A.host.host+'_'+A.service.service)
 		if not F in [ F for F in Forms.values() ] : Forms[num] = F
 
 	    return render(request, 'reference.form.html', {
-                'Forms':Forms, 'event':E
+                'Forms':Forms, 'E':E
             } )
             
 
