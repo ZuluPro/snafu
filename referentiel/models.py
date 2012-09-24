@@ -1,6 +1,8 @@
 from django.db import models
 from common import *
 
+from re import match
+
 class Host(models.Model):
 	HOST_TYPE_CHOICES = (
 		(u'computer',u'computer'),
@@ -50,6 +52,13 @@ class Service(models.Model):
 
 class Status(models.Model):
 	status = models.CharField(max_length=10, unique=True)
+
+	def shortcut(name):
+		if match('OK', name, 2) : status = self.objects.get(status='OK')
+		if match('UP', name, 2) : status = self.objects.get(status='UP')
+		if match('DOWN', name, 2) : status = self.objects.get(status='DOWN')
+		if match('serviceDown', name, 2) : status = self.objects.exclude(Q(status='DOWN') | Q(status='UP') | Q(status='DOWN'))
+		return status
 
 	def __unicode__(self):
 		return self.status
