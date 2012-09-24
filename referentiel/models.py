@@ -53,7 +53,8 @@ class Service(models.Model):
 class Status(models.Model):
 	status = models.CharField(max_length=10, unique=True)
 
-	def shortcut(name):
+	def shortcut(self,name):
+		if match('ALL', name, 2) : status = self.objects.all()
 		if match('OK', name, 2) : status = self.objects.get(status='OK')
 		if match('UP', name, 2) : status = self.objects.get(status='UP')
 		if match('DOWN', name, 2) : status = self.objects.get(status='DOWN')

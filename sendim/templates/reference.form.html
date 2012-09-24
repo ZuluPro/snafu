@@ -6,9 +6,10 @@
  <h3>Veuillez remplir les formulaire de chacun</h3>
 
  <div class="tabbable tabs-left">
+
   <ul id="alertTab" class="nav nav-tabs nav-stacked">
-  {% for A,F in Forms.values %}
-   <li{% if forloop.counter == 1 %} class="active"{% endif %}><a href="#A{{ A.pk }}" data-toggle="tab">{{ A }}</a></li>
+  {% for num,F in Forms.items %}
+   <li{% if forloop.counter == 1 %} class="active"{% endif %}><a href="#R{{ num }}" data-toggle="tab">Ref {{ num }}</a></li>
   {% endfor %}
   </ul>
  
@@ -16,12 +17,12 @@
    {% csrf_token %}
    <input type="hidden" name="action" value="addRef">
 
-   <div id="A{{ A.pk }}Content" class="tab-content">
-   {% for A,Form in Forms.values %}
-     <div class="tab-pane fade{% if forloop.counter == 1 %} in active{% endif %}" id="A{{ A.pk }}">
-      <h3>Formulaire pour {{ A }}</h3>
+   <div id="R{{ num }}Content" class="tab-content">
+   {% for num,Form in Forms.items %}
+     <div class="tab-pane fade{% if forloop.counter == 1 %} in active{% endif %}" id="R{{ num }}">
+      <h3>Formulaire pour {{ num }}</h3>
       <fieldset>
-      {% for field in Form.alertFields %}
+      {% for field in Form.all %}
        <div class="control-group">
         <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
         <div class="controls">

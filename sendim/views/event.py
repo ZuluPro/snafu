@@ -30,23 +30,28 @@ def events(request) :
             logprint("Add ticket #" +str(ticketId)+ "to Event #" +str(eventPk), 'green')
 
         elif "add_ref_q" in request.POST :
+	    A_S = []
 	    Forms = dict()
-	    As = E.getAlerts(withoutRef=True)
-	    for A in As :
-                if A.reference :
-		    R = A.reference
-        	    Forms[A.pk] = A,ReferenceBigForm( {
-		       'host':A.host.pk, 'service':A.service.pk, 'status':A.status.pk,
-		       'mail_criticity':R.mail_criticity.pk,
-                       'glpi_priority':R.glpi_priority.pk, 'glpi_urgency':R.glpi_urgency.pk, 'glpi_impact':R.glpi_impact.pk, 'glpi_source':'Supervision'
-		    }, auto_id=False)
-                else :
-        	   Forms[A.pk] = A,ReferenceBigForm( {
-		       'host':A.host.pk, 'service':A.service.pk, 'status':A.status.pk,
-		       'mail_criticity':1,
-                       'glpi_priority':4, 'glpi_urgency':4, 'glpi_impact':2, 'glpi_source':'Supervision'
-		   }, auto_id=False)
-            return render(request, 'reference.form.html', {
+	    As = E.getAlerts()
+	    for num,A in enumerate(As) :
+		print A.reference, A.pk
+		if not A.host.host+'_'+A.service.service in A_S :
+		    default_data = { 'host':A.host.pk, 'service':A.service.pk }
+
+		    for status in Status.objects.exclude(Q(status='DOWN') | Q(status='UP') | Q(status='DOWN')) :
+			if Reference.objects.filter(host=A.host, service=A.service, status=status) :
+			    R = Reference.objects.filter(host=A.host, service=A.service, status=status)[0]
+			    default_data = dict( default_data.items() + {
+				status.status.lower()+'_criticity':R.mail_criticity.pk,
+				status.status.lower().lower()+'_priority':R.glpi_priority.pk, status.status.lower()+'_urgency':R.glpi_urgency.pk, status.status.lower()+'_impact':R.glpi_impact.pk,
+				'glpi_source':'Supervision'
+			    }.items() )
+			print ReferenceBigForm(default_data, auto_id=False)
+		    F = ReferenceBigForm(default_data, auto_id=False)
+		    A_S.append(A.host.host+'_'+A.service.service)
+		if not F in [ F for F in Forms.values() ] : Forms[num] = F
+
+	    return render(request, 'reference.form.html', {
                 'Forms':Forms, 'event':E
             } )
             
