@@ -2,8 +2,10 @@ from django.shortcuts import render
 
 from sendim.defs import *
 from sendim.models import *
+from sendim.forms import *
 from referentiel.models import *
 from referentiel.forms import *
+from referentiel.defs import *
 
 from common import logprint
 
@@ -19,7 +21,7 @@ def events(request) :
         if 'alertPk' in request.POST :
             alertPk = request.POST["alertPk"]
             A = Alert.objects.get(pk=alertPk)
-            if 'eventPk' in request.POST :
+        if 'eventPk' in request.POST :
                 eventPk = request.POST["eventPk"]
                 E = Event.objects.get(pk=eventPk)
 
@@ -28,11 +30,23 @@ def events(request) :
             logprint("Add ticket #" +str(ticketId)+ "to Event #" +str(eventPk), 'green')
 
         elif "add_ref_q" in request.POST :
-            default_data = { 'host':A.host.pk, 'service':A.service.pk, 'status':A.status.pk, 'mail_criticity':1,
-                    'glpi_priority':4, 'glpi_urgency':4, 'glpi_impact':2, 'glpi_source':'Supervision'  }
-            form = ReferenceForm(default_data, auto_id=False)
+	    Forms = dict()
+	    As = E.getAlerts(withoutRef=True)
+	    for A in As :
+                if getReference(A) :
+		    R = getReference(A)
+        	    Forms[A.pk] = A,ReferenceBigForm( {
+		       'host':A.host.pk, 'service':A.service.pk, 'status':A.status.pk,
+		       'mail_criticity':1,
+                       'glpi_priority':4, 'glpi_urgency':4, 'glpi_impact':2, 'glpi_source':'Supervision'
+		    }, auto_id=False)
+        	Forms[A.pk] = A,ReferenceBigForm( {
+		    'host':A.host.pk, 'service':A.service.pk, 'status':A.status.pk,
+		    'mail_criticity':1,
+                    'glpi_priority':4, 'glpi_urgency':4, 'glpi_impact':2, 'glpi_source':'Supervision'
+		}, auto_id=False)
             return render(request, 'reference.form.html', {
-                'form':form, 'alert':A, 'event':E
+                'Forms':Forms, 'event':E
             } )
             
 

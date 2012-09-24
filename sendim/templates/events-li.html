@@ -15,7 +15,6 @@
   <td>
   {% if event.criticity = '?' %}
    <form method="POST" action="/events" style="margin: 0px 0px 0px">{% csrf_token %}
-    <input type="hidden" name="alertPk" value="{{ event.pk|getLastAlert }}">
     <input type="hidden" name="eventPk" value="{{ event.pk }}">
     <button class="btn btn-primary" name="add_ref_q"><i class="icon-comment icon-white"></i></button>
    </form>

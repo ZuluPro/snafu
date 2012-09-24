@@ -19,9 +19,10 @@ class Event(models.Model) :
     def __unicode__(self) :
         return str(self.pk)+':'+self.element.host+' - '+self.message
 
-    def getAlerts(self, isUp=True):
+    def getAlerts(self, isUp=True, withoutRef=False):
         As = Alert.objects.filter(event=self).order_by('-pk')
 	if not isUp : As = As.exclude( Q(status__status__exact='OK') | Q(status__status__exact='UP') )
+	if withoutRef : As = As.filter(reference=None)
         return As
 
     def getLastAlert(self, isUp=False):
@@ -43,7 +44,7 @@ class Alert(models.Model) :
     traduction = models.ForeignKey(Traduction, blank=True, null=True, on_delete=models.SET_NULL)
 
     def __unicode__(self) :
-        return self.host.host+':'+self.service.service
+        return self.host.host+' : '+self.service.service+' - '+ self.status.status
 
     def linkToReference(self, force=False, byHost=True, byService=True, byStatus=True):
         if ( self.reference and force ) or not self.reference : 
