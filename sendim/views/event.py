@@ -33,18 +33,19 @@ def events(request) :
 	    Forms = dict()
 	    As = E.getAlerts(withoutRef=True)
 	    for A in As :
-                if getReference(A) :
-		    R = getReference(A)
+                if A.reference :
+		    R = A.reference
         	    Forms[A.pk] = A,ReferenceBigForm( {
+		       'host':A.host.pk, 'service':A.service.pk, 'status':A.status.pk,
+		       'mail_criticity':R.mail_criticity.pk,
+                       'glpi_priority':R.glpi_priority.pk, 'glpi_urgency':R.glpi_urgency.pk, 'glpi_impact':R.glpi_impact.pk, 'glpi_source':'Supervision'
+		    }, auto_id=False)
+                else :
+        	   Forms[A.pk] = A,ReferenceBigForm( {
 		       'host':A.host.pk, 'service':A.service.pk, 'status':A.status.pk,
 		       'mail_criticity':1,
                        'glpi_priority':4, 'glpi_urgency':4, 'glpi_impact':2, 'glpi_source':'Supervision'
-		    }, auto_id=False)
-        	Forms[A.pk] = A,ReferenceBigForm( {
-		    'host':A.host.pk, 'service':A.service.pk, 'status':A.status.pk,
-		    'mail_criticity':1,
-                    'glpi_priority':4, 'glpi_urgency':4, 'glpi_impact':2, 'glpi_source':'Supervision'
-		}, auto_id=False)
+		   }, auto_id=False)
             return render(request, 'reference.form.html', {
                 'Forms':Forms, 'event':E
             } )

@@ -6,96 +6,37 @@
  <h3>Veuillez remplir les formulaire de chacun</h3>
 
  <div class="tabbable tabs-left">
-  <ul id="referenceTab" class="nav nav-tabs nav-stacked">
+  <ul id="alertTab" class="nav nav-tabs nav-stacked">
   {% for A,F in Forms.values %}
    <li{% if forloop.counter == 1 %} class="active"{% endif %}><a href="#A{{ A.pk }}" data-toggle="tab">{{ A }}</a></li>
   {% endfor %}
   </ul>
  
-     <form class="form-horizontal" action="/events/configuration" method="post">
-  {% for A,Form in Forms.values %}
+  <form class="form-horizontal" action="/events/configuration" method="post">
+   {% csrf_token %}
+   <input type="hidden" name="action" value="addRef">
+
    <div id="A{{ A.pk }}Content" class="tab-content">
-    <div class="tab-pane fade {% if forloop.counter == 1 %}in active{% endif %}" id="A{{ A.pk }}">
-      {% csrf_token %}
-      <input type="hidden" name="action" value="addRef">
+   {% for A,Form in Forms.values %}
+     <div class="tab-pane fade{% if forloop.counter == 1 %} in active{% endif %}" id="A{{ A.pk }}">
+      <h3>Formulaire pour {{ A }}</h3>
       <fieldset>
-       <div class="row">
- 
-       <div class="span4">
-       {% for field in Form.alertFields %}
-        <div class="control-group">
-         <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
-         <div class="controls">
-          {{ field }}
-         </div>
+      {% for field in Form.alertFields %}
+       <div class="control-group">
+        <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
+        <div class="controls">
+         {{ field }}
         </div>
-       {% endfor %}
        </div>
- 
-       <div class="span4">
-       {% for field in Form.glpiFields %}
-        <div class="control-group">
-         <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
-         <div class="controls">
-          {{ field }}
-         </div>
-        </div>
-       {% endfor %}
-       </div>
- 
-       <div class="span4">
-       {% for field in Form.commonFields %}
-        <div class="control-group">
-         <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
-         <div class="controls">
-          {{ field }}
-         </div>
-        </div>
-       {% endfor %}
-       </div>
- 
-       <div class="span4">
-       {% for field in Form.warning %}
-        <div class="control-group">
-         <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
-         <div class="controls">
-          {{ field }}
-         </div>
-        </div>
-       {% endfor %}
-       </div>
-  
-       <div class="span4">
-       {% for field in Form.critical %}
-        <div class="control-group">
-         <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
-         <div class="controls">
-          {{ field }}
-         </div>
-        </div>
-       {% endfor %}
-       </div>
- 
-       <div class="span4">
-       {% for field in BigForm.unknown %}
-        <div class="control-group">
-         <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
-         <div class="controls">
-          {{ field }}
-         </div>
-        </div>
-       {% endfor %}
-       </div>
+      {% endfor %}
 
-  {% endfor %}
       </fieldset>
-      <button type="submit" class="btn btn-primary">Enregister</button>
-     </form>
     </div>
+   {% endfor %}
    </div>
-  </div>
- </div>
+
+   <button type="submit" class="btn btn-primary">Enregister</button>
+  </form>
 
  </div>
-</div> 
 {% endblock %}
