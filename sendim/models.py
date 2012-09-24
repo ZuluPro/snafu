@@ -63,10 +63,13 @@ class Alert(models.Model) :
         else : 
             if match(r"^(UP|OK)$", self.status.status ) :
                 print Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None).order_by('-pk')
-                E = Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None).order_by('-pk')[0].event
-                self.event = E
-                self.save()
-                
+		if Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None) :
+			E = Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None).order_by('-pk')[0].event
+			self.event = E
+			self.save()
+                else :
+                    logprint("Incoherence for link Alert #"+str(self.pk)+ ", Alert has no father", 'red')
+                    return None
             else :
                 if not self.reference : R = getReference(self)
 		if R == None : mail_criticity='?'
