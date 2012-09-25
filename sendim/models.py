@@ -42,6 +42,8 @@ class Alert(models.Model) :
     event = models.ForeignKey(Event, blank=True, null=True)
     reference = models.ForeignKey(Reference, blank=True, null=True, on_delete=models.SET_NULL)
     traduction = models.ForeignKey(Traduction, blank=True, null=True, on_delete=models.SET_NULL)
+    isPrimary = models.BooleanField(default=False)
+
 
     def __unicode__(self) :
         return self.host.host+' : '+self.service.service+' - '+ self.status.status
