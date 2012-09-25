@@ -24,6 +24,7 @@ def events(request) :
         if 'eventPk' in request.POST :
                 eventPk = request.POST["eventPk"]
                 E = Event.objects.get(pk=eventPk)
+		A = E.getPrimaryAlert()
 
         if "create_ticket_q" in request.POST :
             ticketId = createTicket( eventPk, alertPk )
@@ -59,18 +60,14 @@ def events(request) :
             logprint("Mail sent for Event #"+str(eventPk) )
 
         elif "treatment_q" in request.POST :
-            if 'addRef' in request.POST :
-                addRef(request.POST) # Fonction dans defs
-                E.criticity = MailCriticity.objects.get(pk=request.POST['mail_criticity']).mail_criticity
-                E.save()
+	    if E.criticity == '?' : 
+		E.criticity = A.reference.mail_criticity.mail_criticity
+		E.save()
 
-            if not E.glpi : ticketId = createTicket( eventPk, alertPk )
-            else : ticketId = E.glpi
-            # Recherche du MailGroup correspondant
-            R = Reference.objects.filter(host__host__exact=A.host.host, service__service__exact=A.service.service, status__status__exact=A.status.status )[0]
+            if not E.glpi : E.glpi = createTicket(eventPk)
 
             # Constitution du mail
-            msg = makeMail(R,E,A,ticketId)
+            msg = makeMail(E)
 
             # Recuperation des graphs correspondant
             graphList = readGraphs(E.element.host, A.service.service)

@@ -16,7 +16,7 @@ loginInfo = server.glpi.doLogin( loginData )
 
 idSession=loginInfo['session']
 
-def createTicket(eventPk, alertPk) :
+def createTicket(eventPk) :
 	E = Event.objects.get(pk=eventPk)
 	############ PROVISOIR ############
         for A in E.getAlerts(isUp=False) :

@@ -87,13 +87,14 @@ def addRef(POST):
     logprint('Reference #' +str(R.pk)+ ' saved', 'green')
 
 
-def makeMail(R,E,A,ticketId):
+def makeMail(E):
+    R = E.getPrimaryAlert().reference
     msg = {} 
     msg['from'] = settings.SNAFU['smtp-from']
     msg['to'] = R.mail_group.to
     if E.criticity == 'Majeur' : msg['to'] += ', '+ R.mail_group.ccm
     msg['cc'] = ' ,'.join( [  settings.SNAFU['smtp-from'], R.mail_group.cc] )
-    msg['subject'] = '[Incident '+R.mail_type.mail_type+' Autolib\' - '+E.criticity+'] '+E.date.strftime('%d/%m/%y')+' - '+ E.message +' sur ' +E.element.host +' - GLPI '+str(ticketId)
+    msg['subject'] = '[Incident '+R.mail_type.mail_type+' - '+E.criticity+'] '+E.date.strftime('%d/%m/%y')+' - '+ E.message +' sur ' +E.element.host +' - GLPI '+str(E.glpi)
     with open('./mailforhost.txt' , 'r') as mailFile : msg['body'] = mailFile.read()
     
     return msg
