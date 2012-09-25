@@ -30,6 +30,9 @@ class Event(models.Model) :
 	if not isUp : As = As.exclude( Q(status__status__exact='OK') | Q(status__status__exact='UP') )
         return As[0]
 
+    def getPrimaryAlert(self):
+        return Alert.objects.filter(event=self).get(isPrimary=True)
+
     def openTicket(self) :
     	pass
 
@@ -47,6 +50,13 @@ class Alert(models.Model) :
 
     def __unicode__(self) :
         return self.host.host+' : '+self.service.service+' - '+ self.status.status
+
+    def setPrimary():
+        old_A = self.event.getPrimaryAlert()
+        old_A.isPrimary = False
+        old_A.save()
+        self.isPrimary = True
+        self.save()
 
     def linkToReference(self, force=False, byHost=True, byService=True, byStatus=True):
         if ( self.reference and force ) or not self.reference : 
@@ -91,6 +101,7 @@ class Alert(models.Model) :
                     )
 	            E.save()
                     self.event = E
+                    self.isPrimary = True
                     self.save()
 
                 else :
@@ -104,6 +115,7 @@ class Alert(models.Model) :
                         )
                         E.save()
                         self.event = E
+                        self.isPrimary = True
                         self.save()
                     else : 
                         E = lastA.event
