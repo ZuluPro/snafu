@@ -13,15 +13,15 @@ from common import logprint
 def events(request) :
     if request.method == 'POST' :
 
-        if 'reloadAlert_q' in request.POST :
-            treatAlerts()
-
         if 'eventPk' in request.POST :
                 eventPk = request.POST["eventPk"]
                 E = Event.objects.get(pk=eventPk)
 		A = E.getPrimaryAlert()
 
-        if "sendmail_q" in request.POST :
+        if 'reloadAlert_q' in request.POST :
+            treatAlerts()
+
+        elif "sendmail_q" in request.POST :
             sendMail( request.POST )
             logprint("Mail sent for Event #"+str(eventPk) )
 
