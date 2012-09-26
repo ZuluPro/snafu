@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<div id="placeholder" style="width:600px;height:300px"></div>
+
+<script>
+  $(document).ready(function() {
+
+    var data = [ 
+      {
+        data : [ 
+            {% for Edate,number in monthAs %}
+              [ {{ Edate }} * 1000, {{ number }} ]{% if forloop.counter != monthAs|length %},{% endif %}
+            {% endfor %}
+         ],
+        points : { show: true },
+        lines : { show: true }
+      }
+    ];
+
+    var options = {
+      xaxis: {
+        mode : "time",
+        timeformat : "%m/%d"
+      },
+      yaxis: {
+        min : 0,
+        tickDecimals : 0
+      }
+    };
+
+    $.plot($("#placeholder"), data, options );
+  });
+</script>  
+
+{% endblock %}

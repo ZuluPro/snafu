@@ -1,0 +1,19 @@
+{% load addFontColor %}
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h4>Êtes-vous sûr de vouloir fermer ces évènements : </h4>
+</div>
+
+<form method="POST" action="/snafu/event/close">{% csrf_token %}
+    <div class="modal-body" id="referenceModalBody">
+        <select class="span4" size="{{ Es|length }}" name="eventsPk" multiple="multiple">
+            {% for E in Es %}
+            <option value="{{ E.pk }}">{{ E.pk }}: {{ E }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="modal-footer">
+        <input class="btn btn-primary" type="submit" value="Clôturer"></a>
+        <a href="#" class="btn" data-dismiss="modal">Annuler</a>
+    </div>
+</form>
