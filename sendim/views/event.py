@@ -14,9 +14,9 @@ def events(request) :
     if request.method == 'POST' :
 
         if 'eventPk' in request.POST :
-                eventPk = request.POST["eventPk"]
-                E = Event.objects.get(pk=eventPk)
-		A = E.getPrimaryAlert()
+            eventPk = request.POST["eventPk"]
+            E = Event.objects.get(pk=eventPk)
+            A = E.getPrimaryAlert()
 
         if 'reloadAlert_q' in request.POST :
             treatAlerts()

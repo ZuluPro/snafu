@@ -4,11 +4,11 @@ from referentiel.models import *
 from sendim.models import *
 
 class TraductionBigForm(forms.Form):
-	service = forms.ModelChoiceField(Service.objects.all() )
-	warning = forms.CharField(max_length=300, required=True)
-	critical = forms.CharField(max_length=300, required=True)
-	unknown = forms.CharField(max_length=300, required=True)
-	apply = forms.BooleanField()
+    service = forms.ModelChoiceField(Service.objects.all() )
+    warning = forms.CharField(max_length=300, required=True)
+    critical = forms.CharField(max_length=300, required=True)
+    unknown = forms.CharField(max_length=300, required=True)
+    apply = forms.BooleanField()
 
 class ReferenceBigForm(forms.Form):
     host = forms.ModelChoiceField(Host.objects.all().order_by('host'), required=True )

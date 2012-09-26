@@ -2,23 +2,20 @@ from django.contrib import admin
 from referentiel.models import *
 
 class HostAdmin(admin.ModelAdmin):
-	list_display = ('host','glpi_id', 'host_type')
-	search_fields = ('host','host_type')
-	list_filter = ('host_type',)
-        list_editable = ('glpi_id', )
+    list_display = ('host','glpi_id', 'host_type')
+    search_fields = ('host','host_type')
+    list_filter = ('host_type',)
+    list_editable = ('glpi_id', )
 
 class TraductionAdmin(admin.ModelAdmin):
-	list_display = ('service','traduction')
-	search_fields = ('service','traduction')
-	list_editable = ('traduction',)
+    list_display = ('service','traduction')
+    search_fields = ('service','traduction')
+    list_editable = ('traduction',)
 
 class ReferenceAdmin(admin.ModelAdmin):
-	list_display = ('service','host','mail_type','mail_group','status','mail_criticity','procedure','glpi_category', 'glpi_dst_group', 'glpi_supplier' )
-	search_fields = (
-                ('host__host'),
-                ('service__service'),
-                )
-	list_editable = ('host','mail_type','mail_group','status','mail_criticity', 'procedure', 'glpi_category', 'glpi_dst_group', 'glpi_supplier')
+    list_display = ('service','host','mail_type','mail_group','status','mail_criticity','procedure','glpi_category', 'glpi_dst_group', 'glpi_supplier' )
+    search_fields = ('host__host', 'service__service')
+    list_editable = ('host','mail_type','mail_group','status','mail_criticity', 'procedure', 'glpi_category', 'glpi_dst_group', 'glpi_supplier')
  
 class GlpiSupplierAdmin(admin.ModelAdmin) :
     list_display = ( 'glpi_supplier', 'glpi_id' )

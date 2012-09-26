@@ -113,25 +113,24 @@ class Alert(models.Model) :
 
         else : 
             if match(r"^(UP|OK)$", self.status.status ) :
-                print Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None).order_by('-pk')
-		if Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None) :
-			E = Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None).order_by('-pk')[0].event
-			self.event = E
-			self.save()
+                if Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None) :
+	            E = Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None).order_by('-pk')[0].event
+		    self.event = E
+	            self.save()
                 else :
                     logprint("Incoherence for link Alert #"+str(self.pk)+ ", Alert has no father", 'red')
                     return None
             else :
                 if not self.reference : R = getReference(self)
 
-		if not R : mail_criticity='?'
-		else :
+	        if not R : mail_criticity='?'
+	        else :
                     mail_criticity = R.mail_criticity
                     self.reference = R
 
                 if not self.traduction : T = getTraduction(self)
                 if T == None : traduction=self.info
-		else : traduction = T.traduction
+                else : traduction = T.traduction
 
                 if not Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk) :
                     E = Event (
@@ -179,8 +178,3 @@ class MailTemplate(models.Model) :
 
     def getOn():
         return MailTemplate.objects.get(choosen=True)
-
-#class UselessService(models.Model) :
-#    host = models.ForeignKey(Host)
-#    service = models.ForeignKey(Service)
-#    comment = models.CharField(max_length=300, blank=True,null=True)

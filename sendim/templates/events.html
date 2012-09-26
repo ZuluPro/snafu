@@ -2,7 +2,7 @@
 
 {% block body %}
  <div class="span2">
-  <div class="sidebar-nav well" style="position: relative">
+  <div class="sidebar-nav well" style="position: fixed;">
    <ul class="nav nav-list">
     <li class="nav-header"></li>
     <li> <input type="text" class="input-small" id="pk" filter="pk" placeholder="#Event"> </li>
@@ -32,7 +32,7 @@
      </th>
     </tr>
     <tr>
-     <th colspan="8">
+     <th colspan="8" style="position: fixed;">
       <div class="btn-group">
        <button class="btn btn-mini disabled">Actions : </button>
        <button class="btn btn-mini" onclick="$.fn.AgrForm()">Agreger</button>
