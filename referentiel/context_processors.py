@@ -1,5 +1,7 @@
 from django.conf import settings
 
+from sendim.models import Alert
+
 def glpi(request):
     return {
         'glpi': { 
@@ -14,9 +16,19 @@ def glpi(request):
     }
 
 def nagios(request):
+    print 123
     return {
         'nagios': { 
             'index_url':settings.SNAFU['nagios-url'],
             'host_status_url':settings.SNAFU['nagios-status']+'?host='
+        },
+        'ref': {
+            'ref':Alert.objects.filter(reference=None).count()
+        }
+    }
+
+def refe(request):
+    return {
+        'ref': { 
         }
     }
