@@ -28,8 +28,8 @@ def events(request) :
         elif "treatment_q" in request.POST :
 	    if E.criticity == '?' or not E.getPrimaryAlert().reference : 
 		
-		Forms = makeMultipleForm( createServiceList(E.getAlerts() ) )#ReferenceBigFormSet(initial= [{
-		return render(request, 'reference.form.html', {
+		Forms = makeMultipleForm( createServiceList(E.getAlerts() ) )
+		return render(request, 'event/add-reference.html', {
 			'Forms':Forms, 'E':E,
         		'title':'Snafu - Ajout de Reference'
 		} )
@@ -43,13 +43,13 @@ def events(request) :
             graphList = readGraphs(E.element.host, A.service.service)
     
             # Envoi du formulaire d'envoi de mail
-            return render(request,'sendim.mail.html', {
+            return render(request,'event/preview-mail.html', {
                     'msg':msg,
                     'E':E,
                     'graphList':graphList,
                     'title':'Snafu - Envoi de mail'
             })
-    return render(request, 'events.html', {
+    return render(request, 'event/event-index.html', {
         'Es':Event.objects.filter(closed=False).order_by('-pk'),
         'title':'Snafu - Events'
     })

@@ -46,7 +46,7 @@ def eventsFiltered(request) :
     if request.GET['date'] : pass 
     print Es
 
-    return render(request, 'events-li.html', { 'Es':Es[::-1] })
+    return render(request, 'event/tr.html', { 'Es':Es[::-1] })
 
 def choosePrimaryAlert(request) :
     if request.method == 'GET' :
