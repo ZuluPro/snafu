@@ -1,0 +1,5 @@
+<ul  class="nav nav-tabs nav-stacked">
+ {% for R in Rs %}
+  <li><a id="ref{{ R.pk }}Tab" class="get-ref" href="#" data-toggle="tab" onclick="$.fn.getRef({{ R.pk }})">{{ R.host }} - {{ R.service }} : {{ R.status }}</a></li>
+ {% endfor %}
+</ul>

@@ -69,6 +69,59 @@ $(document).ready(function() {
     $('input').attr('checked',false);
   }
 
+  // REF DETAILS
+  $.fn.refDetail = function(){
+    $.get('/snafu/configuration/ref',{ refPk:$(this).attr('pk') }, function(data) {
+      $('#refContent').html(data);
+    })
+  }
+
+  // MY REFERENCE FILTER
+  $.fn.getReferences = function(){
+    $('#refContent').html();
+    $('#R_tbody').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/ref_q',{'q': $('#ref_q').val() }, function(data) {
+      $('#R_tbody').html( data );
+    });
+  }
+
+  // GET REF
+  $.fn.getRef = function(pk){
+    $('#refContent').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/ref/'+pk+'/get', function(data) {
+      $('#refContent').html(data);
+    })
+  }
+
+ // DEL REF
+  $.fn.delRef = function(pk){
+    $('#refContent').html('');
+    $.post('/snafu/configuration/ref/'+pk+'/del',{ csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val() }, function(data) {
+      $('#refCount').html(data)
+      $('#ref'+pk+'Tab').hide('300');
+    })
+  }
+
+ // GET ALERT
+  $.fn.getAlertWithoutRef = function(pk){
+    $('#refAlertContent').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/ref/alert/'+pk, function(data) {
+      $('#refAlertContent').html(data);
+    })
+  }
+
+ // GOTO ADDREF WITH AN Alert ATTR
+  $.fn.getAlertRef = function(pk){
+    $.get('/snafu/configuration/ref/alert/'+pk+'/form', {}, function(data) {
+      $('#addRef').html(data)
+      $('#addRefTab').tab('show')
+    })
+  }
+
+ // TRANSFORM <p> INTO INPUT
+ // $.fn.createInput = function(pk,attr,val){
+ //   $('#refContent').html('');
+ // }
 
 });
 

@@ -1,0 +1,13 @@
+<div class="span3">
+ <br>
+ <div class="input-append">
+  <input class="span2" id="ref_q" type="text" placeholder="Hôte, service">
+  <button class="btn btn-primary" onclick="$.fn.getReferences()">Rechercher</button>
+ </div>
+ <div id="R_tbody">
+  {% include "configuration/reference/refs/ul.html" %}
+ </div>
+</div>
+
+<div id="refContent" class="span7">
+</div>

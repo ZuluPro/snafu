@@ -1,0 +1,14 @@
+<div class="span3">
+ <br>
+ <div class="input-append">
+  <input class="span2" id="ref_q" type="text" placeholder="Hôte, service">
+  <button class="btn btn-primary" onclick="$.fn.getAsWithoutRef()"><i class="icon-search"></i></button>
+ </div>
+ <div id="refAlerts">
+  {% include "configuration/reference/alerts/ul.html" %}
+ </div>
+</div>
+
+<div id="refAlertContent" class="span7">
+</div>
+

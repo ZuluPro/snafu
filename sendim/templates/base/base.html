@@ -2,11 +2,11 @@
  
 <html lang="en">
   <head>
-   {% include "header.html" %}
+   {% include "base/header.html" %}
   </head>
 
   <body>
-   {% include "nav-bar.html" %}
+   {% include "base/nav-bar.html" %}
    
    <div class="container-fluid" style="padding-right:5px; padding-left:5px;">
     {% block body %}
@@ -15,7 +15,7 @@
   
    <div class="container-fluid" style="padding-right:25px; padding-left:25px;">
     <footer class="footer">
-     {% include "footer.html" %}
+     {% include "base/footer.html" %}
     </footer>
    </div> <!-- /container -->
 

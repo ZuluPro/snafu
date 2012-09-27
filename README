@@ -39,12 +39,6 @@ SNAFU = {
 
 BASEDIR = "/path/to/your/project"
 
-TEMPLATE_DIRS = (
-    ...
-    '/path/to/your/project/templates/base/',
-    ...
-)
-
 ------------------------------------------------------------------------------
 What must include in urls.py :
 

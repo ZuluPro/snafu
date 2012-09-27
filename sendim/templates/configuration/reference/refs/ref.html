@@ -1,0 +1,63 @@
+<div class="row">
+ <h4 align="center">{{ R }}</h4>
+
+<dl>
+ <div class="span2">
+  <dt>Escalade:</dt>
+  <dd>
+   {{ R.escalation_contact|default:"(Aucune)" }}
+  </dd>
+
+  <dt>Tendance:</dt>
+  <dd>{{ R.tendancy|default:"(Aucune)" }}</dd>
+ 
+  <dt>Outage:</dt>
+  <dd>{{ R.outage|default:"(Aucun)" }}</dd>
+ 
+  <dt>Explication:</dt>
+  <dd>{{ R.explanation|default:"(Aucune)" }}</dd>
+ 
+  <dt>Origine:</dt>
+  <dd>{{ R.origin|default:"(Aucune)" }}</dd>
+ 
+  <dt>Procédure:</dt>
+  <dd>{{ R.procedure|default:"(Aucune)" }}</dd>
+ </div>
+
+ <div class="span2">
+ <dt>Type d'incident:</dt>
+ <dd>{{ R.mail_type }}</dd>
+ 
+ <dt>Groupe de destinataire:</dt>
+ <dd>{{ R.mail_group }}</dd>
+ </div>
+
+ <div class="span2">
+ <dt>Criticité:</dt>
+ <dd>{{ R.mail_criticity }}</dd>
+ 
+ <dt>Urgence:</dt>
+ <dd>{{ R.glpi_urgency }}</dd>
+ 
+ <dt>Priorité:</dt>
+ <dd>{{ R.glpi_priority }}</dd>
+ 
+ <dt>Impact:</dt>
+ <dd>{{ R.glpi_impact }}</dd>
+ 
+ <dt>Catégorie:</dt>
+ <dd>{{ R.glpi_category }}</dd>
+ 
+ <dt>Fournisseur:</dt>
+ <dd>{{ R.glpi_supplier }}</dd>
+ </div>
+ 
+</dl>
+ <div class="span1">
+  <div class="btn-group">
+   <button class="btn btn-danger" onclick="$.fn.delRef({{ R.pk }})">Supprimer</button>
+  </div>
+ </div>
+
+
+</div>

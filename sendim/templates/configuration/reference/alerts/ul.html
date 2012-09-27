@@ -1,0 +1,5 @@
+<ul  class="nav nav-tabs nav-stacked">
+ {% for A in AsWithoutRef %}
+  <li><a id="AWithoutRef{{ A.pk }}Tab" href="#" data-toggle="tab" onclick="$.fn.getAlertWithoutRef({{ A.pk }})">{{ A.host }} - {{ A.service }} : {{ A.status }}</a></li>
+ {% endfor %}
+</ul>
