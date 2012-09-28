@@ -27,12 +27,7 @@ $(document).ready(function() {
   })
 
   // POP OVER INIT
-  $("[rel=popover]").mouseover( function() {
-    $(this).popover('show')
-  });
-  $("[rel=popover]").mouseout( function() {
-    $(this).popover('hide')
-  });
+  $("[rel=popover]").popover({trigger:'hover'})
 
   // MY EVENTS FILTER
   $('input[filter]').change( function() {

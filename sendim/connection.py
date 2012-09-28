@@ -1,8 +1,10 @@
 from django.conf import settings
 
 import xmlrpclib
-from urllib2 import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler, build_opener, install_opener
-from socket import error
+from urllib2 import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler, build_opener, install_opener, URLError
+
+from socket import SocketType,error,gaierror
+from urlparse import urlsplit
 
 glpiServer = xmlrpclib.Server(settings.SNAFU['glpi-xmlrpc'], verbose=False, allow_none=True)
 
@@ -19,9 +21,23 @@ def doLogin():
 def doLogout():
     glpiServer.glpi.doLogout()
 
+def checkGlpi():
+    S = SocketType()
+    S.settimeout(2)
+    try : 
+        glpiStatus = S.connect_ex( ( urlsplit(settings.SNAFU['glpi-url']).netloc, 80 ) )
+        S.close()
+    except (error,gaierror), e : glpiStatus = e
+    return glpiStatus
+
 def checkSmtp():
-    S = socket.SocketType()
-    smtpStatus = S.connect_ex( ( settings.SNAFU['smtp-server'],settings.SNAFU['smtp-port']) )
+    try : 
+        S = SocketType()
+        S.settimeout(2)
+        smtpStatus = S.connect_ex( ( settings.SNAFU['smtp-server'],settings.SNAFU['smtp-port']) )
+        S.close()
+    except (error,gaierror), e : smtpStatus = e
+    return smtpStatus
 
 def getOpener():
     www = settings.SNAFU['nagios-url']
@@ -38,9 +54,8 @@ def getOpener():
 def checkNagios():
     opener = getOpener()
     try :
-        opener.open(settings.SNAFU['nagios-url'])
+        opener.open(settings.SNAFU['nagios-url'], timeout=2)
         nagiosStatus = False 
-    except error, e : 
+    except (error,gaierror,URLError), e : 
         nagiosStatus = e
-    print nagiosStatus
     return nagiosStatus
