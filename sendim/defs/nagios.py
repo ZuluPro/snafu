@@ -4,26 +4,18 @@ from sendim.models import *
 from referentiel.models import *
 
 from common import *
-import urllib2, HTMLParser
+import HTMLParser
 import re, time, datetime
 
-www = settings.SNAFU['nagios-url']
-username = settings.SNAFU['nagios-login']
-password = settings.SNAFU['nagios-password']
+from sendim.connection import getOpener
+opener = getOpener()
 htmlparser = HTMLParser.HTMLParser()
-
-passman = urllib2.HTTPPasswordMgrWithDefaultRealm()
-passman.add_password(None, www, username, password)
-authhandler = urllib2.HTTPBasicAuthHandler(passman)
-opener = urllib2.build_opener(authhandler)
-urllib2.install_opener(opener)
 
 def opengraph(alert, graph) :
     return opener.open(www+'pnp4nagios/image?host='+alert.host.host+'&srv='+alert.service.service.replace(' ','+')+'&view=1&source='+str(int(graph) ) ).read()
 
 def readNagios() :
         pagehandle = opener.open(settings.SNAFU['nagios-history']+'?host=all&archive=0&statetype=2&type=0&noflapping=on')
-	print settings.SNAFU['nagios-history']+'?host=all&archive=0&statetype=2&type=0&noflapping=on'
 	problemlist = []
 	for line in pagehandle.readlines()[::-1] :
 		if re.search( r"<img align='left'" , line ) :

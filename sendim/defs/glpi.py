@@ -1,55 +1,52 @@
 from django.conf import settings
 
 from sendim.models import *
+from sendim.connection import *
 from referentiel.models import *
 from referentiel.defs import getReference
 
-import xmlrpclib
-
-serverUrl = settings.SNAFU['glpi-xmlrpc']
-server = xmlrpclib.Server(serverUrl, verbose=False, allow_none=True)
-loginData = { 'login_name':settings.SNAFU['glpi-login'], 'login_password':settings.SNAFU['glpi-password'] }
-
-#try :
-loginInfo = server.glpi.doLogin( loginData )
-#except xmlrpclib.Fault as inst : print 123
-
-idSession=loginInfo['session']
 
 def createTicket(eventPk) :
-	E = Event.objects.get(pk=eventPk)
-	R = E.getReference()
+    loginInfo = doLogin()
+    if 'error' in loginInfo : return None
 
-	# Creation du 1er contenu du ticket
-	content = "Descriptif : "+ E.message +"\nImpact :\nDate et heure : " +str(E.date)+ u"\nV\xe9rification : "
+    E = Event.objects.get(pk=eventPk)
+    R = E.getReference()
 
-        ticket= {
-		'session':idSession,
-		'type':1,
-		'category': R.glpi_category.glpi_id,
-		'title': E.element.host+' '+E.message,
-		'content':content,
-		'recipient': R.glpi_dst_group.glpi_id,
-		'group':9, # Autolib Exploitation
-		'source': 'Supervision',
-		'itemtype' : E.element.host_type,
-		'item' : E.element.glpi_id,
-		'urgency': R.glpi_urgency.glpi_id,
-		'impact': R.glpi_impact.glpi_id
-	}
-        ticketInfo = server.glpi.createTicket(ticket)
-	logprint( "Ticket #"+str(ticketInfo['id'])+" created", 'green' )
+    # Creation du 1er contenu du ticket
+    content = "Descriptif : "+ E.message +"\nImpact :\nDate et heure : " +str(E.date)+ u"\nV\xe9rification : "
 
-	# Sauvegarde dans BDD
-	E.glpi = ticketInfo['id']
-	E.save()
-	logprint( "Ticket #"+str(ticketInfo['id'])+" associate to Event #"+str(E.pk), 'green')
+    ticket= {
+    	'session':loginInfo['session'],
+    	'type':1,
+    	'category': R.glpi_category.glpi_id,
+    	'title': E.element.host+' '+E.message,
+    	'content':content,
+    	'recipient': R.glpi_dst_group.glpi_id,
+    	'group':9,
+    	'source': 'Supervision',
+    	'itemtype' : E.element.host_type,
+    	'item' : E.element.glpi_id,
+    	'urgency': R.glpi_urgency.glpi_id,
+    	'impact': R.glpi_impact.glpi_id
+    }
+    ticketInfo = glpiServer.glpi.createTicket(ticket)
+    logprint( "Ticket #"+str(ticketInfo['id'])+" created", 'green' )
 
-        return ticketInfo['id']
+    # Sauvegarde dans BDD
+    E.glpi = ticketInfo['id']
+    E.save()
+    logprint( "Ticket #"+str(ticketInfo['id'])+" associate to Event #"+str(E.pk), 'green')
+
+    doLogout()
+    return ticketInfo['id']
 
 def addFollowUp(ticketId,content) :
-    contentToAdd = { 'session':idSession, 'ticket':ticketId, 'content':content }
-    server.glpi.addTicketFollowup(contentToAdd)
+    loginInfo = doLogin()
+    E = Event.objects.get(pk=eventPk)
+    contentToAdd = { 'session':idSessionGlpi, 'ticket':ticketId, 'content':content }
+    glpiServer.glpi.addTicketFollowup(contentToAdd)
+    doLogout()
 
 def addMail(ticketId, msg) :
 	content = """from: """ +settings.SNAFU['smtp-from']+ """
@@ -61,4 +58,4 @@ subject: """+msg['Subject']+"""
 	addFollowUp(ticketId,content)
 
 def getTicket(ticketId) :
-    return server.glpi.getTicket({'session':idSession, 'ticket':ticketId})
+    return glpiServer.glpi.getTicket({'session':idSession, 'ticket':ticketId})

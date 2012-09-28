@@ -1,5 +1,5 @@
 from django.forms.formsets import formset_factory
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from sendim.defs import *
 from sendim.models import *
@@ -34,7 +34,9 @@ def events(request) :
         		'title':'Snafu - Ajout de Reference'
 		} )
 
-            if not E.glpi : E.glpi = createTicket(eventPk)
+            if not E.glpi :
+               E.glpi = createTicket(eventPk)
+               if not E.glpi : redirect('/snafu/events')
 
             # Constitution du mail
             msg = makeMail(E)

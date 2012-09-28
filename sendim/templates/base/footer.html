@@ -1,2 +1,30 @@
 <hr>
-<p class="pull-left">SNAFU 2012</p>
+<p class="pull-right">SNAFU 2012</p>
+
+<a class="pull-left" onclick="$('#glpiDiv').toggle(250);">
+ GLPI : {% if glpi.connection.error %}Off{% else %}On{% endif %}
+</a>
+<br>
+<a class="pull-left" onclick="$('#nagiosDiv').toggle(250);">
+ Nagios : {% if nagios.connection %}Off{% else %}On{% endif %}
+</a>
+<br>
+
+<div id="glpiDiv" style="display: none;">
+ <dl class="dl-horizontal">
+  {% for key,value in glpi.connection.items %}
+   <dt>{{ key }}</dt>
+   <dd>{{ value|default:"/" }}</dd>
+  {% endfor %}
+ </dl>
+</div>
+
+<div id="nagiosDiv" style="display: none;">
+ {% if nagios.connection == False %}
+  <dl class="dl-horizontal">
+   <dt>error</dt>
+   <dd>{{ nagios.connection }}</dd>
+  </dl>
+ {% endif %}
+</div>
+

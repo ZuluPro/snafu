@@ -26,6 +26,14 @@ $(document).ready(function() {
     $(this).text('')
   })
 
+  // POP OVER INIT
+  $("[rel=popover]").mouseover( function() {
+    $(this).popover('show')
+  });
+  $("[rel=popover]").mouseout( function() {
+    $(this).popover('hide')
+  });
+
   // MY EVENTS FILTER
   $('input[filter]').change( function() {
     $('#E_tbody').html('<img id="loader" src="/static/img/ajax-loader.gif">' );
