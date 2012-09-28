@@ -22,7 +22,7 @@ def sendim_context(request):
             'group_url': settings.SNAFU['glpi-url']+'front/group.form.php?id=',
             'itilcategory_url': settings.SNAFU['glpi-url']+'front/itilcategory.form.php?id=',
             1:1#'connection':checkGlpi()
-        },
+	},
         'smtp': {
             1:1#'connection':checkSmtp()
         }

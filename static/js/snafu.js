@@ -2,10 +2,23 @@ $(document).ready(function() {
 
   // USE AJAX GET AND #infoModal
   $.fn.UseModal = function(url,GETdict){
-    $.get(url,GETdict, function(data) {
-      $('#infoModal').html( data );
-      $('#infoModal').modal('toggle')
-    });
+    $('#infoModal').modal('hide')
+    $.ajax({ 
+      type: "GET", 
+      url: url, 
+      data: GETdict,
+      async: false,
+      cache: false,
+      error: function() {
+        $('#infoModal').html( 'Erreur de communication avec le serveur' );
+      },
+      success: function(data) {
+        $('#infoModal').html( data );
+      },
+      complete: function() {
+        $('#infoModal').modal('toggle');
+      }
+      });
   }
 
   // USE AJAX POST IN #infoModal

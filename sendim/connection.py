@@ -14,7 +14,7 @@ def doLogin():
            'login_name':settings.SNAFU['glpi-login'],
            'login_password':settings.SNAFU['glpi-password']
        } )
-    except error, e: 
+    except (error,gaierror), e: 
        loginInfo = {'error':e}
     return loginInfo 
 
