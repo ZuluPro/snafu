@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
 
@@ -10,35 +11,7 @@ from referentiel.models import *
 
 from common import logprint
 
-def configuration(request) :
-    
-    if request.method == 'POST' :
-        if request.POST['action'] == 'addTrad' :
-            service = Service.objects.get(pk=request.POST['service'])
-            for status in ('WARNING','CRITICAL','UNKNOWN') :
-                traduction = request.POST[status.lower()]
-                status = Status.objects.get(status=status)
-                if not Traduction.objects.filter(service=service, status=status) :
-                    T = Traduction(service=service, status=status, traduction=traduction)
-                    T.save()
-                    logprint("Save Traduction #"+str(T.pk), "green")
-
-    return render(request, 'configuration/index.html', {
-        'hosts':Host.objects.filter(glpi_id=None),
-        'alerts':Alert.objects.all(),
-        'AsWithoutRef':Alert.objects.filter(reference=None),
-        'alertsWithoutTrad':Alert.objects.filter(traduction=None),
-        'references':Reference.objects.all(),
-        'referenceForm':ReferenceForm,
-        'referenceBigForm':ReferenceBigForm,
-        'traductions':Traduction.objects.all(),
-        'traductionForm':TraductionForm,
-        'traductionBigForm':TraductionBigForm,
-        'mailTemplates':MailTemplate.objects.all(),
-        'mailTemplateForm':MailTemplateForm,
-        'title':'Snafu - Configuration'
-    })
-
+@login_required
 def getReferences(request) :
     Rs = Reference.objects.all()
     if request.GET['q'] :
@@ -49,6 +22,7 @@ def getReferences(request) :
         'Rs':Rs
     })
 
+@login_required
 def reference(request, ref_id, action="get") :
     if action == "get" :
         return render(request, 'configuration/reference/refs/ref.html', {
@@ -58,14 +32,16 @@ def reference(request, ref_id, action="get") :
     elif action == "del" :
         R = Reference.objects.get(pk=ref_id) 
         R.delete()
-        return HttpResponse(str(Reference.objects.all().count())+u" r\xe9f\xe9rence(s)")
+        return HttpResponse(str(Reference.objects.count())+u" r\xe9f\xe9rence(s)")
 
 
+@login_required
 def getAlertWithoutRef(request,alert_id) :
     return render(request, 'configuration/reference/alerts/alert.html', {
         'A':Alert.objects.get(pk=alert_id)
     })
 
+@login_required
 def getRefForm(request,alert_id=0) :
     A = Alert.objects.get(pk=alert_id)
     data = {
@@ -148,4 +124,5 @@ def getRefForm(request,alert_id=0) :
     return render(request, 'configuration/reference/addref/form.html', {
          'referenceBigForm':Form
     })
+
 

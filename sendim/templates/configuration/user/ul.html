@@ -1,0 +1,13 @@
+<ul class="nav nav-tabs nav-stacked">
+ {% for U in Us %}
+  <li>
+   <a id="user{{ U.pk }}Tab" class="get-user" href="#" data-toggle="tab" onclick="$.fn.getUser({{ U.pk }})">
+   {% if not U.first_name %}
+    {{ U.username }}
+   {% else %}
+    {{ U.first_name }} {{ U.last_name }}
+   {% endif %}
+   </a>
+  </li>
+ {% endfor %}
+</ul>

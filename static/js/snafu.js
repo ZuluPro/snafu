@@ -139,5 +139,53 @@ $(document).ready(function() {
  //   $('#refContent').html('');
  // }
 
+  // MY REFERENCE FILTER
+  $.fn.getUsers = function(){
+    $('#userContent').html();
+    $('#U_tbody').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/user_q',{'q': $('#user_q').val() }, function(data) {
+      $('#U_tbody').html( data );
+    });
+  }
+
+  // GET USER
+  $.fn.getUser = function(pk){
+    $('#userContent').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/user/'+pk+'/get', function(data) {
+      $('#userContent').html(data);
+    })
+  }
+
+ // DEL A USER FROM FORM
+  $.fn.delUser = function(pk){
+    $('#userContent').html('');
+    $.post('/snafu/configuration/user/'+pk+'/del',{ csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val() }, function(data) {
+      $('#userCount').html(data);
+      $('#user'+pk+'Tab').hide('300');
+    })
+  }
+
+ // ADD A USER FROM FORM
+  $.fn.addUser = function(){
+    $('#userContent').html('');
+      $.ajax({ 
+        type: "POST", 
+        url: '/snafu/configuration/user/'+$('#userForm input[name="id"]').val()+'/add', 
+        data: $('#userForm').serialize(),
+        async: false,
+        cache: false,
+        success: function(data) {
+           $('#userCount').html(data);
+           $('#userForm input').val('');
+        },
+        error: function() { alert('err'); }
+      })
+  }
+
+  $('#userForm').submit(function() {
+    $.fn.addUser();
+    return false;
+  });
+
 });
 

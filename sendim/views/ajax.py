@@ -1,9 +1,11 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,redirect
 
 from sendim.models import *
 from sendim.defs import *
 from referentiel.models import *
 
+@login_required
 def eventHistory(request) :
     """Return a list of alerts which match with the primary alert of an event"""
     E = Event.objects.get( pk=request.GET['eventPk'])
@@ -18,7 +20,7 @@ def eventHistory(request) :
         'E':E
     } )
 
-
+@login_required
 def eventReference(request) :
     E = Event.objects.get( pk=request.GET['eventPk'])
     A = E.getPrimaryAlert()
@@ -30,6 +32,7 @@ def eventReference(request) :
         'A':A
     })
 
+@login_required
 def eventAlerts(request) :
     E = Event.objects.get( pk=request.GET['eventPk'])
     return render(request, 'modal/eventAlerts.html', {
@@ -37,6 +40,7 @@ def eventAlerts(request) :
         'As':E.getAlerts()[::-1]
     })
 
+@login_required
 def eventsFiltered(request) :
     Es = Event.objects.all()
     if request.GET['pk'] : Es = Es.filter(pk=request.GET['pk'])
@@ -47,6 +51,7 @@ def eventsFiltered(request) :
 
     return render(request, 'event/tr.html', { 'Es':Es.order_by('-date') })
 
+@login_required
 def choosePrimaryAlert(request) :
     if request.method == 'GET' :
         E = Event.objects.get( pk=request.GET['eventPk'])
@@ -61,6 +66,7 @@ def choosePrimaryAlert(request) :
         'As':E.getAlerts()[::-1]
     })
 
+@login_required
 def eventsAgr(request) :
     if request.method == 'POST' :
         agregate(request.POST.getlist('toAgr'), request.POST['choicedEvent'], request.POST['message'] )
@@ -71,6 +77,7 @@ def eventsAgr(request) :
         'alerts': Alert.objects.order_by('-date')
     })
 
+@login_required
 def closeEvents(request) :
     if request.method == 'POST' :
         for E in [ Event.objects.get(pk=pk) for pk in request.POST.getlist('eventsPk') ] :
@@ -81,6 +88,7 @@ def closeEvents(request) :
         'Es': [ Event.objects.get(pk=pk) for pk in request.GET.getlist('events[]') ][::-1],
     })
    
+@login_required
 def followUp(request) :
     if request.method == 'POST' :
         E = Event.objects.get(pk=request.POST['eventPk'])

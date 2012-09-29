@@ -1,4 +1,6 @@
+from django.contrib.auth.models import User
 from django import forms
+from django.forms import widgets
 
 from referentiel.models import *
 from sendim.models import *
@@ -101,4 +103,13 @@ class MailTemplateForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(MailTemplateForm, self).__init__(*args, **kwargs)
         [ self.fields[key].widget.attrs.update({'style' : 'width:100%;'}) for key in self.fields.keys() ]
+
+class UserForm(forms.ModelForm):
+    id = forms.IntegerField(required=False, initial=0, widget=widgets.HiddenInput)
+    class Meta:
+        model = User
+        exclude = ('last_login','date_joined','groups','user_permissions','active')
+        widgets = {
+            'password':widgets.PasswordInput()
+        }
 

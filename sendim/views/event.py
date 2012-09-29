@@ -58,6 +58,7 @@ def events(request) :
         'title':'Snafu - Events'
     })
 
+@login_required
 def EaddRef(request):
     E = Event.objects.get(pk=request.POST['eventPk'])
     A = E.getPrimaryAlert()

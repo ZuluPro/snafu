@@ -1,0 +1,21 @@
+<h4 align="center">{{ U }}</h4>
+
+<dl>
+ <dt>Username:</dt>
+ <dd>{{ U.username }}</dd>
+
+ <dt>First name:</dt>
+ <dd>{{ U.first_name|default:"(Aucun)" }}</dd>
+
+ <dt>Last name:</dt>
+ <dd>{{ U.last_name|default:"(Aucun)" }}</dd>
+
+ <dt>Email:</dt>
+ <dd>{{ U.email|default:"(Aucun)" }}</dd>
+</dl>
+
+{% if user.is_superuser %}
+ <div class="btn-group">
+  <button class="btn btn-danger" onclick="$.fn.delUser({{ U.pk }})">Supprimer</button>
+ </div>
+{% endif %}

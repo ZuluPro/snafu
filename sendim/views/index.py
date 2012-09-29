@@ -1,10 +1,13 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+
 from sendim.models import *
 from common import logprint
 
 from time import mktime
 from datetime import datetime
 
+@login_required
 def index(request) :
     D = datetime.now()
     if D.month == 1 : month=12 ; year=D.year-1
