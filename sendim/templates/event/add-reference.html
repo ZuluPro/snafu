@@ -10,8 +10,8 @@
 
   <ul id="alertTab" class="nav nav-tabs nav-stacked">
   {% for F in Forms %}
-   <li id="R{{ forloop.counter }}Tab"{% if forloop.counter == 1 %} class="active"{% endif %}>
-    <a href="#R{{ forloop.counter }}" data-toggle="tab">Ref {{ forloop.counter }}: {{ F.host_as_text }} - {{ F.service_as_text }}</a>
+   <li {% if forloop.counter == 1 %} class="active"{% endif %}>
+    <a id="R{{ forloop.counter }}Tab" href="#R{{ forloop.counter }}TabContent" data-toggle="tab">Ref {{ forloop.counter }}: {{ F.host_as_text }} - {{ F.service_as_text }}</a>
    </li>
   {% endfor %}
   </ul>
@@ -27,7 +27,7 @@
 
  </div>
 
-<form id="submit" method="POST" action="/snafu/events">{% csrf_token %}
+<form id="submit" method="POST" action="/snafu/events" style="display:none">{% csrf_token %}
  <input name="eventPk" value="{{ E.pk }}">
  <input name="treatment_q">
 </form>

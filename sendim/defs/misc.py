@@ -35,7 +35,7 @@ def addRef(POST):
     logprint('Reference #' +str(R.pk)+ ' saved', 'green')
 
 
-def agregate(eventsPk, choicedEvent, message, glpi=None, mail=False, criticity='Mineur') :
+def agregate(eventsPk, choicedEvent, message, glpi=None, mail=False, criticity='?') :
     if len(eventsPk) < 2 : return None
     for eventPk in eventsPk :
         E = Event.objects.get(pk=eventPk)

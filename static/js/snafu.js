@@ -62,7 +62,7 @@ $(document).ready(function() {
     ids = [];
     $('input:checked').each( function() { ids.push( $(this).val() )})
     $.fn.UseModal('/snafu/event/agr', { events: ids } )
-    $('input').attr('checked',false);
+    $('input:not(#infoModal input)').attr('checked',false);
   }
 
   // PRIMARY ALERT MODAL

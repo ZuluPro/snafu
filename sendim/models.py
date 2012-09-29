@@ -93,7 +93,7 @@ class Alert(models.Model) :
     def linkToReference(self, force=False, byHost=True, byService=True, byStatus=True):
         if ( self.reference and force ) or not self.reference : 
             self.reference = getReference(self, byHost, byService, byStatus)
-            self.save()
+            if self.reference : self.save()
         return self.reference
 
     def linkToTraduction(self, force=False, byStatus=True):

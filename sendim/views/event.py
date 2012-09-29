@@ -59,12 +59,14 @@ def events(request) :
 def EaddRef(request):
     E = Event.objects.get(pk=request.POST['eventPk'])
     A = E.getPrimaryAlert()
-    host = Host.objects.get(pk=request.POST['form-0-host'])
-    service = Service.objects.get(pk=request.POST['form-0-service'])
+
     POST = {}
     for k,v in request.POST.items() :
         if 'form-' in k :
             POST[k[7:]] = v
+
+    host = Host.objects.get(pk=POST['host'])
+    service = Service.objects.get(pk=POST['service'])
 
     for status in ('WARNING','CRITICAL','UNKNOWN') :
         if not Reference.objects.filter(host=host,service=service,status__status=status) :
@@ -94,9 +96,11 @@ def EaddRef(request):
             R.glpi_impact = GlpiImpact.objects.get(pk=POST[status.lower()+'_impact'])
             R.save()
 
-    for A in Alert.objects.filter(host=host,service=service,reference=None): A.linkToReference()
-    E.criticity = E.getPrimaryAlert().reference.mail_criticity.mail_criticity
-    E.save()
+            for A in Alert.objects.filter(host=host,service=service,status__status=status,reference=None): A.linkToReference()
+
+    if E.getPrimaryAlert() in Alert.objects.filter(host=host,service=service) :
+        E.criticity = E.getPrimaryAlert().reference.mail_criticity.mail_criticity
+        E.save()
 
     return render(request, 'event/event-index.html', {
     })
