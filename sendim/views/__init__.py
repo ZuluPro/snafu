@@ -1,3 +1,4 @@
+from login import *
 from index import *
 from ajax import *
 from event import *

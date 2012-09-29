@@ -39,6 +39,8 @@ SNAFU = {
 
 BASEDIR = "/path/to/your/project"
 
+LOGIN_URL = '/snafu/login'
+
 ------------------------------------------------------------------------------
 What must include in urls.py :
 

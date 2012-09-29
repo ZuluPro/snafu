@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+ 
+<html lang="en">
+  <head>
+   <div class="container">
+   <meta charset="utf-8">
+   <title>Snafu - Authentification</title>
+   <link href="/static/css/bootstrap.css" rel="stylesheet">
+   <script src="/static/js/jquery.js"></script>
+  </head>
+
+  <body>
+   <div class="row">
+    <h1 style="text-align:center;">SNAFU - Authentification</h1>
+   </div>
+
+   <div class="row">
+    <form class="well span4 offset4" action="/snafu/login" method="POST">{% csrf_token %}
+     <input type="text" name="username" placeholder="login" style="width:95%">
+     <input type="password" name="password" placeholder="password" style="width:95%">
+     <input class="btn" type="submit" value="Connexion">
+    </form>
+   </div>
+   
+   <div class="row">
+    <footer class="footer">
+     {% include "base/footer.html" %}
+    </footer>
+   </div>
+
+   </div>
+  </body>
+</html>
+   
+

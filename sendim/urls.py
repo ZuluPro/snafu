@@ -2,6 +2,10 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns('',
     (r'^$', 'sendim.views.index'),
+
+    (r'^login$', 'sendim.views.snafu_login'),
+    (r'^logout$', 'sendim.views.snafu_logout'),
+
     (r'^events$', 'sendim.views.events'),
 
     (r'^event/agr$', 'sendim.views.eventsAgr'),

@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.forms.formsets import formset_factory
 from django.shortcuts import render, redirect
 
@@ -10,6 +11,7 @@ from referentiel.defs import *
 
 from common import logprint
 
+@login_required
 def events(request) :
     if request.method == 'POST' :
 
