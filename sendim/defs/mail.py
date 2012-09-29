@@ -55,7 +55,7 @@ def sendMail(POST) :
     msg['Subject'] = mailSub
     msg.attach( MIMEText( mailText.encode('utf8') , 'plain' ) )
     
-    # Ajout des graphs slelectinnes
+    # Ajout des graphs selectinnes
     if 'graphList' in POST :
         graphList = POST.getlist('graphList')
         for i in range(len(graphList)) :
@@ -75,6 +75,7 @@ def sendMail(POST) :
 
     E.mail = True
     E.save()
+    print msg['Subject']
     msg['body'] = mailText
     addMail(E.glpi, msg)
 

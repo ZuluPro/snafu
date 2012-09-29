@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     (r"^event/followup$", 'sendim.views.followUp'),
 
     (r'^event/filter$', 'sendim.views.eventsFiltered'),
+    (r'^event/addref$', 'sendim.views.EaddRef'),
 
     (r'^webservice$', 'sendim.webservice.webservice'),
 

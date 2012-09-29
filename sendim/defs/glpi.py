@@ -43,17 +43,12 @@ def createTicket(eventPk) :
 
 def addFollowUp(ticketId,content) :
     loginInfo = doLogin()
-    E = Event.objects.get(pk=eventPk)
-    contentToAdd = { 'session':idSessionGlpi, 'ticket':ticketId, 'content':content }
+    contentToAdd = { 'session':loginInfo['session'], 'ticket':ticketId, 'content':content }
     glpiServer.glpi.addTicketFollowup(contentToAdd)
     doLogout()
 
 def addMail(ticketId, msg) :
-	content = """from: """ +settings.SNAFU['smtp-from']+ """
-to: """+msg['To']+"""
-cc: """+msg['Cc']+"""
-subject: """+msg['Subject']+"""
-"""+msg['body']
+	content = "from: " +settings.SNAFU['smtp-from']+ "\nto: " +msg['To']#+ "cc: " +msg['Cc'] +"subject: " +msg['Subject']+ "\n" +msg['body']
 	
 	addFollowUp(ticketId,content)
 

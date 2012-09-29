@@ -43,10 +43,9 @@ def eventsFiltered(request) :
     if request.GET['element'] : Es = Es.filter(element__host__contains=request.GET['element'])
     if request.GET['glpi'] : Es = Es.filter(glpi__contains=request.GET['glpi'])
     if request.GET['message'] : Es = Es.filter(message__contains=request.GET['message'])
-    if request.GET['date'] : pass 
-    print Es
+    if request.GET.get('date',None) : pass 
 
-    return render(request, 'event/tr.html', { 'Es':Es[::-1] })
+    return render(request, 'event/tr.html', { 'Es':Es.order_by('-date') })
 
 def choosePrimaryAlert(request) :
     if request.method == 'GET' :

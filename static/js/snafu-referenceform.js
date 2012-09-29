@@ -8,7 +8,6 @@ $(document).ready(function() {
   $.fn.validRef = function(refId){
 
     var R = { treatment_q:true, eventPk:$('input[name=eventPk]').val() };
-    var form = $('#R'+refId+'Form')
     var refTabContent = $('#R'+refId+'TabContent')
 
     $('div[class*="active"] input').each(function(index) {
@@ -21,17 +20,16 @@ $(document).ready(function() {
     refTabContent.html('<img id="loader" src="/static/img/ajax-loader.gif">');
     $.ajax({ 
       type: "POST", 
-      url: "/snafu/configuration", 
+      url: "/snafu/event/addref", 
       data: R,
-      async: true,
+      async: false,
       cache: false,
       error: function() { alert('err'); },
       success: function(data){
-    //    form.hide(500);
         refTabContent.hide(500);
       }
     });
-    if ( $('form:not([style*="display: none"])').length == 0 ) { 
+    if ( $('form').length == 1 ) { 
       $('#submit').submit();
     } else {
       $('#alertTab a:not([style*="display: none"])').tab('show');
