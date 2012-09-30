@@ -44,20 +44,11 @@
     </button>
     <button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
     <ul class="dropdown-menu">
-     <li><a onclick="$.get('/eventAlerts',{ eventPk: '{{ E.pk }}' }, function(data) {
-       $('#infoModal').html( data );
-       $('#infoModal').modal('toggle')
-     });">Alerts de l'Event</a></li>
+     <li><a onclick="$.fn.UseModal('/eventAlerts',{{ E.pk }})">Alerts de l'Event</a></li>
      
-     <li><a onclick="$.get('/eventHistory',{ eventPk: '{{ E.pk }}' }, function(data) {
-       $('#infoModal').html( data );
-       $('#infoModal').modal('toggle')
-     });">Historique</a></li>
+     <li><a onclick="$.fn.UseModal('/eventHistory',{{ E.pk }})">Historique</a></li>
      
-     <li><a onclick="$.get('/eventReference',{ eventPk: '{{ E.pk }}' },function(data) {
-       $('#infoModal').html( data );
-       $('#infoModal').modal('toggle')
-     });">Reference</a></li>
+     <li><a onclick="$.fn.UseModal('/eventReference',{{ E.pk }})">Reference</a></li>
      
      <li><a href="{{ nagios.host_status_url }}{{ E.element }}">Vision Nagios</a></li>
     </ul>

@@ -22,5 +22,13 @@ $(document).ready(function() {
     });
     ids.length = 0;
   }
+
+  $.fn.UseModal = function(url,eventPk){
+  $.get(url,{ eventPk: eventPk }, function(data) {
+       $('#infoModal').html( data );
+       $('#infoModal').modal('toggle')
+     });
+  }
+
 });
 
