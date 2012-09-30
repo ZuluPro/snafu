@@ -37,6 +37,9 @@ def user(request, user_id, action="get") :
         Form = UserForm(request.POST, instance=U)
         if Form.is_valid():
             Form.save()
+            U.set_password(request.POST['password'])
+            U.save()
+            print U.password
 
         return HttpResponse(str(User.objects.count())+" utilisateur(s)")
 

@@ -1,7 +1,7 @@
 <div class="tabbable tabs-left">
  <ul id="userTab" class="nav nav-tabs nav-stacked">
   <li class="active"><a id="refCount" href="#userList" data-toggle="tab">{{ Us|length }} utilisateur(s)</a></li>
-  <li><a href="#addUser" data-toggle="tab">Ajouter</a></li>
+  {% if user.is_superuser %}<li><a href="#addUser" data-toggle="tab">Ajouter</a></li>{% endif %}
  </ul>
  
  <div id="userTabContent" class="tab-content">
@@ -10,9 +10,11 @@
    {% include "configuration/user/manage.html" %}
   </div>
 
-  <div class="tab-pane fade" id="addUser">
-   {% include "configuration/user/form.html" %}
-  </div>
+  {% if user.is_superuser %}
+   <div class="tab-pane fade" id="addUser">
+    {% include "configuration/user/form.html" %}
+   </div>
+  {% endif %}
 
  </div>
 </div> 

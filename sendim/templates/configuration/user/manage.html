@@ -1,8 +1,8 @@
 <div class="span3">
  <br>
  <div class="input-append">
-  <input class="span2" id="user_q" type="text" placeholder="Nom, prénom">
-  <button class="btn btn-primary" onclick="$.fn.getUsers()">Rechercher</button>
+  <input id="user_q" type="text" placeholder="Nom, prénom" style="width:85%">
+  <button class="btn btn-primary" onclick="$.fn.getUsers()" style="width:5%"><i class="icon-search icon-white"></i></button>
  </div>
  <div id="U_tbody">
   {% include "configuration/user/ul.html" %}
