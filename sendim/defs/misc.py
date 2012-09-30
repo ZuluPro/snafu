@@ -135,11 +135,9 @@ def makeMultipleForm(hosts):
        'form-TOTAL_FORMS' : sum( [ len(v) for v in hosts.values() ] ), 
        'form-INITIAL_FORMS': sum( [ len(v) for v in hosts.values() ] )
     }
-    count = 0
 
-    for host,services in hosts.items() :
+    for count,(host,services) in enumerate(hosts.items()) :
         for service in services :
-            print host,service
             data['form-'+str(count)+'-host'] = Host.objects.get(host=host)
             data['form-'+str(count)+'-service'] = Service.objects.get(service=service)
             data['form-'+str(count)+'-glpi_source'] = 'Supervision'
@@ -148,7 +146,5 @@ def makeMultipleForm(hosts):
                 data['form-'+str(count)+'-'+status+'_urgency'] = 3 
                 data['form-'+str(count)+'-'+status+'_priority'] = 3 
                 data['form-'+str(count)+'-'+status+'_impact'] = 4 
-            print data
-            count += 1
        
     return ReferenceBigFormSet(data)
