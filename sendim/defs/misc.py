@@ -16,9 +16,9 @@ from email.mime.text import MIMEText
 
 def sendMail(POST) :
 	E = Event.objects.get(pk=POST['eventPk'])
-	A = Alert.objects.get(pk=POST['alertPk'])
+	A = E.getPrimatyAlert()
 	# Recherche du MailGroup correspondant
-	R = Reference.objects.filter(host__host__exact=A.host.host, service__service__exact=A.service.service, status__status__exact=A.status.status )[0]
+	R = A.reference
 
 	msg = MIMEMultipart()
 	msg['From'] = settings.SNAFU['smtp-from']

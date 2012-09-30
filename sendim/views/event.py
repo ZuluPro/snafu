@@ -49,7 +49,8 @@ def events(request) :
 		
 		Forms = makeMultipleForm( createServiceList(E.getAlerts() ) )#ReferenceBigFormSet(initial= [{
 		return render(request, 'reference.form.html', {
-			'Forms':Forms, 'E':E
+			'Forms':Forms, 'E':E,
+        		'title':'Snafu - Ajout de Reference'
 		} )
 
             if not E.glpi : E.glpi = createTicket(eventPk)
@@ -63,42 +64,14 @@ def events(request) :
             # Envoi du formulaire d'envoi de mail
             return render(request,'sendim.mail.html', {
                     'msg':msg,
-                    'alert':A,
-                    'event':E,
-                    'graphList':graphList
+                    'E':E,
+                    'graphList':graphList,
+                    'title':'Snafu - Envoi de mail'
             })
     return render(request, 'events.html', {
-        'events':Event.objects.order_by('-pk'),
-        'alerts':Alert.objects.all(),
+        'Es':Event.objects.filter(closed=False).order_by('-pk'),
         'title':'Snafu - Events'
     })
-
-
-def createMail(request):
-	E = Event.objects.get( pk=request.POST['eventPk'])
-	A = Alert.objects.get(pk=request.POST['alertPk'])
-	# Recherche du MailGroup correspondant
-	R = Reference.objects.filter(host__host__exact=A.host.host, service__service__exact=A.service.service, status__status__exact=A.status.status )[0]
-
-	# Constitution du mail
-	msg = {} 
-	msg['from'] = SNAFU['smtp-from']
-	msg['to'] = R.mail_group.to
-	if E.criticity == 'Majeur' : msg['to'] += ', '+ R.mail_group.ccm
-	msg['cc'] = ' ,'.join( [ SNAFU['smtp-from'], R.mail_group.cc] )
-	msg['subject'] = MailType.objects.get(choosen=True).subject
-	msg['body'] = MailType.objects.get(choosen=True).body
-	
-	# Recuperation des graphs correspondant
-        graphList = readGraphs(E.element.host, A.service.service)
-
-	# Envoi du formulaire d'envoi de mail
-	return render(request, 'sendim.mail.html', {
-		'msg':msg,
-		'alert':A,
-		'event':E, 'graphList':graphList,
-                'title':'Snafu - Envoi de mail'
-	})
 
 def eventsAgr(request) :
 

@@ -3,67 +3,63 @@
 {% load getProcedure %}
 {% load getEscalation %}
 
-{% for event in events %}
- <tr id="Event{{ event.pk }}" element="{{ event.element.host }}" criticty="{{ event.criticity }}" mail="{{ event.mail }}" glpi="{{ event.glpi }}" style="background-color:{{ event.pk|getAlertColor:"event" }} ;">
-  <td><input type="checkbox" value="{{ event.pk }}"></td>
-  <td>{{ event.pk }}</td>
-  <td>{{ event.date|date:"Y/m/d - G:i:s" }}</td>
-  <td>{{ event.element }}</td>
-  <td>{{ event.criticity }}</td>
-  <td>{{ event.message }}</td>
+{% for E in Es %}
+ <tr id="Event{{ E.pk }}" element="{{ E.element.host }}" criticty="{{ E.criticity }}" mail="{{ E.mail }}" glpi="{{ E.glpi }}" style="background-color:{{ E.pk|getAlertColor:"event" }} ;">
+  <td><input type="checkbox" value="{{ E.pk }}"></td>
+  <td>{{ E.pk }}</td>
+  <td>{{ E.date|date:"Y/m/d - G:i:s" }}</td>
+  <td>{{ E.element }}</td>
+  <td>{{ E.criticity }}</td>
+  <td>{{ E.message }}</td>
 
   <td>
-  {% if event.criticity = '?' %}
    <form method="POST" action="/events" style="margin: 0px 0px 0px">{% csrf_token %}
-    <input type="hidden" name="eventPk" value="{{ event.pk }}">
+  {% if E.criticity = '?' %}
+    <input type="hidden" name="eventPk" value="{{ E.pk }}">
     <button class="btn btn-primary" name="add_ref_q"><i class="icon-comment icon-white"></i></button>
-   </form>
-  {% else %}{% if not event.glpi %}
-   <form method="POST" action="/events" style="margin: 0px 0px 0px">{% csrf_token %}
-    <input type="hidden" name="alertPk" value="{{ event.pk|getLastAlert }}">
-    <input type="hidden" name="eventPk" value="{{ event.pk }}">
+  {% else %}{% if not E.glpi %}
+    <input type="hidden" name="alertPk" value="{{ E.pk|getLastAlert }}">
+    <input type="hidden" name="eventPk" value="{{ E.pk }}">
     <button class="btn btn-primary" name="treatment_q"><i class="icon-pencil icon-white"></i><i class="icon-envelope icon-white"></i></button>
-   </form>
-  {% else %}{% if not event.mail %}
-   <form method="POST" action="/events" style="margin: 0px 0px 0px">{% csrf_token %}
-    <input type="hidden" name="alertPk" value="{{ event.pk|getLastAlert }}">
-    <input type="hidden" name="eventPk" value="{{ event.pk }}">
-    <button class="btn btn-primary" name="treatment_q"><i class="icon-envelope icon-white"></i> {{ event.glpi }}</button>
-   </form>
+  {% else %}{% if not E.mail %}
+    <input type="hidden" name="alertPk" value="{{ E.pk|getLastAlert }}">
+    <input type="hidden" name="eventPk" value="{{ E.pk }}">
+    <button class="btn btn-primary" name="treatment_q"><i class="icon-envelope icon-white"></i> {{ E.glpi }}</button>
   {% else %}
-   <a class="btn btn-primary" href="{{ glpi.ticket_url }}{{ event.glpi }}">{{ event.glpi }}</a>
+   <a class="btn btn-primary" href="{{ glpi.ticket_url }}{{ E.glpi }}">{{ E.glpi }}</a>
   {% endif %}{% endif %}{% endif %}
+   </form>
   </td>
 
   <td>
    <div class="btn-group">
     <button class="btn 
-     {% if event.pk|getEscalation %}btn-danger{% else %}btn-info{% endif %}
-     {% if not event.pk|getProcedure %} disabled{% endif %}
+     {% if E.pk|getEscalation %}btn-danger{% else %}btn-info{% endif %}
+     {% if not E.pk|getProcedure %} disabled{% endif %}
     ">
     {% if event.pk|getProcedure %}
-     <a href="{{ event.pk|getProcedure }}"><i class="icon-globe icon-white"></i></a>
+     <a href="{{ E.pk|getProcedure }}"><i class="icon-globe icon-white"></i></a>
     {% else %}Info
     {% endif %}
     </button>
     <button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
     <ul class="dropdown-menu">
-     <li><a onclick="$.get('/eventAlerts',{ eventPk: '{{ event.pk }}' }, function(data) {
+     <li><a onclick="$.get('/eventAlerts',{ eventPk: '{{ E.pk }}' }, function(data) {
        $('#infoModal').html( data );
        $('#infoModal').modal('toggle')
      });">Alerts de l'Event</a></li>
      
-     <li><a onclick="$.get('/eventHistory',{ eventPk: '{{ event.pk }}' }, function(data) {
+     <li><a onclick="$.get('/eventHistory',{ eventPk: '{{ E.pk }}' }, function(data) {
        $('#infoModal').html( data );
        $('#infoModal').modal('toggle')
      });">Historique</a></li>
      
-     <li><a onclick="$.get('/eventReference',{ eventPk: '{{ event.pk }}' },function(data) {
+     <li><a onclick="$.get('/eventReference',{ eventPk: '{{ E.pk }}' },function(data) {
        $('#infoModal').html( data );
        $('#infoModal').modal('toggle')
      });">Reference</a></li>
      
-     <li><a href="{{ nagios.host_status_url }}{{ event.element }}">Vision Nagios</a></li>
+     <li><a href="{{ nagios.host_status_url }}{{ E.element }}">Vision Nagios</a></li>
     </ul>
    </div>
   </td>
