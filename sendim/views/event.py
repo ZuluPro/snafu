@@ -86,8 +86,8 @@ def createMail(request):
 	msg['to'] = R.mail_group.to
 	if E.criticity == 'Majeur' : msg['to'] += ', '+ R.mail_group.ccm
 	msg['cc'] = ' ,'.join( [ SNAFU['smtp-from'], R.mail_group.cc] )
-	msg['subject'] = MailType.objects.get(choiced=True).subject
-	msg['body'] = MailType.objects.get(choiced=True).body
+	msg['subject'] = MailType.objects.get(choosen=True).subject
+	msg['body'] = MailType.objects.get(choosen=True).body
 	
 	# Recuperation des graphs correspondant
         graphList = readGraphs(E.element.host, A.service.service)

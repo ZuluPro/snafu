@@ -87,7 +87,7 @@ def addRef(POST):
 
 def makeMail(E):
     R = E.getPrimaryAlert().reference
-    MT = MailTemplate.objects.get(choiced=True)
+    MT = MailTemplate.objects.get(choosen=True)
     msg = {}
     msg['from'] = settings.SNAFU['smtp-from']
     msg['to'] = R.mail_group.to

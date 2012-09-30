@@ -27,7 +27,8 @@ class Command(BaseCommand) :
 	if not MailTempplate.objects.all() :
 		MailTemplate(
 			subject='[ Incident $MAIL_TYPE$ - $CRITICITY$ ] $DATE$ - $MESSAGE$ sur $HOST$ - GLPI $GLPI$',
-			body=u"Bonjour,\nNos syst\xe8mes de supervision ont d\xe9t\xe9ct\xe9 une anomalie sur l'\xe9quipement $HOST$ le $JOUR$ \xe0 $HEURE$ : $TRADUCTION$\n\nUn ticket d'incident a \xe9t\xe9 ouvert au lien suivant :\n$GLPI-URL$$GLPI$\n\nLog Nagios correspondant :\n$LOG$\n\nCordialement,"
+			body=u"Bonjour,\nNos syst\xe8mes de supervision ont d\xe9t\xe9ct\xe9 une anomalie sur l'\xe9quipement $HOST$ le $JOUR$ \xe0 $HEURE$ : $TRADUCTION$\n\nUn ticket d'incident a \xe9t\xe9 ouvert au lien suivant :\n$GLPI-URL$$GLPI$\n\nLog Nagios correspondant :\n$LOG$\n\nCordialement,",
+			choosen=True
 		).save()
 		logprint('Add first mail template')
 

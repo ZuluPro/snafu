@@ -12,9 +12,9 @@ class EventAdmin(admin.ModelAdmin) :
 	search_fields = ('element__host', 'glpi','message' )
 
 class MailTemplateAdmin(admin.ModelAdmin) :
-	list_display = ('pk','subject','choiced' )
+	list_display = ('pk','subject','choosen' )
 	search_fields = ('subject','body' )
-	list_filter = ( 'choiced', )
+	list_filter = ( 'choosen', )
 
 admin.site.register(Event, EventAdmin)
 admin.site.register(Alert, AlertAdmin)

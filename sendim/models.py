@@ -43,6 +43,11 @@ class Event(models.Model) :
     def getReference(self) :
     	return getPrimaryAlert().reference
 
+    def close(self, force=False):
+        if self.closed : return None
+        else :
+            pass
+
 class Alert(models.Model) :
     host = models.ForeignKey(Host)
     service = models.ForeignKey(Service)
@@ -143,14 +148,14 @@ class MailTemplate(models.Model) :
     subject = models.CharField(max_length=200)
     body = models.CharField(max_length=2000)
     comment = models.CharField(max_length=300, blank=True,null=True)
-    choiced = models.BooleanField(default=False)
+    choosen = models.BooleanField(default=False)
 
-    def setOn():
-        previousMT = self.objects.get(choiced=True)
-        previousMT.choiced = False
+    def setOn(self):
+        previousMT = MailTemplate.objects.get(choosen=True)
+        previousMT.choosen = False
         previousMT.save()
-        self.choiced = True
+        self.choosen = True
         self.save()
 
-    def getOn():
-        return self.objects.get(choiced=True)
+    def getOn(self):
+        return MailTemplate.objects.get(choosen=True)
