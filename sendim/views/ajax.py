@@ -4,40 +4,35 @@ from sendim.models import *
 from referentiel.models import *
 
 def eventHistory(request) :
+    """Return a list of alerts which match with the primary alert of an event"""
     E = Event.objects.get( pk=request.GET['eventPk'])
-    A = Alert.objects.filter(date__exact=E.date)[0]
-    alerts = Alert.objects.filter(
-       host__host__exact=E.element.host,
-       service__service__exact=A.service.service
+    A = E.getPrimaryAlert()
+    As = Alert.objects.filter(
+       host__host=E.element.host,
+       service__service=A.service.service
     )
 
     return render(request, 'eventHistory.html', {
-        'alerts':alerts[::-1],
-        'event':E
+        'As':As[::-1],
+        'E':E
     } )
 
 
 def eventReference(request) :
     E = Event.objects.get( pk=request.GET['eventPk'])
-    A = Alert.objects.filter(event=E)[0]
-    R = Reference.objects.filter(
-        service__service__exact=A.service.service,
-        status__status__exact=A.status.status
-    )[0]
+    A = E.getPrimaryAlert()
+    R = A.reference
 
     return render(request, 'eventReference.html', {
-        'reference':R,
-        'event':E,
-        'alert':A
+        'R':R,
+        'E':E,
+        'A':A
     })
 
 def eventAlerts(request) :
-    E = Event.objects.get( pk=request.GET['eventPk'])
-    A = Alert.objects.filter(event=E)
-
     return render(request, 'eventAlerts.html', {
-        'event':E,
-        'alerts':A[::-1]
+        'E':Event.objects.get( pk=request.GET['eventPk']),
+        'As':Event.objects.get( pk=request.GET['eventPk']).getAlerts[::-1]
     })
 
 def eventsFiltered(request) :

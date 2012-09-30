@@ -1,12 +1,12 @@
 {% load addFontColor %}
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">×</button>
-    <h4>Historique des alertes : {{ alerts.0.host }} - {{ alerts.0.service }}</h4>
+    <h4>Historique des alertes : {{ As.0.host }} - {{ As.0.service }}</h4>
 </div>
 <div class="modal-body" id="referenceModalBody">
     <ul>
-    {% for alert in alerts %}
-    <li>{{ alert.date|date:"Y/m/d - G:i:s" }} - {{ alert.info|addFontColor:alert.status.status|safe }}</li>
+    {% for A in As %}
+    <li>{{ A.date|date:"Y/m/d - G:i:s" }} - {{ A.info|addFontColor:A.status.status|safe }}</li>
     {% endfor %}
     </ul>
 </div>

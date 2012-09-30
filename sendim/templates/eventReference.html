@@ -1,55 +1,60 @@
 <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">×</button>
-    <h4>Référence pour {{ event.message }} sur {{ event.element.host }} : </h4>
+ <button type="button" class="close" data-dismiss="modal">×</button>
+ <h4>Référence pour {{ E.message }} sur {{ E.element }} : </h4>
 </div>
+
 <div class="modal-body" id="referenceModalBody">
-    <dl class="dl-horizontal">
-        <dt>Host</dt>
-        <dd>{{ alert.host.host }}</dt>
-
-        <dt>Service</dt>
-        <dd>{{ alert.service }}</dt>
-
-        <dt>Status</dt>
-        <dd>{{ alert.status }}</dt>
-
-        <dt>Contact d'escalade</dt>
-        <dd>{{ reference.escalation_contact }}</dt>
-
-        <dt>Tendance</dt>
-        <dd>{{ reference.tendancy }}</dt>
-
-        <dt>Outage</dt>
-        <dd>{{ reference.outage }}</dt>
-
-        <dt>Explanation</dt>
-        <dd>{{ reference.explanation }}</dt>
-
-        <dt>Origin</dt>
-        <dd>{{ reference.origin }}</dt>
-
-        <dt>Procédure</dt>
-        <dd>{{ reference.procedure }}</dt>
-
-        <dt>Criticité</dt>
-        <dd>{{ reference.criticity }}</dt>
-
-        <dt>Mail Group</dt>
-        <dd>
-            <li>To  : {{ reference.mail_group.to }}</li>
-            <li>Cc  : {{ reference.mail_group.cc }}</li>
-            <li>Ccm : {{ reference.mail_group.ccm }}</li>
-        </dt>
-
-        <dt>GLPI</dt>
-        <dd>
-            <li>Categorie : {{ reference.glpi_category }}</li>
-            <li>Groupe destination : {{ reference.glpi_dst_group }}</li>
-            <li>Fournisseur : {{ reference.glpi_supplier }}</li>
-        </dt>
-
-    </dl>
+ {% if not R %}
+ <p>Pas de référence pour cet évenement !</p>
+ {% else %}
+ <dl class="dl-horizontal">
+  <dt>Host</dt>
+  <dd>{{ alert.host.host }}</dt>
+  
+  <dt>Service</dt>
+  <dd>{{ alert.service }}</dt>
+  
+  <dt>Status</dt>
+  <dd>{{ alert.status }}</dt>
+  
+  <dt>Contact d'escalade</dt>
+  <dd>{{ R.escalation_contact }}</dt>
+  
+  <dt>Tendance</dt>
+  <dd>{{ R.tendancy }}</dt>
+  
+  <dt>Outage</dt>
+  <dd>{{ R.outage }}</dt>
+  
+  <dt>Explanation</dt>
+  <dd>{{ R.explanation }}</dt>
+  
+  <dt>Origin</dt>
+  <dd>{{ R.origin }}</dt>
+  
+  <dt>Procédure</dt>
+  <dd>{{ R.procedure }}</dt>
+  
+  <dt>Criticité</dt>
+  <dd>{{ R.criticity }}</dt>
+  
+  <dt>Mail Group</dt>
+  <dd>
+  <li>To  : {{ R.mail_group.to }}</li>
+  <li>Cc  : {{ R.mail_group.cc }}</li>
+  <li>Ccm : {{ R.mail_group.ccm }}</li>
+  </dt>
+  
+  <dt>GLPI</dt>
+  <dd>
+  <li>Categorie : {{ R.glpi_category }}</li>
+  <li>Groupe destination : {{ R.glpi_dst_group }}</li>
+  <li>Fournisseur : {{ R.glpi_supplier }}</li>
+  </dt>
+ </dl>
+{% endif %}
 </div>
+
 <div class="modal-footer">
-    <a href="#" class="btn" data-dismiss="modal">Fermer</a>
+ <a href="#" class="btn" data-dismiss="modal">Fermer</a>
 </div>
