@@ -46,7 +46,19 @@ class Event(models.Model) :
     def close(self, force=False):
         if self.closed : return None
         else :
-            pass
+            hosts = {}
+            for A in self.getAlerts() :
+                if not A.host.host in hosts : hosts[A.host.host] = []
+                if not A.service.service in hosts[A.host.host] : hosts[A.host.host].append(A.service.service)
+            ### Calcul de tout les service
+            notOK = list()
+            for host in hosts.keys() : 
+                for service in hosts[host] :
+                    if not self.getAlerts().filter(host__host=host,service__service=service,status=Status.objects.get(status='OK') ) :
+                        notOK.append( (host,service) )
+            if not notOK :
+                self.closed = True
+                self.save()
 
 class Alert(models.Model) :
     host = models.ForeignKey(Host)

@@ -17,11 +17,9 @@ def createAlert(host=None,service=None,status=None, isDown=True) :
 
     if not status :
        if service.service == "Host status" :
-	   print 123
            if isDown : status = Status.objects.get(status='DOWN')
            else : status = Status.objects.get(status='UP')
        else :
-           print 535
            if isDown : status = choice(Status.objects.exclude(Q(status='OK') | Q(status='UP') | Q(status='DOWN')))
            else : status = choice(Status.objects.exclude(Q(status='UP') | Q(status='DOWN')))
     else : status = Status.objects.get(status=status)
@@ -38,11 +36,9 @@ def createAlert(host=None,service=None,status=None, isDown=True) :
 def createAlertFrom(alert, status=None, isDown=True):
 
     if alert.service.service == 'Host status' :
-        print 123
         if alert.status == Status.objects.get(status='DOWN') : status = Status.objects.get(status='UP')
         else : status = Status.objects.get(status='DOWN')
     else :
-        print 435
         if status : Status.objects.get(status=status)
         else : 
             status = Status.objects.exclude(Q(status='DOWN') | Q(status='UP'))
@@ -74,3 +70,17 @@ def createEvent(A, number=5, endUp=True):
             _A.save()
             _A.link()
     return A.event
+
+def endEvent(E,number=3):
+    A = E.getPrimaryAlert()
+    for i in xrange(number):
+        sleep(1)
+        if i < xrange(number)[-1] :
+          _A = createAlertFrom(A, status=Status.objects.get(status='OK'))
+          _A.save()
+          _A.link()
+        else :  
+          _A = createAlertFrom(A)
+          _A.save()
+          _A.link()
+    return E
