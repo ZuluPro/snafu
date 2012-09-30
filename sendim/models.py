@@ -171,3 +171,8 @@ class MailTemplate(models.Model) :
 
     def getOn():
         return MailTemplate.objects.get(choosen=True)
+
+#class UselessService(models.Model) :
+#    host = models.ForeignKey(Host)
+#    service = models.ForeignKey(Service)
+#    comment = models.CharField(max_length=300, blank=True,null=True)

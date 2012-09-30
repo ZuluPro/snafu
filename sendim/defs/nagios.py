@@ -51,11 +51,9 @@ def readGraphs(host,service=None):
     except : pass
     else:
         graphList = list()
-        count = 0
-        for line in pagehandle.readlines() :
+        for i,line in enumerate(pagehandle.readlines() ) :
             if re.match(r'<td.*Datasource:[^\<]*' , line ) :
-                graphList.append( ( count, re.sub( r".*Datasource: ([^\<]*).*" , r"\1" , line ) ) )
-                count+=1
+                graphList.append( ( i, re.sub( r".*Datasource: ([^\<]*).*" , r"\1" , line ) ) )
         return graphList
 
 def reloadAlert() :

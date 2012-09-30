@@ -32,16 +32,7 @@
      </th>
     </tr>
     <tr>
-     <th colspan="8">Action :<button class="btn btn-mini" onclick="
-      ids = [];
-      $('input:checked').each( function(box) { ids.push( $(this).val() )})
-      $.get('/eventsAgr', { events: ids }, 
-        function(data) {
-          $('#infoModal').html( data );
-          $('#infoModal').modal('toggle');
-        });
-      ids.length = 0;">
-    Agreger</button>
+     <th colspan="8">Action :<button class="btn btn-mini" onclick="$.fn.AgrForm()">Agreger</button>
      </th>
     </tr>
    </thead>

@@ -19,9 +19,6 @@ def events(request) :
         if 'agregate_q' in request.POST :
             agregate(request.POST.getlist('toAgr'), request.POST['choicedEvent'], request.POST['message'] )
 
-        if 'alertPk' in request.POST :
-            alertPk = request.POST["alertPk"]
-            A = Alert.objects.get(pk=alertPk)
         if 'eventPk' in request.POST :
                 eventPk = request.POST["eventPk"]
                 E = Event.objects.get(pk=eventPk)

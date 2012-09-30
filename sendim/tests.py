@@ -75,7 +75,7 @@ def endEvent(E,number=3):
     A = E.getPrimaryAlert()
     for i in xrange(number):
         sleep(1)
-        if i < xrange(number)[-1] :
+        if i >= xrange(number)[-1] :
           _A = createAlertFrom(A, status=Status.objects.get(status='OK'))
           _A.save()
           _A.link()
