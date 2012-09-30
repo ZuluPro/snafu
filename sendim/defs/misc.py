@@ -28,7 +28,7 @@ def sendMail(POST) :
 	msg['Subject'] = POST['subject']
 	mailText = POST['body']
 
-	for pattern,string in ( (r"\$HOST\$", A.host.host), (r"\$GLPI\$" , str(E.glpi)), (r"\$GLPI-URL\$", settings.SNAFU['glpi-url']+'front/ticket.form.php?id='), (r"\$TRADUCTION\$", E.message), (r"\$JOUR\$", E.date.strftime('%d/%m/%y')), (r"\$HEURE\$", E.date.strftime('%H:%M:%S')), (r"\$LOG\$" , '\n'.join( [ alert.date.strftime('%d/%m/%y %H:%M:%S - ')+alert.service.service+' en ' +alert.status.status+' - '+alert.info for alert in Alert.objects.filter(event__pk=E.pk) ] ) ) ) : 
+	for pattern,string in ( (r"\$HOST\$", A.host.host), (r"\$GLPI\$" , str(E.glpi)), (r"\$GLPI-URL\$", settings.SNAFU['glpi-url']+'front/ticket.form.php?id='), (r"\$TRADUCTION\$", E.message), (r"\$DATE\$", E.date.strftime('%d/%m/%y - %H:%M:%S')), (r"\$JOUR\$", E.date.strftime('%d/%m/%y')), (r"\$HEURE\$", E.date.strftime('%H:%M:%S')), (r"\$LOG\$" , '\n'.join( [ alert.date.strftime('%d/%m/%y %H:%M:%S - ')+alert.service.service+' en ' +alert.status.status+' - '+alert.info for alert in Alert.objects.filter(event__pk=E.pk) ] ) ) ) : 
 		mailText = re.sub( pattern , string, mailText )
 		msg['Subject'] = re.sub( pattern,string, msg['Subject'] )
 	msg.attach( MIMEText( mailText.encode('utf8') , 'plain' ) )

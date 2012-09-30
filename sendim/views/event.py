@@ -27,7 +27,7 @@ def events(request) :
                 E = Event.objects.get(pk=eventPk)
 		A = E.getPrimaryAlert()
 
-        elif "add_ref_q" in request.POST :
+        if "add_ref_q" in request.POST :
 		#ReferenceBigFormSet = formset_factory(ReferenceBigForm, extra=0 )
 		#Forms = ReferenceBigFormSet(initial= [{
 		#   'host':E.element.pk, 'service':E.getPrimaryAlert().service,
@@ -40,7 +40,7 @@ def events(request) :
 
             
 
-        elif "sendmail_q" in request.POST :
+        if "sendmail_q" in request.POST :
             sendMail( request.POST )
             logprint("Mail sent for Event #"+str(eventPk) )
 

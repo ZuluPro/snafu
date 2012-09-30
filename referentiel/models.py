@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.db import models
 from common import *
 
@@ -54,11 +55,11 @@ class Status(models.Model):
 	status = models.CharField(max_length=10, unique=True)
 
 	def shortcut(self,name):
-		if match('ALL', name, 2) : status = self.objects.all()
-		if match('OK', name, 2) : status = self.objects.get(status='OK')
-		if match('UP', name, 2) : status = self.objects.get(status='UP')
-		if match('DOWN', name, 2) : status = self.objects.get(status='DOWN')
-		if match('serviceDown', name, 2) : status = self.objects.exclude(Q(status='DOWN') | Q(status='UP') | Q(status='DOWN'))
+		if match('ALL', name, 2) : status = Status.objects.all()
+		if match('OK', name, 2) : status = Status.objects.get(status='OK')
+		if match('UP', name, 2) : status = Status.objects.get(status='UP')
+		if match('DOWN', name, 2) : status = Status.objects.get(status='DOWN')
+		if match('serviceDown', name, 2) : status = Status.objects.filter(Q(status='WARNING') | Q(status='CRITICAL') | Q(status='UNKNOWN'))
 		return status
 
 	def __unicode__(self):
