@@ -18,12 +18,7 @@ idSession=loginInfo['session']
 
 def createTicket(eventPk) :
 	E = Event.objects.get(pk=eventPk)
-	R = E.getPrimaryAlert().reference
-	############ PROVISOIR ############
-        #for A in E.getAlerts(isUp=False) :
-        #    R = getReference(A)
-        #    if R : break
-        ##################################
+	R = E.getReference()
 
 	# Creation du 1er contenu du ticket
 	content = "Descriptif : "+ E.message +"\nImpact :\nDate et heure : " +str(E.date)+ u"\nV\xe9rification : "
@@ -43,12 +38,12 @@ def createTicket(eventPk) :
 		'impact': R.glpi_impact.glpi_id
 	}
         ticketInfo = server.glpi.createTicket(ticket)
-	print "Ticket #"+str(ticketInfo['id'])+" cree"
+	logprint( "Ticket #"+str(ticketInfo['id'])+" created", 'green' )
 
 	# Sauvegarde dans BDD
 	E.glpi = ticketInfo['id']
 	E.save()
-	print "Ticket #"+str(ticketInfo['id'])+" associe a l'Event #"+str(E.pk)
+	logprint( "Ticket #"+str(ticketInfo['id'])+" associate to Event #"+str(E.pk), 'green')
 
         return ticketInfo['id']
 

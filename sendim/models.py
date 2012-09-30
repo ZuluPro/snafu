@@ -36,6 +36,12 @@ class Event(models.Model) :
     def openTicket(self) :
     	pass
 
+    def sendMail(self) :
+    	pass
+
+    def getReference(self) :
+    	return getPrimaryAlert().reference
+
 class Alert(models.Model) :
     host = models.ForeignKey(Host)
     service = models.ForeignKey(Service)
@@ -71,6 +77,12 @@ class Alert(models.Model) :
         return self.reference
 
     def link(self) :
+        """Used for link an alert to Event. Take all case for alerts :
+         -If alert is OK
+         -If last alert is Ok
+         -If no event exists
+        etc...
+        """
         if self.event : E = self.event
 
         else : 
