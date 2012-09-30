@@ -132,7 +132,6 @@ def createServiceList(As, hosts={}):
 def makeMultipleForm(hosts):
     ReferenceBigFormSet = formset_factory(ReferenceBigForm)
     data = {
-       'glpi_source':'Supervision',
        'form-TOTAL_FORMS' : sum( [ len(v) for v in hosts.values() ] ), 
        'form-INITIAL_FORMS': sum( [ len(v) for v in hosts.values() ] )
     }
@@ -143,6 +142,13 @@ def makeMultipleForm(hosts):
             print host,service
             data['form-'+str(count)+'-host'] = Host.objects.get(host=host)
             data['form-'+str(count)+'-service'] = Service.objects.get(service=service)
+            data['form-'+str(count)+'-glpi_source'] = 'Supervision'
+            for status in ('warning','critical','unknown') :
+                data['form-'+str(count)+'-'+status+'_criticity'] = 1 
+                data['form-'+str(count)+'-'+status+'_urgency'] = 3 
+                data['form-'+str(count)+'-'+status+'_priority'] = 3 
+                data['form-'+str(count)+'-'+status+'_impact'] = 4 
+            print data
             count += 1
        
     return ReferenceBigFormSet(data)

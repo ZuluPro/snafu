@@ -26,19 +26,19 @@ class ReferenceBigForm(forms.Form):
     mail_group = forms.ModelChoiceField(MailGroup.objects.all(), required=True  )
 
     warning_criticity = forms.ModelChoiceField(MailCriticity.objects.all(), required=True, initial=1 )
-    warning_urgency = forms.ModelChoiceField(GlpiUrgency.objects.all(), initial=4 )
-    warning_priority = forms.ModelChoiceField(GlpiPriority.objects.all(), initial=2 )
-    warning_impact = forms.ModelChoiceField(GlpiImpact.objects.all(), initial=2 )
+    warning_urgency = forms.ModelChoiceField(GlpiUrgency.objects.all(), initial=3 )
+    warning_priority = forms.ModelChoiceField(GlpiPriority.objects.all(), initial=3 )
+    warning_impact = forms.ModelChoiceField(GlpiImpact.objects.all(), initial=3 )
 
     critical_criticity = forms.ModelChoiceField(MailCriticity.objects.all(), required=True, initial=1 )
-    critical_urgency = forms.ModelChoiceField(GlpiUrgency.objects.all(), initial=4)
-    critical_priority = forms.ModelChoiceField(GlpiPriority.objects.all(), initial=2)
-    critical_impact = forms.ModelChoiceField(GlpiImpact.objects.all(), initial=2 )
+    critical_urgency = forms.ModelChoiceField(GlpiUrgency.objects.all(), initial=3)
+    critical_priority = forms.ModelChoiceField(GlpiPriority.objects.all(), initial=3)
+    critical_impact = forms.ModelChoiceField(GlpiImpact.objects.all(), initial=3 )
 
     unknown_criticity = forms.ModelChoiceField(MailCriticity.objects.all(), required=True, initial=1 )
-    unknown_urgency = forms.ModelChoiceField(GlpiUrgency.objects.all(), initial=4)
-    unknown_priority = forms.ModelChoiceField(GlpiPriority.objects.all(), initial=2)
-    unknown_impact = forms.ModelChoiceField(GlpiImpact.objects.all(),  initial=2)
+    unknown_urgency = forms.ModelChoiceField(GlpiUrgency.objects.all(), initial=3)
+    unknown_priority = forms.ModelChoiceField(GlpiPriority.objects.all(), initial=3)
+    unknown_impact = forms.ModelChoiceField(GlpiImpact.objects.all(),  initial=3)
 
     glpi_category = forms.ModelChoiceField(GlpiCategory.objects.all() ) 
     glpi_source = forms.CharField(initial='Supervision')
@@ -85,8 +85,8 @@ class ReferenceBigForm(forms.Form):
         ]
 
 class MailTemplateForm(forms.Form):
-    subject = forms.CharField(max_length=300, required=True, initial=MailTemplate.objects.get(pk=1).subject )
-    body = forms.CharField(max_length=3000, required=True, initial=MailTemplate.objects.get(pk=1).body, widget=forms.Textarea() )
+    subject = forms.CharField(max_length=300, required=True, initial=MailTemplate.objects.get(choosen=True).subject )
+    body = forms.CharField(max_length=3000, required=True, initial=MailTemplate.objects.get(choosen=True).body, widget=forms.Textarea() )
     comment = forms.CharField(max_length=3000, widget=forms.Textarea() )
     choiced = forms.BooleanField()
 

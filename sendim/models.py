@@ -41,7 +41,7 @@ class Event(models.Model) :
     	pass
 
     def getReference(self) :
-    	return getPrimaryAlert().reference
+    	return self.getPrimaryAlert().reference
 
     def close(self, force=False):
         if self.closed : return None
@@ -157,5 +157,5 @@ class MailTemplate(models.Model) :
         self.choosen = True
         self.save()
 
-    def getOn(self):
+    def getOn():
         return MailTemplate.objects.get(choosen=True)
