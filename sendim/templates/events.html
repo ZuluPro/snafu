@@ -36,7 +36,7 @@
      </th>
     </tr>
    </thead>
-   <tbody>
+   <tbody id="E_tbody">
    {% include 'events-li.html' %}
    </tbody>
   </table>
@@ -49,20 +49,5 @@
  <div class="modal hide fade in" style="display: hidden; width: 800px;" id="infoModal" >
         
  </div>
-
- <script type="text/javascript">
-    $('input[filter]').change( function() {
-            $.get('/events/filter',
-                {
-                    'pk': $('#pk').val(),
-                    'element': $('#element').val(),
-                    'glpi' : $('#glpi').val(),
-                    'message' : $('#message').val(),
-                    'date' : $('#datepicker').val()
-                }, function(data) {
-                $('tbody').html( data );
-            })
-    });
-</script>
 
 {% endblock %}

@@ -37,11 +37,12 @@ def eventAlerts(request) :
     })
 
 def eventsFiltered(request) :
-    events = Event.objects.all()
-    if request.GET['pk'] : events = events.filter(pk=request.GET['pk'])
-    if request.GET['element'] : events = events.filter(element__host__contains=request.GET['element'])
-    if request.GET['glpi'] : events = events.filter(glpi__contains=request.GET['glpi'])
-    if request.GET['message'] : events = events.filter(message__contains=request.GET['message'])
+    Es = Event.objects.all()
+    if request.GET['pk'] : Es = Es.filter(pk=request.GET['pk'])
+    if request.GET['element'] : Es = Es.filter(element__host__contains=request.GET['element'])
+    if request.GET['glpi'] : Es = Es.filter(glpi__contains=request.GET['glpi'])
+    if request.GET['message'] : Es = Es.filter(message__contains=request.GET['message'])
     if request.GET['date'] : pass 
+    print Es
 
-    return render(request, 'events-li.html', { 'events':events[::-1] })
+    return render(request, 'events-li.html', { 'Es':Es[::-1] })
