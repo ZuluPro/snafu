@@ -15,6 +15,7 @@ class Event(models.Model) :
     message = models.CharField(max_length=300)
     glpi = models.IntegerField(blank=True, null=True)
     mail = models.BooleanField(default=False)
+    closed = models.BooleanField(default=False)
 
     def __unicode__(self) :
         return str(self.pk)+':'+self.element.host+' - '+self.message
