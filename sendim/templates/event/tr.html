@@ -58,11 +58,11 @@
   <td>
    <div class="btn-group">
     <button class="btn 
-     {% if E.pk|getEscalation %}btn-danger{% else %}btn-info{% endif %}
-     {% if not E.pk|getProcedure %} disabled{% endif %}
+     {% if E|getEscalation %}btn-danger{% else %}btn-info{% endif %}
+     {% if not E|getProcedure %} disabled{% endif %}
     ">
-    {% if event.pk|getProcedure %}
-     <a href="{{ E.pk|getProcedure }}"><i class="icon-globe icon-white"></i></a>
+    {% if E|getProcedure %}
+     <a href="{{ E|getProcedure }}"><i class="icon-globe icon-white"></i></a>
     {% else %}Info
     {% endif %}
     </button>

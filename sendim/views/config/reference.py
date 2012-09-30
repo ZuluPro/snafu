@@ -1,48 +1,60 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from sendim.defs import *
-from sendim.models import *
+from sendim.models import Event, Alert
 from sendim.forms import *
 from referentiel.defs import *
-from referentiel.forms import *
-from referentiel.models import *
+from referentiel.models import Reference
 
 from common import logprint
 
 @login_required
 def getReferences(request) :
+    """Get list of references filtered by host and service.
+    Search GET['q'] in the 2 attributes and make a logical OR.
+    
+    This view is used with AJAX."""
     Rs = Reference.objects.all()
     if request.GET['q'] :
-        Rs_host = list( Rs.filter(host__host__icontains=request.GET['q']) )
-        Rs_service = list( Rs.filter(service__service__icontains=request.GET['q']) )
-        Rs = Rs_host + Rs_service
+        Rs = (
+            set( Rs.filter(host__host__icontains=request.GET['q']) ) |
+            set( Rs.filter(service__service__icontains=request.GET['q']) )
+        )
     return render(request, 'configuration/reference/refs/ul.html', {
         'Rs':Rs
     })
 
 @login_required
 def reference(request, ref_id, action="get") :
+    """Get or delete a reference.
+
+    Delete :
+     - Return user number for put it in page.
+
+    This view is used with AJAX."""
     if action == "get" :
         return render(request, 'configuration/reference/refs/ref.html', {
-           'R':Reference.objects.get(pk=ref_id)
+           'R':get_object_or_404(Reference, pk=ref_id)
         })
 
     elif action == "del" :
-        R = Reference.objects.get(pk=ref_id) 
+        R = get_object_or_404(Reference, pk=ref_id)
         R.delete()
         return HttpResponse(str(Reference.objects.count())+u" r\xe9f\xe9rence(s)")
 
 
-@login_required
-def getAlertWithoutRef(request,alert_id) :
-    return render(request, 'configuration/reference/alerts/alert.html', {
-        'A':Alert.objects.get(pk=alert_id)
-    })
+#@login_required
+#def getAlertWithoutRef(request,alert_id) :
+#    return render(request, 'configuration/reference/alerts/alert.html', {
+#        'A':Alert.objects.get(pk=alert_id)
+#    })
 
 @login_required
 def getRefForm(request,alert_id=0) :
+    """Create a BigForm for a given alert.
+    This view is used with AJAX."""
     A = Alert.objects.get(pk=alert_id)
     data = {
         'host':A.host.pk,

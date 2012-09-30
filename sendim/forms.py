@@ -6,6 +6,9 @@ from referentiel.models import *
 from sendim.models import *
 
 class TraductionBigForm(forms.Form):
+    """A form for Traduction.
+    It allow to add WARNING/CRITICAL/UNKNOWN traduction in one time."""
+
     service = forms.ModelChoiceField(Service.objects.all() )
     warning = forms.CharField(max_length=300, required=True)
     critical = forms.CharField(max_length=300, required=True)
@@ -13,6 +16,8 @@ class TraductionBigForm(forms.Form):
     apply = forms.BooleanField()
 
 class ReferenceBigForm(forms.Form):
+    """A form for Reference.
+    It allow to add WARNING/CRITICAL/UNKNOWN reference in one time."""
     host = forms.ModelChoiceField(Host.objects.all().order_by('host'), required=True )
     service = forms.ModelChoiceField(Service.objects.all(), required=True  )
     apply = forms.BooleanField()

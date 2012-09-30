@@ -187,5 +187,11 @@ $(document).ready(function() {
     return false;
   });
 
+ // ASK QUESTION BEFORE LAUNCH FUNCTION
+  $.fn.Question = function(question, func){
+    $('#infoModal').modal('hide');
+    $('#infoModal').html(question, func);
+  }
+
 });
 

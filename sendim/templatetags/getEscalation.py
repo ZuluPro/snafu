@@ -8,9 +8,9 @@ from referentiel.defs import getReference
 register = template.Library()
 
 @register.filter(name='getEscalation')
-def getEscalation(value, arg=None) :
-    A = Event.objects.get(pk=value).getPrimaryAlert() 
-
+def getEscalation(E, arg=None) :
+    """Return escalation of event's primary alert."""
+    A = E.getPrimaryAlert() 
     R = A.reference
 
     if R : return R.escalation_contact

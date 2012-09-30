@@ -1,11 +1,12 @@
-from sendim.models import *
 from django import template
 
 register = template.Library()
 
 @register.filter(name='getEventColor')
-def getEventColor(value, arg=None) :
-    E = value
+def getEventColor(E, arg=None) :
+    """Return the class name of tr in function of alerts.
+    If last alert if OK/UP, then tr will be blank."""
+
     A = E.getPrimaryAlert()
     As = E.getAlerts().filter(host=A.host,service=A.service).exclude(pk=A.pk).order_by('-date')
 

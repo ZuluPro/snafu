@@ -7,7 +7,7 @@ from referentiel.models import *
 
 @login_required
 def eventHistory(request) :
-    """Return a list of alerts which match with the primary alert of an event"""
+    """Return a list of alerts which match with the primary alert of an event."""
     E = Event.objects.get( pk=request.GET['eventPk'])
     A = E.getPrimaryAlert()
     As = Alert.objects.filter(
@@ -22,6 +22,7 @@ def eventHistory(request) :
 
 @login_required
 def eventReference(request) :
+    """Get reference of primary alert of a given event."""
     E = Event.objects.get( pk=request.GET['eventPk'])
     A = E.getPrimaryAlert()
     R = A.reference
@@ -34,6 +35,7 @@ def eventReference(request) :
 
 @login_required
 def eventAlerts(request) :
+    """Get alerts which are linked to a given event."""
     E = Event.objects.get( pk=request.GET['eventPk'])
     return render(request, 'modal/eventAlerts.html', {
         'E':E,
@@ -42,6 +44,7 @@ def eventAlerts(request) :
 
 @login_required
 def eventsFiltered(request) :
+    """Get events filtered by pk, element, glpi ticket number or message."""
     Es = Event.objects.all()
     if request.GET['pk'] : Es = Es.filter(pk=request.GET['pk'])
     if request.GET['element'] : Es = Es.filter(element__host__contains=request.GET['element'])
@@ -53,8 +56,12 @@ def eventsFiltered(request) :
 
 @login_required
 def choosePrimaryAlert(request) :
+    """Choose which alert will be primary.
+    In GET : Return list of event's alerts.
+    In POST : Set primary alert from POST['choosenAlert'].
+    """
     if request.method == 'GET' :
-        E = Event.objects.get( pk=request.GET['eventPk'])
+        E = Event.objects.get(pk=request.GET['eventPk'])
 
     if request.method == 'POST' :
         E = Event.objects.get(pk=request.POST['eventPk'])
@@ -68,6 +75,9 @@ def choosePrimaryAlert(request) :
 
 @login_required
 def eventsAgr(request) :
+    """Aggregate several events in one.
+    In GET : Return list of events with them alerts.
+    In POST : Use aggregate() to make it into POST['choicedEvent']."""
     if request.method == 'POST' :
         agregate(request.POST.getlist('toAgr'), request.POST['choicedEvent'], request.POST['message'] )
         return redirect('/snafu/events')
@@ -79,6 +89,9 @@ def eventsAgr(request) :
 
 @login_required
 def closeEvents(request) :
+    """Close events
+    In GET : Return list of events given in GET['events[]'].
+    In POST : Use Event.close() to make it on events' id given in POST['eventsPk']."""
     if request.method == 'POST' :
         for E in [ Event.objects.get(pk=pk) for pk in request.POST.getlist('eventsPk') ] :
             E.close()
@@ -90,6 +103,8 @@ def closeEvents(request) :
    
 @login_required
 def followUp(request) :
+    """Add a follow up to an event's GLPI ticket.
+    In GET : Return asked event with a textarea."""
     if request.method == 'POST' :
         E = Event.objects.get(pk=request.POST['eventPk'])
         addFollowUp(E.glpi, request.POST['content'])

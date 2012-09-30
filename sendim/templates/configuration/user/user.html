@@ -14,8 +14,9 @@
  <dd>{{ U.email|default:"(Aucun)" }}</dd>
 </dl>
 
-{% if user.is_superuser %}
- <div class="btn-group">
+<div class="btn-group">
+ {% if user.is_superuser %}
+  <button class="btn btn-danger" onclick="$.fn.resetPassword({{ U.pk }})">Réinitialisation du mot de passe</button>
   <button class="btn btn-danger" onclick="$.fn.delUser({{ U.pk }})">Supprimer</button>
- </div>
-{% endif %}
+ {% endif %}
+</div>

@@ -21,6 +21,10 @@ class Event(models.Model) :
         return str(self.pk)+':'+self.element.host+' - '+self.message
 
     def getAlerts(self, isUp=True, withoutRef=False):
+        """Return a QuerySet of event's alerts.
+        It is possible to filter with 2 arguments :
+         - isUp : If False excludes UP/OK alerts.
+         - withoutRef = If True excludes alerts without reference."""
         As = Alert.objects.filter(event=self).order_by('-pk')
 	if not isUp : As = As.exclude( Q(status__status__exact='OK') | Q(status__status__exact='UP') )
 	if withoutRef : As = As.filter(reference=None)
@@ -32,6 +36,8 @@ class Event(models.Model) :
         return As[0]
 
     def getPrimaryAlert(self):
+        """Return primary alert of event.
+        if there's no primary alert, set the first as primary."""
         try : return Alert.objects.filter(event=self).get(isPrimary=True)
         except Alert.DoesNotExist :
             A = self.getAlerts()[0]
@@ -47,9 +53,14 @@ class Event(models.Model) :
     	pass
 
     def getReference(self) :
+        """Return reference of primary alert."""
     	return self.getPrimaryAlert().reference
 
     def close(self, force=False):
+        """Calculate if the event may be closed.
+        If yes :  Close event
+        If no : Do nothing, or close if force=True in arguments."""
+        
         if self.closed : return None
         else :
             hosts = {}
@@ -82,6 +93,7 @@ class Alert(models.Model) :
         return self.host.host+' : '+self.service.service+' - '+ self.status.status
 
     def setPrimary(self):
+        """Set alert as primary, set all event's alerts as not."""
         old_A = self.event.getPrimaryAlert()
         old_A.isPrimary = False
         old_A.save()
@@ -91,12 +103,16 @@ class Alert(models.Model) :
         self.save()
 
     def linkToReference(self, force=False, byHost=True, byService=True, byStatus=True):
+        """Search if a reference matches with the alert.
+        In case, link alert to it."""
         if ( self.reference and force ) or not self.reference : 
             self.reference = getReference(self, byHost, byService, byStatus)
             if self.reference : self.save()
         return self.reference
 
     def linkToTraduction(self, force=False, byStatus=True):
+        """Search if a traduction matches with the alert.
+        In case, link alert to it."""
         if ( self.traduction and force ) or not self.traduction : 
             self.traduction = getTraduction(self, byStatus)
             self.save()
@@ -104,9 +120,10 @@ class Alert(models.Model) :
 
     def link(self) :
         """Used for link an alert to Event. Take all case for alerts :
-         -If alert is OK
-         -If last alert is Ok
-         -If no event exists
+         - If alert is OK/UP : Link to event
+         - If previous similar alert is DOWN : Link to previous alert's event
+         - If previous similar alert is OK/UP : Create event and link
+         - If no previous similar alert : Create Event and link
         etc...
         """
         if self.event : E = self.event
@@ -146,7 +163,7 @@ class Alert(models.Model) :
 
                 else :
                     lastA = Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None).order_by('-pk')[0]
-                    if lastA.status in ( Status.objects.get(status='OK'), Status.objects.get(status='UP') ) :
+                    if (lastA.status in ( Status.objects.get(status='OK'), Status.objects.get(status='UP') )) or (lastA.event == None) :
                         E = Event (
                             element = self.host,
                             date = self.date,
@@ -170,6 +187,7 @@ class MailTemplate(models.Model) :
     choosen = models.BooleanField(default=False)
 
     def setOn(self):
+        """Set template as used, set all others not."""
         previousMT = MailTemplate.objects.get(choosen=True)
         previousMT.choosen = False
         previousMT.save()
@@ -177,4 +195,5 @@ class MailTemplate(models.Model) :
         self.save()
 
     def getOn():
+        """Return the chosen template."""
         return MailTemplate.objects.get(choosen=True)

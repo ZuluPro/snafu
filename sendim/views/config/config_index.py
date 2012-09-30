@@ -3,17 +3,22 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from sendim.defs import *
-from sendim.models import *
+from sendim.models import Alert, MailTemplate
 from sendim.forms import *
 from referentiel.defs import *
 from referentiel.forms import *
-from referentiel.models import *
+from referentiel.models import Host, Reference, Traduction
 
 from common import logprint
 
 @login_required
 def configuration(request) :
+    """Index of configuration, this view is the only one which is request without AJAX.
+    It gets all necessary data dor make menus:
+     - References
+     - Traductions
+     - Mail templates
+     - Users"""
     
     if request.method == 'POST' :
         if request.POST['action'] == 'addTrad' :
@@ -28,13 +33,10 @@ def configuration(request) :
 
     return render(request, 'configuration/index.html', {
         'hosts':Host.objects.filter(glpi_id=None),
-        'alerts':Alert.objects.all(),
         'AsWithoutRef':Alert.objects.filter(reference=None),
         'alertsWithoutTrad':Alert.objects.filter(traduction=None),
         'references':Reference.objects.all(),
-        'referenceForm':ReferenceForm,
         'referenceBigForm':ReferenceBigForm,
-        'traductions':Traduction.objects.all(),
         'traductionForm':TraductionForm,
         'traductionBigForm':TraductionBigForm,
         'mailTemplates':MailTemplate.objects.all(),

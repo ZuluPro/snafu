@@ -7,7 +7,7 @@ from sendim.models import Host,Service,Status
 from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 from datetime import datetime
 
-dispatcher = SimpleXMLRPCDispatcher(allow_none=False, encoding=None) # Python 2.5
+dispatcher = SimpleXMLRPCDispatcher(allow_none=True, encoding=None)
 
 @csrf_exempt 
 def webservice(request):
@@ -25,31 +25,16 @@ def webservice(request):
     else:
         response = HttpResponse()
         response.write("<b>This is an XML-RPC Service.</b><br>")
-        response.write("You need to invoke it using an XML-RPC Client!<br>")
-        response.write("The following methods are available:<ul>")
-        methods = dispatcher.system_listMethods()
-
-        for method in methods:
-            # right now, my version of SimpleXMLRPCDispatcher always
-            # returns "signatures not supported"... :(
-            # but, in an ideal world it will tell users what args are expected
-            sig = dispatcher.system_methodSignature(method)
-
-            # this just reads your docblock, so fill it in!
-            help =  dispatcher.system_methodHelp(method)
-
-            response.write("<li><b>%s</b>: [%s] %s" % (method, sig, help))
-
-    response.write("</ul>")
-    response.write('<a href="http://www.djangoproject.com/"> <img src="http://media.djangoproject.com/img/badges/djangomade124x25_grey.gif" border="0" alt="Made with Django." title="Made with Django."></a>')
 
     response['Content-length'] = str(len(response.content))
     return response
 
-def test(test="Ok"):
-    return test
+def test():
+    """A simple test for webservice."""
+    return 0
 
 def pushAlert(host,service,status,info,date=None):
+    """Create a new alert."""
     if not date : date = datetime.now()
     elif type(date) == type('') : date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S' )
     
@@ -61,6 +46,7 @@ def pushAlert(host,service,status,info,date=None):
         date = date
     )
     A.save()
+    A.link()
     return A
 
 dispatcher.register_function(test, 'test')

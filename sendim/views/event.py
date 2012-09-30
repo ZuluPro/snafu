@@ -13,6 +13,13 @@ from common import logprint
 
 @login_required
 def events(request) :
+    """List events and do processing on them.
+    
+    Processes are in POST method :
+     - reloadAlert_q : Parse Nagios alert history page.
+     - sendmail_q : Send a mail for a given event.
+     - treatment_q : Make exploitation processes.
+    """
     if request.method == 'POST' :
 
         if 'eventPk' in request.POST :
@@ -60,6 +67,8 @@ def events(request) :
 
 @login_required
 def EaddRef(request):
+    """Add a reference to DB.
+    This view is used by AJAX."""
     E = Event.objects.get(pk=request.POST['eventPk'])
     A = E.getPrimaryAlert()
 
