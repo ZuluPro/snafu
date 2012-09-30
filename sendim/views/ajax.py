@@ -32,7 +32,7 @@ def eventReference(request) :
 def eventAlerts(request) :
     return render(request, 'eventAlerts.html', {
         'E':Event.objects.get( pk=request.GET['eventPk']),
-        'As':Event.objects.get( pk=request.GET['eventPk']).getAlerts[::-1]
+        'As':Event.objects.get( pk=request.GET['eventPk']).getAlerts()[::-1]
     })
 
 def eventsFiltered(request) :
