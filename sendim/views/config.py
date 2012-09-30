@@ -76,6 +76,7 @@ def configuration(request) :
                     A.save()
 
     return render(request, 'configuration/index.html', {
+        'hosts':Host.objects.filter(glpi_id=None),
         'alerts':Alert.objects.all(),
         'alertsWithoutRef':Alert.objects.filter(reference=None),
         'alertsWithoutTrad':Alert.objects.filter(traduction=None),

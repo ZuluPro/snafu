@@ -27,10 +27,6 @@ def events(request) :
                 E = Event.objects.get(pk=eventPk)
 		A = E.getPrimaryAlert()
 
-        if "create_ticket_q" in request.POST :
-            ticketId = createTicket( eventPk, alertPk )
-            logprint("Add ticket #" +str(ticketId)+ "to Event #" +str(eventPk), 'green')
-
         elif "add_ref_q" in request.POST :
 		#ReferenceBigFormSet = formset_factory(ReferenceBigForm, extra=0 )
 		#Forms = ReferenceBigFormSet(initial= [{
@@ -90,12 +86,12 @@ def createMail(request):
 
 	# Constitution du mail
 	msg = {} 
-	msg['from'] = "Equipe d'exploitation Autolib' <it-prod@autolib.eu>"
+	msg['from'] = SNAFU['smtp-from']
 	msg['to'] = R.mail_group.to
 	if E.criticity == 'Majeur' : msg['to'] += ', '+ R.mail_group.ccm
-	msg['cc'] = ' ,'.join( [ 'it-prod@autolib.eu', R.mail_group.cc] )
-	msg['subject'] = '[Incident '+R.mail_type.mail_type+' Autolib\' - '+E.criticity+'] '+E.date.strftime('%d/%m/%y')+' - '+ E.message +' sur ' +E.element.host +' - GLPI '+str(E.glpi)
-	with open('./mailforhost.txt' , 'r') as mailFile : msg['body'] = mailFile.read()
+	msg['cc'] = ' ,'.join( [ SNAFU['smtp-from'], R.mail_group.cc] )
+	msg['subject'] = MailType.objects.get(choiced=True).subject
+	msg['body'] = MailType.objects.get(choiced=True).body
 	
 	# Recuperation des graphs correspondant
         graphList = readGraphs(E.element.host, A.service.service)

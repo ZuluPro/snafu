@@ -23,6 +23,8 @@ class Command(BaseCommand) :
     args = None
     def handle(self, *args, **options) :
 
+	if not Service.objects.filter(service='Host status') : Service(service='Host status').save()
+
         computers = ws.glpi.listObjects( { 'session': ws_session['session'], 'itemtype': 'computer', 'limit': 2000 } )
         for host in computers :
                 try:

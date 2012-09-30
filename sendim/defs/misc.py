@@ -26,15 +26,11 @@ def sendMail(POST) :
 	if POST['ccm'] : msg['To'] += ', '+ R.mail_group.ccm
 	msg['Cc'] = POST['cc']
 	msg['Subject'] = POST['subject']
-
 	mailText = POST['body']
-	mailText = re.sub( r"\$HOST\$" , A.host.host, mailText )
-	mailText = re.sub( r"\$GLPI\$" , str(E.glpi) , mailText )
-	mailText = re.sub( r"\$GLPI-URL\$" , settings.SNAFU['glpi-url']+'front/ticket.form.php?id=' , mailText)
-	mailText = re.sub( r"\$TRADUCTION\$" , E.message , mailText)
-	mailText = re.sub( r"\$JOUR\$" , E.date.strftime('%d/%m/%y') , mailText)
-	mailText = re.sub( r"\$HEURE\$" , E.date.strftime('%H:%M:%S') ,  mailText)
-	mailText = re.sub( r"\$LOG\$" , '\n'.join( [ alert.date.strftime('%d/%m/%y %H:%M:%S - ')+alert.service.service+' en ' +alert.status.status+' - '+alert.info for alert in Alert.objects.filter(event__pk=E.pk) ] ),  mailText)
+
+	for pattern,string in ( (r"\$HOST\$", A.host.host), (r"\$GLPI\$" , str(E.glpi)), (r"\$GLPI-URL\$", settings.SNAFU['glpi-url']+'front/ticket.form.php?id='), (r"\$TRADUCTION\$", E.message), (r"\$JOUR\$", E.date.strftime('%d/%m/%y')), (r"\$HEURE\$", E.date.strftime('%H:%M:%S')), (r"\$LOG\$" , '\n'.join( [ alert.date.strftime('%d/%m/%y %H:%M:%S - ')+alert.service.service+' en ' +alert.status.status+' - '+alert.info for alert in Alert.objects.filter(event__pk=E.pk) ] ) ) ) : 
+		mailText = re.sub( pattern , string, mailText )
+		msg['Subject'] = re.sub( pattern,string, msg['Subject'] )
 	msg.attach( MIMEText( mailText.encode('utf8') , 'plain' ) )
 	
 	# Ajout des graphs slelectinnes

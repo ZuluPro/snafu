@@ -83,31 +83,6 @@ def reloadAlert() :
 
 def treatAlerts() :
     ## Recherche des alerts n'ayant pas d'Event
-    for alert in Alert.objects.filter(event=None) :
-        try : # Execept Si pas d'alerte trouve
-          lastAlert = Alert.objects.filter( Q(host=alert.host) & Q(service=alert.service) & ~Q(date__gt=alert.date) & ~Q(event=None) ).order_by('-pk')[0]
-          lastEvent = lastAlert.event
-          if not re.search( r"(OK|UP)", lastAlert.status.status ):
-              alert.event = lastEvent ; alert.save()
-              logprint("Add automaticaly Alert #" +str(alert.pk)+ " to Event #" +str(lastEvent.pk), "green")
-          else : raise exceptions.StandardError
-        except : 
-            E = Event()
-            try :
-                Reference.objects.filter(host__host__exact=alert.host.host, service__service__exact=alert.service.service )[0]
-                if re.search(r'(OK|UP)', alert.status.status) : tempStatus='WARNING'
-                else : tempStatus = alert.status.status
-                E.criticity= Reference.objects.filter(host__host__exact=alert.host.host, service__service__exact=alert.service.service, status__status__exact=tempStatus )[0].mail_criticity
-            except : E.criticity = "?"
-
-            try :
-                Traduction.objects.filter( service__service__exact=alert.service.service )[0]
-                E.message = Traduction.objects.filter(service__service__exact=alert.service)[0].traduction
-            except : E.message = alert.info
-            
-            E.element=alert.host; E.date=alert.date
-            E.save()
-            alert.event = E
-            alert.save()
-            logprint("Link Alert #"+str(alert.pk)+" To Event #"+str(E.pk), "green")
+    for A in Alert.objects.filter(event=None) :
+	A.link()
     return None
