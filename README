@@ -1,4 +1,6 @@
 Need django 1.4.x and python2.7.x
+
+------------------------------------------------------------------------------
 What must include in settings.py :
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -38,8 +40,13 @@ SNAFU = {
 
 BASEDIR = "/path/to/your/project"
 
+TEMPLATE_DIRS = (
+    ...
+    '/path/to/your/project/templates/base/',
+    ...
+)
 
-
+------------------------------------------------------------------------------
 What must include in urls.py :
 
 urlpatterns = patterns('',

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+ 
+<html lang="en">
+  <head>
+   {% include "header.html" %}
+  </head>
+
+  <body>
+   {% include "nav-bar.html" %}
+   
+   <div class="container-fluid" style="padding-right:5px; padding-left:5px;">
+    {% block body %}
+    {% endblock %}
+   </div> <!-- /container -->
+
+  </body>
+</html>
+   
