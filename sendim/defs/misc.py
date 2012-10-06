@@ -16,7 +16,7 @@ from email.mime.text import MIMEText
 
 def sendMail(POST) :
 	E = Event.objects.get(pk=POST['eventPk'])
-	A = E.getPrimatyAlert()
+	A = E.getPrimaryAlert()
 	# Recherche du MailGroup correspondant
 	R = A.reference
 
