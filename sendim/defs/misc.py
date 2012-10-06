@@ -25,12 +25,26 @@ def sendMail(POST) :
         msg['To'] = POST['to']
 	if POST['ccm'] : msg['To'] += ', '+ R.mail_group.ccm
 	msg['Cc'] = POST['cc']
-	msg['Subject'] = POST['subject']
+	mailSub = POST['subject']
 	mailText = POST['body']
 
-	for pattern,string in ( (r"\$HOST\$", A.host.host), (r"\$GLPI\$" , str(E.glpi)), (r"\$GLPI-URL\$", settings.SNAFU['glpi-url']+'front/ticket.form.php?id='), (r"\$TRADUCTION\$", E.message), (r"\$DATE\$", E.date.strftime('%d/%m/%y - %H:%M:%S')), (r"\$JOUR\$", E.date.strftime('%d/%m/%y')), (r"\$HEURE\$", E.date.strftime('%H:%M:%S')), (r"\$LOG\$" , '\n'.join( [ alert.date.strftime('%d/%m/%y %H:%M:%S - ')+alert.service.service+' en ' +alert.status.status+' - '+alert.info for alert in Alert.objects.filter(event__pk=E.pk) ] ) ) ) : 
-		mailText = re.sub( pattern , string, mailText )
-		msg['Subject'] = re.sub( pattern,string, msg['Subject'] )
+	subs = (
+		("$HOST$", A.host.host),
+		("$MESSAGE$", E.message),
+		("$MAIL_TYPE$", R.mail_type.mail_type),
+		("$CRITICITY$", E.criticity),
+		("$GLPI$" , str(E.glpi)),
+		("$GLPI-URL$", settings.SNAFU['glpi-url']+'front/ticket.form.php?id='),
+		("$TRADUCTION$", E.message),
+		("$DATE$", E.date.strftime('%d/%m/%y - %H:%M:%S')),
+		("$JOUR$", E.date.strftime('%d/%m/%y')),
+		("$HEURE$", E.date.strftime('%H:%M:%S')),
+		("$LOG$" , '\n'.join( [ A.date.strftime('%d/%m/%y %H:%M:%S - ')+A.service.service+' en ' +A.status.status+' - '+A.info for A in E.getAlerts() ] ) )
+	) 
+	for pattern,string in subs :
+		mailText = mailText.replace(pattern, string)
+		mailSub = mailSub.replace(pattern, string)
+	msg['Subject'] = mailSub
 	msg.attach( MIMEText( mailText.encode('utf8') , 'plain' ) )
 	
 	# Ajout des graphs slelectinnes
