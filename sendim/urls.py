@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('',
+    (r'^$', 'sendim.views.index'),
     (r'^events$', 'sendim.views.events'),
 
     (r'^event/agr$', 'sendim.views.eventsAgr'),
@@ -10,7 +11,6 @@ urlpatterns = patterns('',
     (r"^event/choosePrimaryAlert$", 'sendim.views.choosePrimaryAlert'),
 
     (r'^event/filter$', 'sendim.views.eventsFiltered'),
-#    (r'^mail$', 'sendim.views.createMail'),
 
     (r'^webservice$', 'sendim.webservice.webservice'),
 

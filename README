@@ -51,6 +51,6 @@ What must include in urls.py :
 
 urlpatterns = patterns('',
    ...
-   url(r'^event', include('sendim.urls')),
+   url(r'^snafu/', include('sendim.urls')),
    ...
 )
