@@ -13,7 +13,7 @@
   <td>{{ E.message }}</td>
 
   <td>
-   <form method="POST" action="/events" style="margin: 0px 0px 0px">{% csrf_token %}
+   <form method="POST" action="/snafu/events" style="margin: 0px 0px 0px">{% csrf_token %}
   {% if E.criticity = '?' %}
     <input type="hidden" name="eventPk" value="{{ E.pk }}">
     <button class="btn btn-primary" name="add_ref_q"><i class="icon-comment icon-white"></i></button>
@@ -44,11 +44,11 @@
     </button>
     <button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
     <ul class="dropdown-menu">
-     <li><a onclick="$.fn.UseModal('/eventAlerts',{ eventPk:{{ E.pk }} })">Alerts de l'Event</a></li>
+     <li><a onclick="$.fn.UseModal('/snafu/event/alerts',{ eventPk:{{ E.pk }} })">Alerts de l'Event</a></li>
      
-     <li><a onclick="$.fn.UseModal('/eventHistory',{ eventPk:{{ E.pk }} } )">Historique de l'alert primaire</a></li>
+     <li><a onclick="$.fn.UseModal('/snafu/event/history',{ eventPk:{{ E.pk }} } )">Historique de l'alert primaire</a></li>
      
-     <li><a onclick="$.fn.UseModal('/eventReference',{ eventPk:{{ E.pk }} })">Reference</a></li>
+     <li><a onclick="$.fn.UseModal('/snafu/event/reference',{ eventPk:{{ E.pk }} })">Reference</a></li>
      
      <li><a href="{{ nagios.host_status_url }}{{ E.element }}">Vision Nagios</a></li>
     </ul>

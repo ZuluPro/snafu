@@ -20,7 +20,7 @@ $(document).ready(function() {
 
     $.ajax({ 
       type: "POST", 
-      url: "/events/configuration", 
+      url: "/snafu/configuration", 
       data: R,
       async: false,
       cache: false,

@@ -28,7 +28,7 @@ $(document).ready(function() {
 
   // MY EVENTS FILTER
   $('input[filter]').change( function() {
-    $.get('/events/filter',
+    $.get('/snafu/event/filter',
       {
         'pk': $('#pk').val(),
         'element': $('#element').val(),
@@ -44,13 +44,13 @@ $(document).ready(function() {
   $.fn.AgrForm = function(){
     ids = [];
     $('input:checked').each( function(box) { ids.push( $(this).val() )})
-    $.fn.UseModal('/eventsAgr', { events: ids } )
+    $.fn.UseModal('/snafu/event/agr', { events: ids } )
     $('input').attr('checked',false);
   }
 
   // AGGREGATION MODAL
   $.fn.CPAForm = function(){
-    $.fn.UseModal('/events/choosePrimaryAlert', { eventPk: $('input:checked').val() } )
+    $.fn.UseModal('/snafu/event/choosePrimaryAlert', { eventPk: $('input:checked').val() } )
     $('input').attr('checked',false);
   }
 

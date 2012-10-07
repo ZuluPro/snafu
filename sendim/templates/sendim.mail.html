@@ -3,7 +3,7 @@
 <h2>Prévisualisation du mail :</h2> 
 
 {% block body %}
-	<form class="form-horizontal" action="/events" method="post">{% csrf_token %}
+	<form class="form-horizontal" action="/snafu/events" method="post">{% csrf_token %}
 	<input type="hidden" name="eventPk" value="{{ E.pk }}">
 	<fieldset>
 	<div class="control-group">

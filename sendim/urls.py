@@ -1,19 +1,18 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('',
-    (r'^s$', 'sendim.views.events'),
-    (r'^s/(?P<page>\d*)$', 'sendim.views.events'),
+    (r'^events$', 'sendim.views.events'),
 
-    (r'^sAgr$', 'sendim.views.eventsAgr'),
-    (r"^History$", 'sendim.views.eventHistory'),
-    (r"^Reference$", 'sendim.views.eventReference'),
-    (r"^Alerts$", 'sendim.views.eventAlerts'),
-    (r"^s/choosePrimaryAlert$", 'sendim.views.choosePrimaryAlert'),
+    (r'^event/agr$', 'sendim.views.eventsAgr'),
+    (r"^event/history$", 'sendim.views.eventHistory'),
+    (r"^event/reference$", 'sendim.views.eventReference'),
+    (r"^event/alerts$", 'sendim.views.eventAlerts'),
+    (r"^event/choosePrimaryAlert$", 'sendim.views.choosePrimaryAlert'),
 
-    (r'^s/filter$', 'sendim.views.eventsFiltered'),
+    (r'^event/filter$', 'sendim.views.eventsFiltered'),
 #    (r'^mail$', 'sendim.views.createMail'),
 
-    (r'^s/webservice$', 'sendim.webservice.webservice'),
+    (r'^webservice$', 'sendim.webservice.webservice'),
 
-    (r'^s/configuration$', 'sendim.views.configuration'),
+    (r'^configuration$', 'sendim.views.configuration'),
 )

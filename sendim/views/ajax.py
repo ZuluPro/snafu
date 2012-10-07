@@ -12,7 +12,7 @@ def eventHistory(request) :
        service__service=A.service.service
     )
 
-    return render(request, 'eventHistory.html', {
+    return render(request, 'modal/eventHistory.html', {
         'As':As[::-1],
         'E':E
     } )
@@ -23,7 +23,7 @@ def eventReference(request) :
     A = E.getPrimaryAlert()
     R = A.reference
 
-    return render(request, 'eventReference.html', {
+    return render(request, 'modal/eventReference.html', {
         'R':R,
         'E':E,
         'A':A
@@ -31,7 +31,7 @@ def eventReference(request) :
 
 def eventAlerts(request) :
     E = Event.objects.get( pk=request.GET['eventPk'])
-    return render(request, 'eventAlerts.html', {
+    return render(request, 'modal/eventAlerts.html', {
         'E':E,
         'As':E.getAlerts()[::-1]
     })

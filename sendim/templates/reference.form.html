@@ -42,7 +42,7 @@
 
  </div>
 
- <form id="submit" action="/events" method="post" style="display: none;">
+ <form id="submit" action="/snafu/events" method="post" style="display: none;">
   {% csrf_token %}
   <input type="hidden" name="eventPk" value="{{ E.pk }}">
   <input type="hidden" name="treatment_q" value="{{ E.pk }}">
