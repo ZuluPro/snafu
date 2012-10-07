@@ -16,26 +16,10 @@ def events(request) :
         if 'reloadAlert_q' in request.POST :
             treatAlerts()
 
-        if 'agregate_q' in request.POST :
-            agregate(request.POST.getlist('toAgr'), request.POST['choicedEvent'], request.POST['message'] )
-
         if 'eventPk' in request.POST :
                 eventPk = request.POST["eventPk"]
                 E = Event.objects.get(pk=eventPk)
 		A = E.getPrimaryAlert()
-
-        if "add_ref_q" in request.POST :
-		#ReferenceBigFormSet = formset_factory(ReferenceBigForm, extra=0 )
-		#Forms = ReferenceBigFormSet(initial= [{
-		#   'host':E.element.pk, 'service':E.getPrimaryAlert().service,
-		#		'glpi_source':'Supervision'
-		#}])
-		Forms = makeMultipleForm( createServiceList(E.getAlerts() ) )#ReferenceBigFormSet(initial= [{
-		return render(request, 'reference.form.html', {
-			'Forms':Forms, 'E':E
-		} )
-
-            
 
         if "sendmail_q" in request.POST :
             sendMail( request.POST )
@@ -68,12 +52,5 @@ def events(request) :
     return render(request, 'events.html', {
         'Es':Event.objects.filter(closed=False).order_by('-pk'),
         'title':'Snafu - Events'
-    })
-
-def eventsAgr(request) :
-
-    return render(request, 'events-agr.html', {
-        'events': [ Event.objects.get(pk=pk) for pk in request.GET.getlist('events[]') ][::-1],
-        'alerts': Alert.objects.order_by('-date')
     })
 

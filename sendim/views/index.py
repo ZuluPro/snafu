@@ -20,6 +20,7 @@ def index(request) :
     monthAs.sort()
 
     return render(request, 'snafu-index.html', {
-      'monthAs' : monthAs
+      'monthAs' : monthAs,
+      'title' : 'Snafu'
     })
 

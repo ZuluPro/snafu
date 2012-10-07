@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 
 from sendim.models import *
+from sendim.defs import *
 from referentiel.models import *
 
 def eventHistory(request) :
@@ -60,3 +61,15 @@ def choosePrimaryAlert(request) :
         'E':E,
         'As':E.getAlerts()[::-1]
     })
+
+def eventsAgr(request) :
+    if request.method == 'POST' :
+        agregate(request.POST.getlist('toAgr'), request.POST['choicedEvent'], request.POST['message'] )
+        return redirect('/snafu/events')
+
+    else :
+        return render(request, 'events-agr.html', {
+            'events': [ Event.objects.get(pk=pk) for pk in request.GET.getlist('events[]') ][::-1],
+            'alerts': Alert.objects.order_by('-date')
+        })
+
