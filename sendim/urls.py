@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     (r"^History$", 'sendim.views.eventHistory'),
     (r"^Reference$", 'sendim.views.eventReference'),
     (r"^Alerts$", 'sendim.views.eventAlerts'),
+    (r"^s/choosePrimaryAlert$", 'sendim.views.choosePrimaryAlert'),
 
     (r'^s/filter$', 'sendim.views.eventsFiltered'),
 #    (r'^mail$', 'sendim.views.createMail'),

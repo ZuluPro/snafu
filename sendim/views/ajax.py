@@ -46,3 +46,17 @@ def eventsFiltered(request) :
     print Es
 
     return render(request, 'events-li.html', { 'Es':Es[::-1] })
+
+def choosePrimaryAlert(request) :
+    if request.method == 'GET' :
+        E = Event.objects.get( pk=request.GET['eventPk'])
+
+    if request.method == 'POST' :
+        E = Event.objects.get(pk=request.POST['eventPk'])
+        A = Alert.objects.get(pk=request.POST['choosenAlert'])
+        A.setPrimary()
+
+    return render(request, 'modal/choosePrimaryAlert.html', {
+        'E':E,
+        'As':E.getAlerts()[::-1]
+    })

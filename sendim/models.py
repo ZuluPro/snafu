@@ -81,6 +81,7 @@ class Alert(models.Model) :
         old_A.save()
         self.isPrimary = True
         self.save()
+        logprint("Change primary alert for Event#"+str(self.event.pk)+": From #"+str(old_A.pk)+" to #"+str(self.pk), 'pink') 
 
     def linkToReference(self, force=False, byHost=True, byService=True, byStatus=True):
         if ( self.reference and force ) or not self.reference : 
