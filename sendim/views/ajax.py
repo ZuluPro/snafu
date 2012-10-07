@@ -68,8 +68,13 @@ def eventsAgr(request) :
         return redirect('/snafu/events')
 
     else :
-        return render(request, 'events-agr.html', {
+        return render(request, 'modal/events-agr.html', {
             'events': [ Event.objects.get(pk=pk) for pk in request.GET.getlist('events[]') ][::-1],
             'alerts': Alert.objects.order_by('-date')
         })
 
+def closeEvents(request) :
+    return render(request, 'events-agr.html', {
+        'events': [ Event.objects.get(pk=pk) for pk in request.GET.getlist('events[]') ][::-1],
+    })
+   
