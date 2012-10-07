@@ -1,0 +1,19 @@
+<div class="tabbable tabs-left">
+ <ul id="hostsTab" class="nav nav-tabs nav-stacked">
+  <li class="active"><a href="#hostList" data-toggle="tab">{{ hosts.count }} sans ID GLPI</a></li>
+ </ul>
+ 
+ <div id="hostsContent" class="tab-content">
+  <div class="tab-pane fade in active" id="mailTemplateList">
+  {% for H in hosts %}
+   <p>{{ H.host }}</p>
+  {% endfor %}
+  </div>
+
+  <div class="tab-pane fade" id="alter">
+   <p>A venir...<p>
+  </div>
+ </div>
+
+</div> 
+
