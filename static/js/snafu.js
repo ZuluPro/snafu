@@ -28,6 +28,7 @@ $(document).ready(function() {
 
   // MY EVENTS FILTER
   $('input[filter]').change( function() {
+    $('#E_tbody').html('<img id="loader" src="/static/img/ajax-loader.gif">' );
     $.get('/snafu/event/filter',
       {
         'pk': $('#pk').val(),
