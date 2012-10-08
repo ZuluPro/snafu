@@ -3,9 +3,9 @@ from django.shortcuts import render
 from sendim.defs import *
 from sendim.models import *
 from sendim.forms import *
+from referentiel.defs import *
 from referentiel.forms import *
 from referentiel.models import *
-from referentiel.forms import *
 
 from common import logprint
 
@@ -69,11 +69,12 @@ def configuration(request) :
 
 	    if 'treatment_q' in request.POST :
                     E = Event.objects.get(pk=request.POST['eventPk'])
-                    E.criticity = R.mail_criticity.mail_criticity
-                    E.save()
                     A = E.getPrimaryAlert()
+                    R = getReference(A)
                     A.reference = R
                     A.save()
+                    E.criticity = R.mail_criticity.mail_criticity
+                    E.save()
 
     return render(request, 'configuration/index.html', {
         'hosts':Host.objects.filter(glpi_id=None),
