@@ -16,7 +16,7 @@
    <form method="POST" action="/snafu/events" style="margin: 0px 0px 0px">{% csrf_token %}
   {% if E.criticity = '?' %}
     <input type="hidden" name="eventPk" value="{{ E.pk }}">
-    <button class="btn btn-primary" name="add_ref_q"><i class="icon-comment icon-white"></i></button>
+    <button class="btn btn-primary" name="treatment_q"><i class="icon-comment icon-white"></i></button>
   {% else %}{% if not E.glpi %}
     <input type="hidden" name="alertPk" value="{{ E.pk|getLastAlert }}">
     <input type="hidden" name="eventPk" value="{{ E.pk }}">

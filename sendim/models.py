@@ -32,7 +32,13 @@ class Event(models.Model) :
         return As[0]
 
     def getPrimaryAlert(self):
-        return Alert.objects.filter(event=self).get(isPrimary=True)
+        try : return Alert.objects.filter(event=self).get(isPrimary=True)
+        except Alert.DoesNotExist :
+            A = self.getAlerts()[0]
+            logprint("Event #"+str(self.pk)+" had no primary alert, set to the first Alert #"+str(A.pk), 'red')
+            A.isPrimary = True
+            A.save()
+            return A
 
     def openTicket(self) :
     	pass
@@ -79,9 +85,10 @@ class Alert(models.Model) :
         old_A = self.event.getPrimaryAlert()
         old_A.isPrimary = False
         old_A.save()
+        logprint("Set primary alert for Event#"+str(self.event.pk)+": From #"+str(old_A.pk)+" to #"+str(self.pk), 'pink') 
+           
         self.isPrimary = True
         self.save()
-        logprint("Change primary alert for Event#"+str(self.event.pk)+": From #"+str(old_A.pk)+" to #"+str(self.pk), 'pink') 
 
     def linkToReference(self, force=False, byHost=True, byService=True, byStatus=True):
         if ( self.reference and force ) or not self.reference : 

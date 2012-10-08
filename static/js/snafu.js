@@ -48,9 +48,17 @@ $(document).ready(function() {
     $('input').attr('checked',false);
   }
 
-  // AGGREGATION MODAL
+  // PRIMARY ALERT MODAL
   $.fn.CPAForm = function(){
     $.fn.UseModal('/snafu/event/choosePrimaryAlert', { eventPk: $('input:checked').val() } )
+    $('input').attr('checked',false);
+  }
+
+  // PRIMARY ALERT MODAL
+  $.fn.CloseForm = function(){
+    ids = [];
+    $('input:checked').each( function(box) { ids.push( $(this).val() )})
+    $.fn.UseModal('/snafu/event/close', { events: ids } )
     $('input').attr('checked',false);
   }
 

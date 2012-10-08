@@ -18,7 +18,7 @@
   <div class="tab-content">
   {% for Form in Forms %}
    <div class="tab-pane fade{% if forloop.counter == 1 %} in active{% endif %}" id="R{{ forloop.counter }}">
-  <form id="R{{ forloop.counter }}Form" class="form-horizontal" action="/events/configuration" method="post">
+  <form id="R{{ forloop.counter }}Form" class="form-horizontal" action="/snafu/configuration" method="post">
    {% csrf_token %}
    <input type="hidden" name="action" value="addRef">
 

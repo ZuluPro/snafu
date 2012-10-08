@@ -67,14 +67,18 @@ def eventsAgr(request) :
         agregate(request.POST.getlist('toAgr'), request.POST['choicedEvent'], request.POST['message'] )
         return redirect('/snafu/events')
 
-    else :
-        return render(request, 'modal/events-agr.html', {
-            'events': [ Event.objects.get(pk=pk) for pk in request.GET.getlist('events[]') ][::-1],
-            'alerts': Alert.objects.order_by('-date')
-        })
+    return render(request, 'modal/events-agr.html', {
+        'events': [ Event.objects.get(pk=pk) for pk in request.GET.getlist('events[]') ][::-1],
+        'alerts': Alert.objects.order_by('-date')
+    })
 
 def closeEvents(request) :
-    return render(request, 'events-agr.html', {
-        'events': [ Event.objects.get(pk=pk) for pk in request.GET.getlist('events[]') ][::-1],
+    if request.method == 'POST' :
+        for E in [ Event.objects.get(pk=pk) for pk in request.POST.getlist('eventsPk') ] :
+            E.close()
+        return redirect('/snafu/events')
+
+    return render(request, 'modal/close-event.html', {
+        'Es': [ Event.objects.get(pk=pk) for pk in request.GET.getlist('events[]') ][::-1],
     })
    
