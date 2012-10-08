@@ -14,20 +14,27 @@
 
   <td>
    <form method="POST" action="/snafu/events" style="margin: 0px 0px 0px">{% csrf_token %}
-  {% if E.criticity = '?' %}
     <input type="hidden" name="eventPk" value="{{ E.pk }}">
-    <button class="btn btn-primary" name="treatment_q"><i class="icon-comment icon-white"></i></button>
-  {% else %}{% if not E.glpi %}
-    <input type="hidden" name="alertPk" value="{{ E.pk|getLastAlert }}">
-    <input type="hidden" name="eventPk" value="{{ E.pk }}">
-    <button class="btn btn-primary" name="treatment_q"><i class="icon-pencil icon-white"></i><i class="icon-envelope icon-white"></i></button>
-  {% else %}{% if not E.mail %}
-    <input type="hidden" name="alertPk" value="{{ E.pk|getLastAlert }}">
-    <input type="hidden" name="eventPk" value="{{ E.pk }}">
-    <button class="btn btn-primary" name="treatment_q"><i class="icon-envelope icon-white"></i> {{ E.glpi }}</button>
-  {% else %}
-   <a class="btn btn-primary" href="{{ glpi.ticket_url }}{{ E.glpi }}">{{ E.glpi }}</a>
-  {% endif %}{% endif %}{% endif %}
+    <div class="btn-group">
+     {% if E.criticity = '?' %}
+      <button class="btn btn-primary" name="treatment_q"><i class="icon-comment icon-white"></i></button>
+     {% else %}
+       {% if not E.glpi %}
+        <button class="btn btn-primary" name="treatment_q"><i class="icon-pencil icon-white"></i></button>
+       {% else %}
+        <a class="btn btn-primary" href="{{ glpi.ticket_url }}{{ E.glpi }}">{{ E.glpi }}</a>
+       {% endif %}
+       {% if not E.mail %}
+        {% if not E.glpi %}
+         <button class="btn btn-primary disabled"><i class="icon-envelope icon-white"></i></button>
+        {% else %}
+         <button class="btn btn-primary" name="treatment_q"><i class="icon-envelope icon-white"></i></button>
+        {% endif %}
+       {% else %}
+        <button class="btn btn-primary disabled"><i class="icon-envelope icon-white"></i></button>
+       {% endif %}
+     {% endif %}
+    </div>
    </form>
   </td>
 
