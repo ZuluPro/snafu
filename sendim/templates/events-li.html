@@ -1,10 +1,10 @@
 {% load getAlertColor %}
-{% load getLastAlert %}
+{% load getEventColor %}
 {% load getProcedure %}
 {% load getEscalation %}
 
 {% for E in Es %}
- <tr id="Event{{ E.pk }}" element="{{ E.element.host }}" criticty="{{ E.criticity }}" mail="{{ E.mail }}" glpi="{{ E.glpi }}" style="background-color:{{ E.pk|getAlertColor:"event" }} ;">
+ <tr id="Event{{ E.pk }}" class="{{ E|getEventColor }}" style="">
   <td><input type="checkbox" value="{{ E.pk }}"></td>
   <td>{{ E.pk }}</td>
   <td>{{ E.date|date:"Y/m/d - G:i:s" }}</td>

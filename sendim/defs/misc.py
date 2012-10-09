@@ -136,11 +136,14 @@ def agregate(eventsPk, choicedEvent, message, glpi=None, mail=False, criticity='
         E.save()
 
 
-def createServiceList(As, hosts={}):
+def createServiceList(As):
+    hosts={}
     for A in As :
+        print A.host.host
         if not A.host.host in hosts : hosts[A.host.host] = []
         if not A.service.service in hosts[A.host.host] : hosts[A.host.host].append(A.service.service)
 
+    print hosts
     return hosts
 
 def makeMultipleForm(hosts):
