@@ -3,13 +3,14 @@ from sendim.models import *
 
 
 class AlertAdmin(admin.ModelAdmin) :
-	list_display = ('date', 'host','service','status','event' )
-	list_filter = ( 'status', )
-	search_fields = ('service__service', 'host__host')
+	list_display = ('pk','date','host','service','status','event' )
+	list_filter = ( 'status','isPrimary' )
+	search_fields = ('id', 'service__service', 'host__host')
 
 class EventAdmin(admin.ModelAdmin) :
-	list_display = ('date','element','message' )
-	search_fields = ('element__host', 'glpi','message' )
+	list_display = ('pk', 'date','element','message' )
+	list_filter = ( 'closed','mail' )
+	search_fields = ('id', 'element__host', 'glpi','message' )
 
 class MailTemplateAdmin(admin.ModelAdmin) :
 	list_display = ('pk','subject','choosen' )
