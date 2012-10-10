@@ -2,7 +2,6 @@
 
 
 {% block body %}
- <script src="static/js/snafu-referenceform.js"></script>
 
  <h2>Il manque les références pour {{ Forms|length }} alerte(s)</h2>
  <h3>Veuillez remplir les formulaire de chacun</h3>
@@ -11,7 +10,9 @@
 
   <ul id="alertTab" class="nav nav-tabs nav-stacked">
   {% for F in Forms %}
-   <li id="R{{ forloop.counter }}Tab"{% if forloop.counter == 1 %} class="active"{% endif %}><a href="#R{{ forloop.counter }}" data-toggle="tab">Ref {{ forloop.counter }}</a></li>
+   <li id="R{{ forloop.counter }}Tab"{% if forloop.counter == 1 %} class="active"{% endif %}>
+    <a href="#R{{ forloop.counter }}" data-toggle="tab">Ref {{ forloop.counter }}: {{ F.host_as_text }} - {{ F.service_as_text }}</a>
+   </li>
   {% endfor %}
   </ul>
  
@@ -22,7 +23,7 @@
    {% csrf_token %}
    <input type="hidden" name="action" value="addRef">
 
-    <h3>Formulaire pour {{ forloop.counter }}</h3>
+    <h3>Formulaire {{ forloop.counter }} : {{ Form.host_as_text }} - {{ Form.service_as_text }}</h3>
     <fieldset>
     {% for field in Form.all %}
      <div class="control-group">

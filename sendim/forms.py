@@ -45,6 +45,14 @@ class ReferenceBigForm(forms.Form):
     glpi_dst_group = forms.ModelChoiceField(GlpiGroup.objects.all() ) 
     glpi_supplier = forms.ModelChoiceField(GlpiSupplier.objects.all())
 
+    def host_as_text(self):
+        try : return Host.objects.get(pk=self['host'].value()).host
+        except Event.DoesNotExist : return ''
+
+    def service_as_text(self):
+        try : return Service.objects.get(pk=self['service'].value()).service
+        except Event.DoesNotExist : return ''
+
     def warning(self):
         return [ self.__getitem__(label) for label,field in self.fields.items() if 'warning_' in label ]
 
