@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     (r"^event/alerts$", 'sendim.views.eventAlerts'),
     (r"^event/choosePrimaryAlert$", 'sendim.views.choosePrimaryAlert'),
     (r"^event/close$", 'sendim.views.closeEvents'),
+    (r"^event/followup$", 'sendim.views.followUp'),
 
     (r'^event/filter$', 'sendim.views.eventsFiltered'),
 

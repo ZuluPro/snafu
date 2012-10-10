@@ -82,3 +82,16 @@ def closeEvents(request) :
         'Es': [ Event.objects.get(pk=pk) for pk in request.GET.getlist('events[]') ][::-1],
     })
    
+def followUp(request) :
+    if request.method == 'POST' :
+        E = Event.objects.get(pk=request.POST['eventPk'])
+        addFollowUp(E.glpi, request.POST['content'])
+        return redirect('/snafu/events')
+
+    elif request.method == 'GET' :
+        E = Event.objects.get(pk=request.GET['eventPk'])
+
+    return render(request, 'modal/glpi-followup.html', {
+      'E':E
+    })
+   

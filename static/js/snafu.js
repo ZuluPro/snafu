@@ -44,7 +44,7 @@ $(document).ready(function() {
   // AGGREGATION MODAL
   $.fn.AgrForm = function(){
     ids = [];
-    $('input:checked').each( function(box) { ids.push( $(this).val() )})
+    $('input:checked').each( function() { ids.push( $(this).val() )})
     $.fn.UseModal('/snafu/event/agr', { events: ids } )
     $('input').attr('checked',false);
   }
@@ -55,11 +55,17 @@ $(document).ready(function() {
     $('input').attr('checked',false);
   }
 
-  // PRIMARY ALERT MODAL
+  // CLOSE MODAL
   $.fn.CloseForm = function(){
     ids = [];
-    $('input:checked').each( function(box) { ids.push( $(this).val() )})
+    $('input:checked').each( function() { ids.push( $(this).val() )})
     $.fn.UseModal('/snafu/event/close', { events: ids } )
+    $('input').attr('checked',false);
+  }
+
+  // FOLLOW-UP MODAL
+  $.fn.FollowUpForm = function(){
+    $.fn.UseModal('/snafu/event/followup', { eventPk: $('input:checked').val() } )
     $('input').attr('checked',false);
   }
 
