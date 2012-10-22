@@ -45,11 +45,23 @@ def reference(request, ref_id, action="get") :
         return HttpResponse(str(Reference.objects.count())+u" r\xe9f\xe9rence(s)")
 
 
-#@login_required
-#def getAlertWithoutRef(request,alert_id) :
-#    return render(request, 'configuration/reference/alerts/alert.html', {
-#        'A':Alert.objects.get(pk=alert_id)
-#    })
+@login_required
+def getAlertWithoutRef(request,alert_id) :
+    return render(request, 'configuration/reference/alerts/alert.html', {
+        'A':Alert.objects.get(pk=alert_id)
+    })
+
+@login_required
+def getAsWithoutRef(request) :
+    As = Alert.objects.filter(reference=None)
+    if request.GET['q'] :
+        As = (
+            set( As.filter(host__host__icontains=request.GET['q']) ) |
+            set( As.filter(service__service__icontains=request.GET['q']) )
+        )
+    return render(request, 'configuration/reference/alerts/ul.html', {
+        'AsWithoutRef':As
+    })
 
 @login_required
 def getRefForm(request,alert_id=0) :

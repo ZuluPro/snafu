@@ -118,12 +118,20 @@ $(document).ready(function() {
     })
   }
 
- // GET ALERT
+ // GET ALERT WITHOUT REF
   $.fn.getAlertWithoutRef = function(pk){
     $('#refAlertContent').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
     $.get('/snafu/configuration/ref/alert/'+pk, function(data) {
       $('#refAlertContent').html(data);
     })
+  }
+
+ // GET ALERTS WITHOUT REF
+  $.fn.getAsWithoutRef = function(){
+    $('#refAlerts').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/ref/alert/tabs', { q : $('#a_ref_q').val() }, function(data) {
+      $('#refAlerts').html(data);
+    });
   }
 
  // GOTO ADDREF WITH AN Alert ATTR
