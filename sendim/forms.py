@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
-from django.forms import widgets
+from django.forms import widgets, formsets
 
 from referentiel.models import *
 from sendim.models import *
@@ -51,6 +51,7 @@ class ReferenceBigForm(forms.Form):
     glpi_source = forms.CharField(initial='Supervision')
     glpi_dst_group = forms.ModelChoiceField(GlpiGroup.objects.all() ) 
     glpi_supplier = forms.ModelChoiceField(GlpiSupplier.objects.all())
+
 
     def host_as_text(self):
         try : return Host.objects.get(pk=self['host'].value()).host
@@ -117,4 +118,3 @@ class UserForm(forms.ModelForm):
         widgets = {
             'password':widgets.PasswordInput()
         }
-

@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.forms.formsets import formset_factory
+from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect
 
 from sendim.defs import *
@@ -37,7 +38,7 @@ def events(request) :
         elif "treatment_q" in request.POST :
 	    if E.criticity == '?' or not E.getPrimaryAlert().reference : 
 		
-		Forms = makeMultipleForm( createServiceList(E.getAlerts() ) )
+		Forms = getFormSet(E)
 		return render(request, 'event/add-reference.html', {
 			'Forms':Forms, 'E':E,
         		'title':'Snafu - Ajout de Reference'
@@ -67,52 +68,26 @@ def events(request) :
 
 @login_required
 def EaddRef(request):
-    """Add a reference to DB.
-    This view is used by AJAX."""
+    """
+    Add a reference to DB.
+    In POST method only, else raise 403.
+    This view is used by AJAX.
+    """
+    if request.method == 'GET' : raise HttpResponseForbidden
+
     E = Event.objects.get(pk=request.POST['eventPk'])
-    A = E.getPrimaryAlert()
 
-    POST = {}
-    for k,v in request.POST.items() :
-        if 'form-' in k :
-            POST[k[7:]] = v
-
-    host = Host.objects.get(pk=POST['host'])
-    service = Service.objects.get(pk=POST['service'])
+    host,service = postFormSet(request.POST)
 
     for status in ('WARNING','CRITICAL','UNKNOWN') :
-        if not Reference.objects.filter(host=host,service=service,status__status=status) :
-            R = Reference(
-                host = host,
-                service = service,
-                status = Status.objects.get(status=status),
+        As = E.getAlerts().filter(status__status=status) 
+        for _A in As: 
+            _A.linkToReference()
 
-                escalation_contact = POST['escalation_contact'],
-                tendancy = POST['tendancy'],
-                outage = POST['outage'],
-                explanation = POST['explanation'],
-                origin = POST['origin'],
-                procedure = POST['procedure'],
-
-                mail_type = MailType.objects.get(pk=POST['mail_type']),
-                mail_group = MailGroup.objects.get(pk=POST['mail_group']),
-
-                glpi_category = GlpiCategory.objects.get(pk=POST['glpi_category']),
-                glpi_source = POST['glpi_source'],
-                glpi_dst_group = GlpiGroup.objects.get(pk=POST['glpi_dst_group']),
-                glpi_supplier = GlpiSupplier.objects.get(pk=POST['glpi_supplier'])
-            )
-            R.mail_criticity = MailCriticity.objects.get(pk=POST[status.lower()+'_criticity'])
-            R.glpi_urgency = GlpiUrgency.objects.get(pk=POST[status.lower()+'_urgency'])
-            R.glpi_priority = GlpiPriority.objects.get(pk=POST[status.lower()+'_priority'])
-            R.glpi_impact = GlpiImpact.objects.get(pk=POST[status.lower()+'_impact'])
-            R.save()
-
-            for A in Alert.objects.filter(host=host,service=service,status__status=status,reference=None): A.linkToReference()
-
-    if E.getPrimaryAlert() in Alert.objects.filter(host=host,service=service) :
-        E.criticity = E.getPrimaryAlert().reference.mail_criticity.mail_criticity
-        E.save()
+            A = E.getPrimaryAlert()
+            if A.isPrimary : 
+                E.criticity = A.reference.mail_criticity.mail_criticity
+                E.save()
 
     return render(request, 'event/event-index.html', {
     })

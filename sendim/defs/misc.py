@@ -6,34 +6,6 @@ from sendim.forms import *
 from sendim.models import *
 
 from common import logprint
-import re
-
-def addRef(POST):
-    alert = Alert.objects.get( pk=POST['alertPk'] )
-    R = Reference(
-        host = Host.objects.get(pk=POST['host']),
-        service = Service.objects.get(pk=POST['service']),
-        status = Status.objects.get(pk=POST['status']),
-        escalation_contact = POST['escalation_contact'],
-        tendancy = POST['tendancy'],
-        outage = POST['outage'],
-        explanation = POST['explanation'],
-        origin = POST['origin'],
-        procedure = POST['procedure'],
-        mail_type = MailType.objects.get(pk=POST['mail_type']),
-        mail_group = MailGroup.objects.get(pk=POST['mail_group']),
-        mail_criticity = MailCriticity.objects.get(pk=POST['mail_criticity']),
-        glpi_urgency = GlpiUrgency.objects.get(pk=POST['glpi_urgency']),
-        glpi_priority = GlpiPriority.objects.get(pk=POST['glpi_priority']),
-        glpi_impact = GlpiImpact.objects.get(pk=POST['glpi_impact']),
-        glpi_category = GlpiCategory.objects.get(pk=POST['glpi_category']),
-        glpi_source = POST['glpi_source'],
-        glpi_dst_group = GlpiGroup.objects.get(pk=POST['glpi_dst_group']),
-        glpi_supplier = GlpiSupplier.objects.get(pk=POST['glpi_supplier'])
-    )
-    R.save()
-    logprint('Reference #' +str(R.pk)+ ' saved', 'green')
-
 
 def agregate(eventsPk, choicedEvent, message, glpi=None, mail=False, criticity='?') :
     if len(eventsPk) < 2 : return None
@@ -57,31 +29,3 @@ def agregate(eventsPk, choicedEvent, message, glpi=None, mail=False, criticity='
         E.mail = mail
         E.criticity = criticity
         E.save()
-
-
-def createServiceList(As):
-    hosts={}
-    for A in As :
-        if not A.host.host in hosts : hosts[A.host.host] = []
-        if not A.service.service in hosts[A.host.host] : hosts[A.host.host].append(A.service.service)
-    return hosts
-
-def makeMultipleForm(hosts):
-    ReferenceBigFormSet = formset_factory(ReferenceBigForm)
-    data = {
-       'form-TOTAL_FORMS' : sum( [ len(v) for v in hosts.values() ] ), 
-       'form-INITIAL_FORMS': sum( [ len(v) for v in hosts.values() ] )
-    }
-
-    for count,(host,services) in enumerate(hosts.items()) :
-        for service in services :
-            data['form-'+str(count)+'-host'] = Host.objects.get(host=host)
-            data['form-'+str(count)+'-service'] = Service.objects.get(service=service)
-            data['form-'+str(count)+'-glpi_source'] = 'Supervision'
-            for status in ('warning','critical','unknown') :
-                data['form-'+str(count)+'-'+status+'_criticity'] = 1 
-                data['form-'+str(count)+'-'+status+'_urgency'] = 3 
-                data['form-'+str(count)+'-'+status+'_priority'] = 3 
-                data['form-'+str(count)+'-'+status+'_impact'] = 4 
-       
-    return ReferenceBigFormSet(data)

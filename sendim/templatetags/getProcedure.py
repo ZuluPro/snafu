@@ -10,4 +10,6 @@ def getProcedure(E, arg=None) :
     """Return the procedure of the given event."""
     A = E.getPrimaryAlert()
     R = A.reference
-    return R.procedure
+
+    if R : return R.procedure
+    else : return ''
