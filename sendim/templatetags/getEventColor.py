@@ -11,7 +11,7 @@ def getEventColor(E, arg=None) :
 
     A = E.getPrimaryAlert()
     if not A : return ''
-    As = E.getAlerts().filter(host=A.host,service=A.service).exclude(pk=A.pk).order_by('-date')
+    As = E.getAlerts().filter(host=A.host,service=A.service).order_by('-date')
     if not As : return ''
 
     if not As : return A.status.status.lower()+'-status'

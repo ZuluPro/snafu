@@ -78,16 +78,18 @@ def getAsWithoutRef(request) :
 def getRefForm(request,alert_id=0) :
     """
     Create a BigForm for a given alert.
+    If alert_id is 0, it creates en empty form.
+
     This view is used with AJAX.
     """
-    A = Alert.objects.get(pk=alert_id)
     data = {
-        'host':A.host.pk,
-        'service':A.service.pk,
         'glpi_source':'Supervision',
         'apply':True
     }
-    if alert_id :
+    if int(alert_id) :
+        A = Alert.objects.get(pk=alert_id)
+        data['host'] = A.host.pk
+        data['service'] = A.service.pk
         Rs = Reference.objects.filter(host=A.host,service=A.service)
         if Rs :
            for R in Rs : 

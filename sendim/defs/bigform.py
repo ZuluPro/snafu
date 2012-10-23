@@ -77,4 +77,7 @@ def postFormSet(_POST, is_a_set=True):
             R.glpi_impact = GlpiImpact.objects.get(pk=POST[status.lower()+'_impact'])
             R.save()
 
+    for A in Alert.objects.filter(host=host,service=service) :
+        A.linkToReference()
+
     return host,service
