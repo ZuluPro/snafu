@@ -23,7 +23,7 @@ urlpatterns = patterns('',
 
     (r'^configuration$', 'sendim.views.configuration'),
     (r'^configuration/ref_q$', 'sendim.views.getReferences'),
-    (r'^configuration/ref/(?P<ref_id>\d+)/(?P<action>(get|del))$', 'sendim.views.reference'),
+    (r'^configuration/ref/(?P<ref_id>\d+)/(?P<action>(get|del|add))$', 'sendim.views.reference'),
     (r'^configuration/ref/alert/tabs$', 'sendim.views.getAsWithoutRef'),
     (r'^configuration/ref/alert/(?P<alert_id>\d+)$', 'sendim.views.getAlertWithoutRef'),
     (r'^configuration/ref/alert/(?P<alert_id>\d+)/form$', 'sendim.views.getRefForm'),

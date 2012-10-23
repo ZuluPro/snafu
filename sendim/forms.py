@@ -6,8 +6,10 @@ from referentiel.models import *
 from sendim.models import *
 
 class TraductionBigForm(forms.Form):
-    """A form for Traduction.
-    It allow to add WARNING/CRITICAL/UNKNOWN traduction in one time."""
+    """
+    A form for Traduction.
+    It allow to add WARNING/CRITICAL/UNKNOWN traduction in one time.
+    """
 
     service = forms.ModelChoiceField(Service.objects.all() )
     warning = forms.CharField(max_length=300, required=True)
@@ -16,8 +18,10 @@ class TraductionBigForm(forms.Form):
     apply = forms.BooleanField()
 
 class ReferenceBigForm(forms.Form):
-    """A form for Reference.
-    It allow to add WARNING/CRITICAL/UNKNOWN reference in one time."""
+    """
+    A form for Reference.
+    It allow to add WARNING/CRITICAL/UNKNOWN reference in one time.
+    """
     host = forms.ModelChoiceField(Host.objects.all().order_by('host'), required=True )
     service = forms.ModelChoiceField(Service.objects.all(), required=True  )
     apply = forms.BooleanField()
@@ -35,23 +39,22 @@ class ReferenceBigForm(forms.Form):
     warning_criticity = forms.ModelChoiceField(MailCriticity.objects.all(), required=True, initial=1 )
     warning_urgency = forms.ModelChoiceField(GlpiUrgency.objects.all(), initial=3 )
     warning_priority = forms.ModelChoiceField(GlpiPriority.objects.all(), initial=3 )
-    warning_impact = forms.ModelChoiceField(GlpiImpact.objects.all(), initial=3 )
+    warning_impact = forms.ModelChoiceField(GlpiImpact.objects.all(), initial=4 )
 
     critical_criticity = forms.ModelChoiceField(MailCriticity.objects.all(), required=True, initial=1 )
     critical_urgency = forms.ModelChoiceField(GlpiUrgency.objects.all(), initial=3)
     critical_priority = forms.ModelChoiceField(GlpiPriority.objects.all(), initial=3)
-    critical_impact = forms.ModelChoiceField(GlpiImpact.objects.all(), initial=3 )
+    critical_impact = forms.ModelChoiceField(GlpiImpact.objects.all(), initial=4 )
 
     unknown_criticity = forms.ModelChoiceField(MailCriticity.objects.all(), required=True, initial=1 )
     unknown_urgency = forms.ModelChoiceField(GlpiUrgency.objects.all(), initial=3)
     unknown_priority = forms.ModelChoiceField(GlpiPriority.objects.all(), initial=3)
-    unknown_impact = forms.ModelChoiceField(GlpiImpact.objects.all(),  initial=3)
+    unknown_impact = forms.ModelChoiceField(GlpiImpact.objects.all(),  initial=4)
 
     glpi_category = forms.ModelChoiceField(GlpiCategory.objects.all() ) 
     glpi_source = forms.CharField(initial='Supervision')
     glpi_dst_group = forms.ModelChoiceField(GlpiGroup.objects.all() ) 
     glpi_supplier = forms.ModelChoiceField(GlpiSupplier.objects.all())
-
 
     def host_as_text(self):
         try : return Host.objects.get(pk=self['host'].value()).host

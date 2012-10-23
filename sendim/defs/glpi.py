@@ -2,15 +2,15 @@ from django.conf import settings
 
 from sendim.models import *
 from sendim.connection import *
+from sendim.exceptions import UnableToConnectGLPI
 from referentiel.models import *
 from referentiel.defs import getReference
 
 
-def createTicket(eventPk) :
+def createTicket(E) :
     loginInfo = doLogin()
-    if 'error' in loginInfo : return None
+    if 'error' in loginInfo : raise UnableToConnectGLPI
 
-    E = Event.objects.get(pk=eventPk)
     R = E.getReference()
 
     # Creation du 1er contenu du ticket

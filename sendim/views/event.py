@@ -3,9 +3,11 @@ from django.forms.formsets import formset_factory
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect
 
+from sendim.context_processors import setMessage
 from sendim.defs import *
 from sendim.models import *
 from sendim.forms import *
+from sendim.exceptions import UnableToConnectGLPI
 from referentiel.models import *
 from referentiel.forms import *
 from referentiel.defs import *
@@ -29,6 +31,7 @@ def events(request) :
             A = E.getPrimaryAlert()
 
         if 'reloadAlert_q' in request.POST :
+            setMessage('Nagios',"Lecture de l'historique des alertes")
             treatAlerts()
 
         elif "sendmail_q" in request.POST :
@@ -45,8 +48,9 @@ def events(request) :
 		} )
 
             if not E.glpi :
-               E.glpi = createTicket(eventPk)
-               if not E.glpi : redirect('/snafu/events')
+               try :
+                   E.glpi = createTicket(E)
+               except UnableToConnectGLPI : return redirect('/snafu/events')
 
             # Constitution du mail
             msg = makeMail(E)
@@ -85,7 +89,7 @@ def EaddRef(request):
             _A.linkToReference()
 
             A = E.getPrimaryAlert()
-            if A.isPrimary : 
+            if _A.isPrimary : 
                 E.criticity = A.reference.mail_criticity.mail_criticity
                 E.save()
 

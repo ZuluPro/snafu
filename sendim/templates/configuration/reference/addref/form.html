@@ -1,6 +1,6 @@
-<form class="form-horizontal" action="/snafu/configuration" method="post">
- {% csrf_token %}
- <input type="hidden" name="action" value="addRef">
+<form class="form-horizontal" id="refForm">
+ <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+ <input type="hidden" name="action" value="addRef"/>
  <fieldset>
 
   <div class="row">

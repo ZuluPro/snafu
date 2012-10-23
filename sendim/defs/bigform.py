@@ -1,11 +1,17 @@
 from django.forms.formsets import formset_factory
 
+from referentiel.models import Host,Service,Reference
 from sendim.forms import *
 
 def getFormSet(E=None):
+    """
+    Create a sendim.forms.ReferenceBigForm set.
+    
+    If an Event is given as argument, Use them alerts for know how many
+    forms is needed and initialize with alerts attributes.
+    """
     hosts = dict()
     if E :
-        print E
         for A in E.getAlerts() :
             if not A.host.host in hosts : hosts[A.host.host] = []
             if not A.service.service in hosts[A.host.host] : hosts[A.host.host].append(A.service.service)
@@ -18,21 +24,27 @@ def getFormSet(E=None):
     for count,(host,services) in enumerate(hosts.items()) :                                          
         for service in services :
             data['form-'+str(count)+'-host'] = Host.objects.get(host=host)
-            data['form-'+str(count)+'-service'] = Service.objects.get(service=service)               
+            data['form-'+str(count)+'-service'] = Service.objects.get(service=service)
             data['form-'+str(count)+'-glpi_source'] = 'Supervision'                                  
             for status in ('warning','critical','unknown') :
-                data['form-'+str(count)+'-'+status+'_criticity'] = 1                                 
-                data['form-'+str(count)+'-'+status+'_urgency'] = 3                                   
+                data['form-'+str(count)+'-'+status+'_criticity'] = 1 
+                data['form-'+str(count)+'-'+status+'_urgency'] = 3
                 data['form-'+str(count)+'-'+status+'_priority'] = 3
                 data['form-'+str(count)+'-'+status+'_impact'] = 4                                    
        
     return ReferenceBigFormSet(data)
 
-def postFormSet(_POST):
-    POST = dict()
-    for k,v in _POST.items() :
-        if 'form-' in k :
-            POST[k[7:]] = v
+def postFormSet(_POST, is_a_set=True):
+    """
+    This function use POST from a ReferenceBigForm for save
+    WARNING/CRITICAL/UNKNOWN references.
+    """
+    if is_a_set :
+        POST = dict()
+        for k,v in _POST.items() :
+            if 'form-' in k :
+                POST[k[7:]] = v
+    else : POST = _POST
 
     host = Host.objects.get(pk=POST['host'])
     service = Service.objects.get(pk=POST['service'])

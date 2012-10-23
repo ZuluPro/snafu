@@ -1,12 +1,7 @@
-from django.forms.formsets import formset_factory
-from django.conf import settings
-
-from referentiel.models import *
-from sendim.forms import *
-from sendim.models import *
+from sendim.models import Event
 
 from common import logprint
-
+ 
 def agregate(eventsPk, choicedEvent, message, glpi=None, mail=False, criticity='?') :
     if len(eventsPk) < 2 : return None
     for eventPk in eventsPk :

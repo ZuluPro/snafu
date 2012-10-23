@@ -40,11 +40,19 @@ class Event(models.Model) :
         if there's no primary alert, set the first as primary."""
         try : return Alert.objects.filter(event=self).get(isPrimary=True)
         except Alert.DoesNotExist :
-            A = self.getAlerts()[0]
-            logprint("Event #"+str(self.pk)+" had no primary alert, set to the first Alert #"+str(A.pk), 'red')
-            A.isPrimary = True
-            A.save()
+            if self.getAlerts() :
+                A = self.getAlerts()[0]
+                logprint("Event #"+str(self.pk)+" had no primary alert, set to the first Alert #"+str(A.pk), 'red')
+                A.setPrimary()
+                return A
+            else :
+                self.delete()
+                logprint("Event #"+str(self.pk)+" had no alert, it has been deleted", 'red')
+        except Alert.MultipleObjectsReturned :
+            A = self.getAlerts().filter(isPrimary=True)[0]
+            A.setPrimary()
             return A
+            
 
     def openTicket(self) :
     	pass
@@ -94,13 +102,17 @@ class Alert(models.Model) :
 
     def setPrimary(self):
         """Set alert as primary, set all event's alerts as not."""
-        old_A = self.event.getPrimaryAlert()
-        old_A.isPrimary = False
-        old_A.save()
-        logprint("Set primary alert for Event#"+str(self.event.pk)+": From #"+str(old_A.pk)+" to #"+str(self.pk), 'pink') 
+        As = self.event.getAlerts().filter(isPrimary=True)
+        if As :
+            for A in As :
+                if A is self : continue
+                A.isPrimary = False
+                A.save()
+                logprint("Set alert #" +str(A.pk)+ " as not primary", 'pink')
            
         self.isPrimary = True
         self.save()
+        logprint("Set primary alert for Event#"+str(self.event.pk)+" to Alert #"+str(self.pk), 'pink') 
 
     def linkToReference(self, force=False, byHost=True, byService=True, byStatus=True):
         """Search if a reference matches with the alert.

@@ -142,6 +142,31 @@ $(document).ready(function() {
     })
   }
 
+ // ADD A REF FROM FORM
+  $.fn.addRef = function(){
+    $('#userContent').html('');
+
+    if ( ! $('#refForm input[name="id"]').val() ) { var ref_id = 0; }
+    else { var ref_id = $('#refForm input[name="id"]').val(); };
+
+    $.ajax({ 
+      type: "POST", 
+      url: '/snafu/configuration/ref/'+ref_id+'/add', 
+      data: $('#refForm').serialize(),
+      async: false,
+      cache: false,
+      success: function(data) {
+         $('#refCount').html(data);
+      },
+      error: function() { alert('err'); }
+    })
+  }
+
+  $('#refForm').submit(function() {
+    $.fn.addRef();
+    return false;
+  });
+
  // TRANSFORM <p> INTO INPUT
  // $.fn.createInput = function(pk,attr,val){
  //   $('#refContent').html('');

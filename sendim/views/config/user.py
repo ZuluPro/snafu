@@ -5,11 +5,10 @@ from django.shortcuts import render, get_object_or_404
 
 from sendim.forms import UserForm
 
-from common import logprint
-
 @login_required
 def getUsers(request) :
-    """Get users filtered by username, first name and last name.
+    """
+    Get users filtered by username, first name and last name.
     Search GET['q'] in the 3 attributes and make a logical OR.
 
     This view is used with AJAX.
@@ -28,7 +27,8 @@ def getUsers(request) :
 
 @login_required
 def user(request, user_id, action="get") :
-    """Get, add or delete a user.
+    """
+    Get, add or delete a user.
 
     Delete :
      - Return user number for put it in page.
@@ -37,7 +37,8 @@ def user(request, user_id, action="get") :
      - user_id could be 0.
      - Return user number for put it in page.
 
-    This view is used with AJAX."""
+    This view is used with AJAX.
+    """
     if action == "get" :
         return render(request, 'configuration/user/user.html', {
            'U':get_object_or_404(User, pk=user_id)
@@ -55,7 +56,6 @@ def user(request, user_id, action="get") :
             Form.save()
             U.set_password(request.POST['password'])
             U.save()
-            print U.password
 
         return HttpResponse(str(User.objects.count())+" utilisateur(s)")
 
