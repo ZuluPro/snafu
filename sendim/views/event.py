@@ -1,9 +1,9 @@
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.forms.formsets import formset_factory
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect
 
-from sendim.context_processors import setMessage
 from sendim.defs import *
 from sendim.models import *
 from sendim.forms import *
@@ -16,7 +16,8 @@ from common import logprint
 
 @login_required
 def events(request) :
-    """List events and do processing on them.
+    """
+    List events and do processing on them.
     
     Processes are in POST method :
      - reloadAlert_q : Parse Nagios alert history page.
@@ -65,8 +66,21 @@ def events(request) :
                     'graphList':graphList,
                     'title':'Snafu - Envoi de mail'
             })
+        Es = Event.objects.filter(closed=False).order_by('-pk')
+    else :
+        Es = Event.objects.filter(closed=False).order_by('-pk')
+
+        paginator = Paginator(Es, 100)
+        page = request.GET.get('page')
+        try:
+            Es = paginator.page(page)
+        except PageNotAnInteger:
+            Es = paginator.page(1)
+        except EmptyPage:
+            Es = paginator.page(paginator.num_pages)
+
     return render(request, 'event/event-index.html', {
-        'Es':Event.objects.filter(closed=False).order_by('-pk'),
+        'Es':Es,
         'title':'Snafu - Events'
     })
 

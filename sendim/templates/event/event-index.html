@@ -58,6 +58,18 @@
    {% include 'event/tr.html' %}
    </tbody>
   </table>
+
+  <div>
+   <ul class="pager">
+    {% if Es.has_previous %}
+     <li class="previous"><a href="/snafu/events?page={{ Es.previous_page_number }}">&larr; Récents</a></li>
+    {% endif %}
+    {% if Es.has_next %}
+     <li class="next"><a href="/snafu/events?page={{ Es.next_page_number }}">Ancien &rarr;</a></li>
+    {% endif %}
+   </ul>
+  </div>
+
  </div>
 
 {% endblock %}

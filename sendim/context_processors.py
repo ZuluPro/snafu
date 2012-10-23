@@ -3,11 +3,6 @@ from django.conf import settings
 from sendim.models import Alert
 from sendim.connection import checkNagios, checkSmtp, doLogin, checkGlpi
 
-message = dict()
-
-def setMessage(title, content):
-    message = { 'title':title, 'content':content }
-
 def sendim_context(request):
     return {
         'nagios': { 
@@ -30,6 +25,5 @@ def sendim_context(request):
 	},
         'smtp': {
             1:1#'connection':checkSmtp()
-        },
-        'message': message
+        }
     }
