@@ -42,18 +42,30 @@ $(document).ready(function() {
   // POP OVER INIT
   $("[rel=popover]").popover({trigger:'hover'})
 
-  // MY EVENTS FILTER
+  // EVENTS FILTER
   $('input[filter]').change( function() {
     $('#E_tbody').html('<img id="loader" src="/static/img/ajax-loader.gif">' );
-    $.get('/snafu/event/filter',
-      {
-        'pk': $('#pk').val(),
-        'element': $('#element').val(),
-        'glpi' : $('#glpi').val(),
-        'message' : $('#message').val(),
-        'date' : $('#datepicker').val()
-      }, function(data) {
-    $('#E_tbody').html( data );
+    data = {
+      'pk': $('#pk').val(),
+      'element': $('#element').val(),
+      'glpi' : $('#glpi').val(),
+      'message' : $('#message').val(),
+      'date' : $('#datepicker').val()
+    };
+    $.ajax({ 
+      type: "GET", 
+      url: '/snafu/event/filter',
+      data: data,
+      async: false,
+      cache: false,
+      error: function(data) {
+        $('#infoModal').html("<center>Données demandées invalides !</center>");
+        $('#infoModal').modal('show');
+        $.get('/snafu/event/filter', function(data) {
+          $('#E_tbody').html(data);
+        });
+      },
+      success: function(data) { $('#E_tbody').html( data ); }
     })
   });
 
@@ -113,7 +125,7 @@ $(document).ready(function() {
   $.fn.delRef = function(pk){
     $('#refContent').html('');
     $.post('/snafu/configuration/ref/'+pk+'/del',{ csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val() }, function(data) {
-      $('#refCount').html(data)
+      $('#referenceTab').html(data)
       $('#ref'+pk+'Tab').hide('300');
     })
   }
@@ -156,7 +168,7 @@ $(document).ready(function() {
       async: false,
       cache: false,
       success: function(data) {
-         $('#refCount').html(data);
+         $('#referenceTab').html(data);
       },
       error: function() { alert('err'); }
     })

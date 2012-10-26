@@ -1,10 +1,7 @@
 <div class="tabbable tabs-left">
  <ul id="referenceTab" class="nav nav-tabs nav-stacked">
-  <li class="active"><a id="refCount" href="#referenceList" data-toggle="tab">{{ Rs.count }} référence(s)</a></li>
-  <li><a href="#alertWithoutRef" data-toggle="tab">{{ AsWithoutRef.count }} alerte(s) sans référence</a></li>
-  <li><a id="addRefTab" href="#addRef" data-toggle="tab" onclick="$.fn.getAlertRef(0)">Ajouter</a></li>
+  {% include "configuration/reference/tabs.html" %} 
  </ul>
- 
  <div id="referenceTabContent" class="tab-content">
 
   <div class="tab-pane fade in active" id="referenceList">

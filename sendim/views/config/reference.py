@@ -44,14 +44,16 @@ def reference(request, ref_id, action="get") :
     elif action == "del" :
         R = get_object_or_404(Reference, pk=ref_id)
         R.delete()
-        return HttpResponse(str(Reference.objects.count())+u" r\xe9f\xe9rence(s)")
  
     elif action == "add" :
          Form = ReferenceBigForm(request.POST)
          if not Form.is_valid() :
              postFormSet(request.POST, is_a_set=False)
          
-         return HttpResponse(str(Reference.objects.count())+u" r\xe9f\xe9rence(s)")
+    return render(request, 'configuration/reference/tabs.html', {
+        'Rs':Reference.objects.all(),
+        'AsWithoutRef':Alert.objects.filter( Q(reference=None), ~Q(status__status='OK'), ~Q(status__status='UP') )
+    })
 
 
 @login_required
