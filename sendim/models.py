@@ -21,10 +21,12 @@ class Event(models.Model) :
         return str(self.pk)+':'+self.element.host+' - '+self.message
 
     def getAlerts(self, isUp=True, withoutRef=False):
-        """Return a QuerySet of event's alerts.
+        """
+        Return a QuerySet of event's alerts.
         It is possible to filter with 2 arguments :
          - isUp : If False excludes UP/OK alerts.
-         - withoutRef = If True excludes alerts without reference."""
+         - withoutRef = If True excludes alerts without reference.
+        """
         As = Alert.objects.filter(event=self).order_by('-pk')
 	if not isUp : As = As.exclude( Q(status__status__exact='OK') | Q(status__status__exact='UP') )
 	if withoutRef : As = As.filter(reference=None)
@@ -36,8 +38,10 @@ class Event(models.Model) :
         return As[0]
 
     def getPrimaryAlert(self):
-        """Return primary alert of event.
-        if there's no primary alert, set the first as primary."""
+        """
+        Return primary alert of event.
+        if there's no primary alert, set the first as primary.
+        """
         try : return Alert.objects.filter(event=self).get(isPrimary=True)
         except Alert.DoesNotExist :
             if self.getAlerts() :
@@ -65,11 +69,13 @@ class Event(models.Model) :
     	return self.getPrimaryAlert().reference
 
     def close(self, force=False):
-        """Calculate if the event may be closed.
+        """
+        Calculate if the event may be closed.
         If yes :  Close event
-        If no : Do nothing, or close if force=True in arguments."""
+        If no : Do nothing, or close if force=True in arguments.
+        """
         
-        if self.closed : return None
+        if self.closed : return False
         else :
             hosts = {}
             for A in self.getAlerts() :
@@ -115,23 +121,28 @@ class Alert(models.Model) :
         logprint("Set primary alert for Event#"+str(self.event.pk)+" to Alert #"+str(self.pk), 'pink') 
 
     def linkToReference(self, force=False, byHost=True, byService=True, byStatus=True):
-        """Search if a reference matches with the alert.
-        In case, link alert to it."""
+        """
+        Search if a reference matches with the alert.
+        In case, link alert to it.
+        """
         if ( self.reference and force ) or not self.reference : 
             self.reference = getReference(self, byHost, byService, byStatus)
             if self.reference : self.save()
         return self.reference
 
     def linkToTraduction(self, force=False, byStatus=True):
-        """Search if a traduction matches with the alert.
-        In case, link alert to it."""
+        """
+        Search if a traduction matches with the alert.
+        In case, link alert to it.
+        """
         if ( self.traduction and force ) or not self.traduction : 
             self.traduction = getTraduction(self, byStatus)
             self.save()
         return self.reference
 
     def link(self) :
-        """Used for link an alert to Event. Take all case for alerts :
+        """
+        Used for link an alert to Event. Take all case for alerts :
          - If alert is OK/UP : Link to event
          - If previous similar alert is DOWN : Link to previous alert's event
          - If previous similar alert is OK/UP : Create event and link

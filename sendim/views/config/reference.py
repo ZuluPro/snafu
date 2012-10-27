@@ -118,4 +118,3 @@ def getRefForm(request,alert_id=0) :
          'referenceBigForm':Form
     })
 
-

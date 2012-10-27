@@ -1,3 +1,7 @@
+"""
+Function related to GLPI webservice.
+"""
+
 from django.conf import settings
 
 from sendim.models import *
@@ -8,6 +12,10 @@ from referentiel.defs import getReference
 
 
 def createTicket(E) :
+    """
+    Create a GLPI ticket for the given Event object.
+    Add ticket number to Event.glpi.
+    """
     loginInfo = doLogin()
     if 'error' in loginInfo : raise UnableToConnectGLPI
 
@@ -24,7 +32,7 @@ def createTicket(E) :
     	'content':content,
     	'recipient': R.glpi_dst_group.glpi_id,
     	'group':9,
-    	'source': 'Supervision',
+    	'source': R.glpi_source,
     	'itemtype' : E.element.host_type,
     	'item' : E.element.glpi_id,
     	'urgency': R.glpi_urgency.glpi_id,
@@ -42,15 +50,58 @@ def createTicket(E) :
     return ticketInfo['id']
 
 def addFollowUp(ticketId,content) :
+    """
+    Add a content to the given ticket number.
+    """
     loginInfo = doLogin()
     contentToAdd = { 'session':loginInfo['session'], 'ticket':ticketId, 'content':content }
     glpiServer.glpi.addTicketFollowup(contentToAdd)
     doLogout()
 
 def addMail(ticketId, msg) :
-	content = "from: " +settings.SNAFU['smtp-from']+ "\nto: " +msg['To']#+ "cc: " +msg['Cc'] +"subject: " +msg['Subject']+ "\n" +msg['body']
-	
-	addFollowUp(ticketId,content)
+    """
+    Use method addFollowUp() for add the given mail object to ticket.
+    """
+    content = "from: " +settings.SNAFU['smtp-from']+ "\nto: " +msg['To']#+ "cc: " +msg['Cc'] +"subject: " +msg['Subject']+ "\n" +msg['body']
+    addFollowUp(ticketId,content)
 
 def getTicket(ticketId) :
+    """
+    Return a dictionnary with ticket's attributes.
+
+    Below, a short list of them :
+    - General :
+     - name
+     - content
+     - solution 
+     - status
+
+    - related to date :
+     - date
+     - date_mod
+
+    - Users and Groups:
+     - users_id_lastupdater
+     - users_name_lastupdater
+     - users_name_recipient
+     - users_id_recipient
+     - users :
+      - requester
+      - assign
+     - groups :
+      - requester
+      - assign
+
+    - Items :
+     - itemtype
+     - items_id
+     - items_name
+     - itemtype_name
+
+    - Category :
+     - type
+     - type_name
+     - ticketcategories_id
+     - ticketcategories_name
+    """
     return glpiServer.glpi.getTicket({'session':idSession, 'ticket':ticketId})

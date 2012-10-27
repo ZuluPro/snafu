@@ -1,3 +1,7 @@
+"""
+Function for create alerts and events.
+"""
+
 from django.db.models import Q
 
 from referentiel.models import Host, Service, Status, Reference
@@ -9,8 +13,10 @@ from datetime import datetime
 from time import sleep
 
 def createAlert(host=None,service=None,status=None, isDown=True) :
-    """Create a random alert from data in referentiel.
-    Attributes may be choose with arguments."""
+    """
+    Create a random alert from data in referentiel.
+    Attributes may be choose with arguments.
+    """
     if not host : host = choice(Host.objects.all())
     else : host = Host.objects.get(host=host)
 
@@ -36,8 +42,10 @@ def createAlert(host=None,service=None,status=None, isDown=True) :
     return A
 
 def createAlertFrom(alert, status=None, isDown=True):
-    """Create a random alert from previous one given in argument.i
-    Only status may be chosen."""
+    """
+    Create a random alert from previous one given in argument.i
+    Only status may be chosen.
+    """
     if alert.service.service == 'Host status' :
         if alert.status == Status.objects.get(status='DOWN') : status = Status.objects.get(status='UP')
         else : status = Status.objects.get(status='DOWN')
@@ -59,8 +67,10 @@ def createAlertFrom(alert, status=None, isDown=True):
     return A
         
 def createEvent(A, number=5, endUp=True):
-    """Create a event from an alert. Event will have number of alert given in argument (by default 5).
-    It may be chosen if the last alert will be OK or not""" 
+    """
+    Create a event from an alert. Event will have number of alert given in argument (by default 5).
+    It may be chosen if the last alert will be OK or not.
+    """ 
     A.save()
     A.link()
     for i in xrange(number):
@@ -77,8 +87,10 @@ def createEvent(A, number=5, endUp=True):
     return A.event
 
 def endEvent(E,number=3):
-    """Add alerts to an event for close it.
-    Number of alert to add before close can be given in arguments."""
+    """
+    Add alerts to an event for close it.
+    Number of alert to add before close can be given in arguments.
+    """
     A = E.getPrimaryAlert()
     for i in xrange(number):
         sleep(1)

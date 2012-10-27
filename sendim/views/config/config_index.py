@@ -8,10 +8,7 @@ from django.db.models import Q
 from sendim.models import Alert, MailTemplate
 from sendim.forms import *
 from referentiel.defs import *
-from referentiel.forms import *
 from referentiel.models import Host, Reference, Traduction
-
-from common import logprint
 
 @login_required
 def configuration(request) :
@@ -24,17 +21,6 @@ def configuration(request) :
      - Users
     """
     
-    if request.method == 'POST' :
-        if request.POST['action'] == 'addTrad' :
-            service = Service.objects.get(pk=request.POST['service'])
-            for status in ('WARNING','CRITICAL','UNKNOWN') :
-                traduction = request.POST[status.lower()]
-                status = Status.objects.get(status=status)
-                if not Traduction.objects.filter(service=service, status=status) :
-                    T = Traduction(service=service, status=status, traduction=traduction)
-                    T.save()
-                    logprint("Save Traduction #"+str(T.pk), "green")
-
     Rs = Reference.objects.all()
     return render(request, 'configuration/index.html', {
         'hosts':Host.objects.filter(glpi_id=None),
@@ -42,7 +28,6 @@ def configuration(request) :
         'alertsWithoutTrad':Alert.objects.filter(traduction=None),
         'Rs':Rs,
         'referenceBigForm':ReferenceBigForm,
-        'traductionForm':TraductionForm,
         'traductionBigForm':TraductionBigForm,
         'mailTemplates':MailTemplate.objects.all(),
         'mailTemplateForm':MailTemplateForm,

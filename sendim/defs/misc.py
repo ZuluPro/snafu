@@ -3,6 +3,9 @@ from sendim.models import Event
 from common import logprint
  
 def agregate(eventsPk, choicedEvent, message, glpi=None, mail=False, criticity='?') :
+    """
+    Aggregate several events in one.
+    """
     if len(eventsPk) < 2 : return None
     for eventPk in eventsPk :
         E = Event.objects.get(pk=eventPk)

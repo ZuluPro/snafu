@@ -10,6 +10,10 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 def makeMail(E):
+    """
+    Using the given Event and the chosen MailTemplate for create
+    a dictionnary which contains all mail attributes.
+    """
     R = E.getPrimaryAlert().reference
     MT = MailTemplate.objects.get(choosen=True)
     msg = {}
@@ -23,6 +27,12 @@ def makeMail(E):
     return msg
 
 def sendMail(POST) :
+    """
+    Use request.POST from 'sendim/templates/event/preview-mail.html',
+    for send an email.
+    This function make all substitutions before processing.
+    After send, add mail to GLPI ticket.
+    """
     E = Event.objects.get(pk=POST['eventPk'])
     A = E.getPrimaryAlert()
     # Recherche du MailGroup correspondant
