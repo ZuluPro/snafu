@@ -1,5 +1,9 @@
 <ul class="nav nav-tabs nav-stacked">
- {% for U in Us %}
+ {% if UsPage.has_previous %}
+  <li><a onclick="$.fn.getUsers({{ UsPage.previous_page_number }});">&uarr; Précédents</a></li>
+ {% endif %}
+
+ {% for U in UsPage %}
   <li>
    <a id="user{{ U.pk }}Tab" class="get-user" href="#" data-toggle="tab" onclick="$.fn.getUser({{ U.pk }})">
    {% if not U.first_name %}
@@ -10,4 +14,8 @@
    </a>
   </li>
  {% endfor %}
+
+ {% if UsPage.has_next %}
+  <li><a onclick="$.fn.getUsers({{ UsPage.next_page_number }});">&darr; Suivant(s)</a></li>
+ {% endif %}
 </ul>

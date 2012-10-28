@@ -27,6 +27,9 @@ def configuration(request) :
     Ts = Traduction.objects.all()
     TsPage = Paginator(Ts, 10).page(1)
 
+    Us = User.objects.all()
+    UsPage = Paginator(Us, 10).page(1)
+
     AsWithoutTrad = Alert.objects.filter( Q(traduction=None), ~Q(status__status='OK'), ~Q(status__status='UP') )
     AsWithoutTradPage = Paginator(AsWithoutTrad, 10).page(1)
 
@@ -42,11 +45,12 @@ def configuration(request) :
         'AsWithoutTrad':Alert.objects.filter( Q(traduction=None), ~Q(status__status='OK'), ~Q(status__status='UP') ),
         'AsWithoutTradPage':AsWithoutTradPage,
 
+        'Us':Us,
+        'UsPage':UsPage,
+        'UserForm':UserForm,
+
         'mailTemplates':MailTemplate.objects.all(),
         'mailTemplateForm':MailTemplateForm,
-
-        'Us':User.objects.all(),
-        'UserForm':UserForm,
 
         'hosts':Host.objects.filter(glpi_id=None),
         'title':'Snafu - Configuration'

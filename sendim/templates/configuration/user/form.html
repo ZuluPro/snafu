@@ -1,4 +1,3 @@
---{{ UserForm.initial }}--
 <form id="userForm" class="form-horizontal">
  {% csrf_token %}
  <fieldset>
@@ -25,6 +24,6 @@
   </div>
 
  </fieldset>
- <button class="btn btn-primary">Enregister</button>
+ <button class="btn btn-primary" onclick="$.fn.addUser(); return false;">Enregister</button>
 </form>
 

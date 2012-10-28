@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -15,14 +16,15 @@ def getUsers(request) :
     """
     Us = User.objects.all()
     if request.GET['q'] :
-        Us = (
+        Us = list( (
             set( Us.filter(username__icontains=request.GET['q']) ) |
             set( Us.filter(first_name__icontains=request.GET['q']) ) |
             set( Us.filter(last_name__icontains=request.GET['q']) )
-        )
+        ) )
 
+    Us = Paginator(Us, 10).page(request.GET.get('page',1))
     return render(request, 'configuration/user/ul.html', {
-        'Us':Us
+        'UsPage':Us
     })
 
 @login_required
@@ -57,5 +59,19 @@ def user(request, user_id, action="get") :
             U.set_password(request.POST['password'])
             U.save()
 
-        return HttpResponse(str(User.objects.count())+" utilisateur(s)")
+        return render(request, 'configuration/user/tabs.html', {
+            'Us':User.objects.all()
+        })
+
+@login_required
+def getUserForm(request) :
+    """
+    Create a form
+    This view is used with AJAX.
+    """
+
+    Form = UserForm
+    return render(request, 'configuration/user/form.html', {
+         'UserForm':Form
+    })
 

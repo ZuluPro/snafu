@@ -1,0 +1,2 @@
+<li class="active"><a id="userCount" href="#userList" data-toggle="tab">{{ Us|length }} utilisateur(s)</a></li>
+{% if user.is_superuser %}<li><a href="#addUser" data-toggle="tab" onclick="$.fn.getUserForm(0)">Ajouter</a></li>{% endif %}

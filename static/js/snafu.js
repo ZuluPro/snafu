@@ -287,21 +287,32 @@ $(document).ready(function() {
     });
   }
 
+ // GOTO ADDUSER
+  $.fn.getUserForm = function(){
+    $.get('/snafu/configuration/user/form', {}, function(data) {
+      $('#addUser').html(data)
+      $('#addUserTab').tab('show')
+    })
+  }
+
  // ADD A USER FROM FORM
   $.fn.addUser = function(){
     $('#userContent').html('');
-      $.ajax({ 
-        type: "POST", 
-        url: '/snafu/configuration/user/'+$('#userForm input[name="id"]').val()+'/add', 
-        data: $('#userForm').serialize(),
-        async: false,
-        cache: false,
-        success: function(data) {
-           $('#userCount').html(data);
-           $('#userForm input').val('');
-        },
-        error: function() { alert('err'); }
-      })
+
+    if ( ! $('#userForm input[name="id"]').val() ) { var user_id = 0; }
+    else { var user_id = $('#userForm input[name="id"]').val(); };
+
+    $.ajax({ 
+      type: "POST", 
+      url: '/snafu/configuration/user/'+user_id+'/add', 
+      data: $('#userForm').serialize(),
+      async: false,
+      cache: false,
+      success: function(data) {
+         $('#userTab').html(data);
+      },
+      error: function() { alert('err'); }
+    })
   }
 
   $('#userForm').submit(function() {

@@ -37,4 +37,5 @@ urlpatterns = patterns('',
 
     (r'^configuration/user/(?P<user_id>\d+)/(?P<action>(get|del|add))$', 'sendim.views.user'),
     (r'^configuration/user_q$', 'sendim.views.getUsers'),
+    (r'^configuration/user/form$', 'sendim.views.getUserForm'),
 )
