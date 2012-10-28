@@ -1,0 +1,28 @@
+<div class="row">
+ <h4 align="center">{{ A }}</h4>
+
+ <div class="span5">
+  <dl>
+   <dt>Date:</dt>
+   <dd>
+    {{ A.date }}
+   </dd>
+
+   <dt>Info(s):</dt>
+   <dd>{{ A.info }}</dd>
+ 
+   <dt>Événement:</dt>
+   <dd>{{ A.event }}</dd>
+ 
+   <dt>Référence:</dt>
+   <dd>{{ A.reference }}</dd>
+  </dl>
+  
+ <div class="span1">
+  <div class="btn-group">
+   <button class="btn btn-primary" onclick="$.fn.getAlertTrad({{ A.pk }})">Ajouter traduction</button>
+  </div>
+ </div>
+
+
+</div>

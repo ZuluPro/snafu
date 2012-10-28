@@ -36,7 +36,7 @@ def readNagios() :
                     re.sub( r".*ALERT: [^;]*;[^;]*;[^;]*;[^;]*;[^;]*;([^;]*)<br clear='all' />$" , r"\1" , line ),
                     re.sub( r".*>\[([^\]]*)\].*" , r"\1" , line ) ] )
 
-             elif re.search( 'HOST ALERT' , line ) :
+            elif re.search( 'HOST ALERT' , line ) :
                 problemlist.append( [ re.sub( r"^.*ALERT: ([^;]*);.*" , r"\1" , line ),
                     "Host status",
                     re.sub( r".*ALERT: [^;]*;([^;]*);.*$" , r"\1" , line ),
@@ -65,8 +65,8 @@ def reloadAlert() :
     logprint('Insert alerts :','pink')
     for host,service,status,info,date in readNagios() :
         # Conversion de la date nagios en object datetime
-                try : date = datetime.datetime.fromtimestamp( time.mktime( time.strptime(date, "%Y-%m-%d %H:%M:%S")) )
-                except ValueError:
+        try : date = datetime.datetime.fromtimestamp( time.mktime( time.strptime(date, "%Y-%m-%d %H:%M:%S")) )
+        except ValueError:
             logprint("Nagios parsing failed on date "+date, 'yellow' )
             date = datetime.datetime.now()
 
@@ -81,7 +81,7 @@ def reloadAlert() :
                 date=date
             )
             A.save() 
-        return None
+    return None
 
 
 def treatAlerts() :
@@ -89,5 +89,5 @@ def treatAlerts() :
     Link all new alerts to an event.
     """
     for A in Alert.objects.filter(event=None) :
-    A.link()
+        A.link()
     return None

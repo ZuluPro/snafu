@@ -105,11 +105,14 @@ $(document).ready(function() {
   }
 
   // MY REFERENCE FILTER
-  $.fn.getReferences = function(){
+  $.fn.getReferences = function(page){
     $('#refContent').html();
     $('#R_tbody').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
-    $.get('/snafu/configuration/ref_q',{'q': $('#ref_q').val() }, function(data) {
-      $('#R_tbody').html( data );
+    $.get('/snafu/configuration/ref_q', {
+     'q': $('#ref_q').val(),
+     'page':page
+    }, function(data) {
+      $('#R_tbody').html(data);
     });
   }
 
@@ -184,15 +187,80 @@ $(document).ready(function() {
  //   $('#refContent').html('');
  // }
 
-  // MY REFERENCE FILTER
-  $.fn.getUsers = function(){
-    $('#userContent').html();
-    $('#U_tbody').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
-    $.get('/snafu/configuration/user_q',{'q': $('#user_q').val() }, function(data) {
-      $('#U_tbody').html( data );
+
+///////////////////////////////////////////////////////////
+  // GET TRAD
+  $.fn.getTrad = function(pk){
+    $('#tradContent').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/trad/'+pk+'/get', function(data) {
+      $('#tradContent').html(data);
+    })
+  }
+
+  // TRADUCTION FILTER
+  $.fn.getTraductions = function(page){
+    $('#tradContent').html();
+    $('#T_tbody').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/trad_q', {
+     'q': $('#trad_q').val(),
+     'page':page
+    }, function(data) {
+      $('#T_tbody').html(data);
     });
   }
 
+ // GET ALERT WITHOUT REF
+  $.fn.getAlertWithoutTrad = function(pk){
+    $('#tradAlertContent').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/trad/alert/'+pk, function(data) {
+      $('#tradAlertContent').html(data);
+    })
+  }
+
+ // GET ALERTS WITHOUT REF
+  $.fn.getAsWithoutTrad = function(page){
+    $('#tradAlerts').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/trad/alert/tabs', { 
+     'q': $('#a_trad_q').val(),
+     'page': page
+    }, function(data) {
+      $('#tradAlerts').html(data);
+    });
+  }
+
+ // GOTO ADDREF WITH AN Alert ATTR
+  $.fn.getAlertTrad = function(pk){
+    $.get('/snafu/configuration/trad/alert/'+pk+'/form', {}, function(data) {
+      $('#addTradContent').html(data)
+      $('#addTradTab').tab('show')
+    })
+  }
+
+ // ADD A REF FROM FORM
+  $.fn.addTrad = function(){
+
+    if ( ! $('#tradForm input[name="id"]').val() ) { var trad_id = 0; }
+    else { var trad_id = $('#tradForm input[name="id"]').val(); };
+
+    $.ajax({ 
+      type: "POST", 
+      url: '/snafu/configuration/trad/'+trad_id+'/add', 
+      data: $('#tradForm').serialize(),
+      async: false,
+      cache: false,
+      success: function(data) {
+         $('#traductionTab').html(data);
+      },
+      error: function() { alert('err'); }
+    })
+  }
+
+  $('#tradForm').submit(function() {
+    $.fn.addTrad();
+    return false;
+  });
+
+///////////////////////////////////////////////////////////
   // GET USER
   $.fn.getUser = function(pk){
     $('#userContent').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
@@ -208,6 +276,15 @@ $(document).ready(function() {
       $('#userCount').html(data);
       $('#user'+pk+'Tab').hide('300');
     })
+  }
+
+  // MY USER FILTER
+  $.fn.getUsers = function(){
+    $('#userContent').html();
+    $('#U_tbody').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/user_q',{'q': $('#user_q').val() }, function(data) {
+      $('#U_tbody').html( data );
+    });
   }
 
  // ADD A USER FROM FORM

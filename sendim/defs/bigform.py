@@ -81,3 +81,18 @@ def postFormSet(_POST, is_a_set=True):
         A.linkToReference()
 
     return host,service
+
+def postTraductionFormSet(POST) :
+    service = Service.objects.get(pk=POST['service'])
+    for status in ('warning','critical','unknown') :
+        T = Traduction(
+            service = service,
+            status = Status.objects.get(status=status),
+            traduction = POST[status]
+        )
+        T.save()
+
+    for A in Alert.objects.filter(service=service, traduction=None) :
+        A.linkToTraduction()
+
+    return service

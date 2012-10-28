@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
@@ -14,16 +15,19 @@ def getReferences(request) :
     Get list of references filtered by host and service.
     Search GET['q'] in the 2 attributes and make a logical OR.
     
-    This view is used with AJAX.
+    Includes a Paginator which split references into pages of 10.
+
+    This view is used with AJAX and return references' tabs.
     """
     Rs = Reference.objects.all()
     if request.GET['q'] :
-        Rs = (
+        Rs = list( (
             set( Rs.filter(host__host__icontains=request.GET['q']) ) |
             set( Rs.filter(service__service__icontains=request.GET['q']) )
-        )
+        ) )
+    Rs = Paginator(Rs, 10).page(request.GET.get('page',1))
     return render(request, 'configuration/reference/refs/ul.html', {
-        'Rs':Rs
+        'RsPage':Rs
     })
 
 @login_required
@@ -80,7 +84,7 @@ def getAsWithoutRef(request) :
 def getRefForm(request,alert_id=0) :
     """
     Create a BigForm for a given alert.
-    If alert_id is 0, it creates en empty form.
+    If alert_id is 0, it creates an empty form.
 
     This view is used with AJAX.
     """

@@ -1,5 +1,11 @@
 <ul  class="nav nav-tabs nav-stacked">
- {% for R in Rs %}
+ {% if RsPage.has_previous %}
+  <li><a onclick="$.fn.getReferences({{ RsPage.previous_page_number }});">&uarr; Précédents</a></li>
+ {% endif %}
+ {% for R in RsPage %}
   <li><a id="ref{{ R.pk }}Tab" class="get-ref" href="#" data-toggle="tab" onclick="$.fn.getRef({{ R.pk }})">{{ R.host }} - {{ R.service }} : {{ R.status }}</a></li>
  {% endfor %}
+ {% if RsPage.has_next %}
+  <li><a onclick="$.fn.getReferences({{ RsPage.next_page_number }});">&darr; Suivant(s)</a></li>
+ {% endif %}
 </ul>
