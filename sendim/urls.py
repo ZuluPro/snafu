@@ -47,5 +47,5 @@ urlpatterns = patterns('',
     (r'^configuration/category_q$', 'sendim.views.getCategories'),
     (r'^configuration/category/(?P<cat_id>\d+)/(?P<action>(get|del|add))$', 'sendim.views.category'),
     (r'^configuration/category/form$', 'sendim.views.getGlpiCategoryForm'),
-    (r'^configuration/category/diff$', 'sendim.views.categoryDiff'),
+    #(r'^configuration/category/diff$', 'sendim.views.categoryDiff'),
 )

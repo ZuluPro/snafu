@@ -1,0 +1,176 @@
+[
+  {
+    "model": "referentiel.service",
+    "pk": 1,
+    "fields": { "service":"Host status" }
+  },
+  {
+    "model": "referentiel.glpiurgency",
+    "pk": 1,
+    "fields": {
+      "glpi_urgency":"Très basse",
+      "glpi_id":1
+    }
+  },
+  {
+    "model": "referentiel.glpiurgency",
+    "pk": 2,
+    "fields": {
+      "glpi_urgency":"Basse",
+      "glpi_id":2
+    }
+  },
+  {
+    "model": "referentiel.glpiurgency",
+    "pk": 3,
+    "fields": {
+      "glpi_urgency":"Moyenne",
+      "glpi_id":3
+    }
+  },
+  {
+    "model": "referentiel.glpiurgency",
+    "pk": 4,
+    "fields": {
+      "glpi_urgency":"Haute",
+      "glpi_id":4
+    }
+  },
+  {
+    "model": "referentiel.glpiurgency",
+    "pk": 5,
+    "fields": {
+      "glpi_urgency":"Très haute",
+      "glpi_id":5
+    }
+  },
+  {
+    "model": "referentiel.glpiimpact",
+    "pk": 1,
+    "fields": {
+      "glpi_impact":"Très bas",
+      "glpi_id":1
+    }
+  },
+  {
+    "model": "referentiel.glpiimpact",
+    "pk": 2,
+    "fields": {
+      "glpi_impact":"Bas",
+      "glpi_id":2
+    }
+  },
+  {
+    "model": "referentiel.glpiimpact",
+    "pk": 3,
+    "fields": {
+      "glpi_impact":"Moyen",
+      "glpi_id":3
+    }
+  },
+  {
+    "model": "referentiel.glpiimpact",
+    "pk": 4,
+    "fields": {
+      "glpi_impact":"Haut",
+      "glpi_id":4
+    }
+  },
+  {
+    "model": "referentiel.glpiimpact",
+    "pk": 5,
+    "fields": {
+      "glpi_impact":"Très haut",
+      "glpi_id":5
+    }
+  },
+  {
+    "model": "referentiel.glpipriority",
+    "pk": 1,
+    "fields": {
+      "glpi_priority":"Très basse",
+      "glpi_id":1
+    }
+  },
+  {
+    "model": "referentiel.glpipriority",
+    "pk": 2,
+    "fields": {
+      "glpi_priority":"Basse",
+      "glpi_id":2
+    }
+  },
+  {
+    "model": "referentiel.glpipriority",
+    "pk": 3,
+    "fields": {
+      "glpi_priority":"Moyenne",
+      "glpi_id":3
+    }
+  },
+  {
+    "model": "referentiel.glpipriority",
+    "pk": 4,
+    "fields": {
+      "glpi_priority":"Haute",
+      "glpi_id":4
+    }
+  },
+  {
+    "model": "referentiel.glpipriority",
+    "pk": 5,
+    "fields": {
+      "glpi_priority":"Très haute",
+      "glpi_id":5
+    }
+  },
+  {
+    "model": "referentiel.glpipriority",
+    "pk": 5,
+    "fields": {
+      "glpi_priority":"Majeure",
+      "glpi_id":6
+    }
+  },
+  {
+    "model": "referentiel.mailcriticity",
+    "pk": 1,
+    "fields": { "mailcriticity":"Mineur" }
+  },
+  {
+    "model": "referentiel.mailcriticity",
+    "pk": 2,
+    "fields": { "mailcriticity":"Majeur" }
+  },
+  {
+    "model": "referentiel.status",
+    "pk": 1,
+    "fields": { "status":"WARNING" }
+  },
+  {
+    "model": "referentiel.status",
+    "pk": 2,
+    "fields": { "status":"CRITICAL" }
+  },
+  {
+    "model": "referentiel.status",
+    "pk": 3,
+    "fields": { "status":"UNKNOWN" }
+  },
+  {
+    "model": "referentiel.status",
+    "pk": 4,
+    "fields": { "status":"DOWN" }
+  },
+  {
+    "model": "referentiel.status",
+    "pk": 5,
+    "fields": { "status":"OK" }
+  },
+  {
+    "model": "referentiel.status",
+    "pk": 6,
+    "fields": { "status":"UP" }
+  }
+]
+

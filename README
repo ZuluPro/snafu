@@ -19,7 +19,7 @@ English :
     Thanks for look at this.
 
 Français :
-    SNAFU est un hyperviseur écrit in Python with Django.
+    SNAFU est un hyperviseur écrit en Python avec Django.
     Crée pour faire un interface entre la supervision et la gestion de ticket.
 
     Merci d'y jeter un coup d'oeil.
