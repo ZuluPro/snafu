@@ -1,51 +1,27 @@
-Need django 1.4.x and python2.7.x
-
+                                  .-.                
+                                 /    \              
+    .--.     ___ .-.     .---.   | .`. ;   ___  ___  
+  /  _  \   (   )   \   / .-, \  | |(___) (   )(   ) 
+ . .' `. ;   |  .-. .  (__) ; |  | |_      | |  | |  
+ | '   | |   | |  | |    .'`  | (   __)    | |  | |  
+ _\_`.(___)  | |  | |   / .'| |  | |       | |  | |  
+(   ). '.    | |  | |  | /  | |  | |       | |  | |  
+ | |  `\ |   | |  | |  ; |  ; |  | |       | |  ; '  
+ ; '._,' '   | |  | |  ' `-'  |  | |       ' `-'  /  
+  '.___.'   (___)(___) `.__.'_. (___)       '.__.'   
+                                                     
 ------------------------------------------------------------------------------
-What must include in settings.py :
+                                                     
+English :
+    SNAFU is an hypervisor written in Python with Django.
+    Created for make a gateway between supervision and ticket management.
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'sendim.context_processors.sendim_context',
-)
+    Thanks for look at this.
 
-INSTALLED_APPS = (
-    ...
-    'django.contrib.admin',
-    'sendim',
-    'referentiel',
-    ...
-)
+Français :
+    SNAFU est un hyperviseur écrit in Python with Django.
+    Crée pour faire un interface entre la supervision et la gestion de ticket.
 
-SNAFU = {
-    'nagios-url': 'http://mywebsite/nagios/',
-    'nagios-status': 'http://192.168.100.52/cgi-bin/nagios3/status.cgi',
-    'nagios-history': 'http://mywebsite/nagios/cgi-bin/nagios3/history.cgi',
-    'nagios-login': 'foo',
-    'nagios-password': 'b@r',
-    'glpi-url':'https://mywebiste/glpi/',
-    'glpi-xmlrpc':'https://mywebsite/glpi/plugins/webservices/xmlrpc.php',
-    'glpi-login':'Foo',
-    'glpi-password':'B@r',
-    'smtp-from':"foobar@raboof.com",
-#    If you need a password 
-#   'smtp-password':"r@b0OF"
-    'smtp-server':'12.3.19.83',
-    'smtp-port':25
+    Merci d'y jeter un coup d'oeil.
 
-}
-
-BASEDIR = "/path/to/your/project"
-
-LOGIN_URL = '/snafu/login'
-
-------------------------------------------------------------------------------
-What must include in urls.py :
-
-urlpatterns = patterns('',
-   ...
-   url(r'^snafu/', include('sendim.urls')),
-   ...
-)
+snafu.django@gmail.com
