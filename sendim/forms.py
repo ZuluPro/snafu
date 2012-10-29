@@ -11,7 +11,7 @@ class TraductionBigForm(forms.Form):
     It allow to add WARNING/CRITICAL/UNKNOWN traduction in one time.
     """
 
-    service = forms.ModelChoiceField(Service.objects.all() )
+    service = forms.ModelChoiceField(Service.objects.all().order_by('service') )
     warning = forms.CharField(max_length=300, required=True)
     critical = forms.CharField(max_length=300, required=True)
     unknown = forms.CharField(max_length=300, required=True)

@@ -1,0 +1,12 @@
+<ul  class="nav nav-tabs nav-stacked">
+ {% if CsPage.has_previous %}
+  <li><a onclick="$.fn.getCategories({{ CsPage.previous_page_number }});">&uarr; Précédentes</a></li>
+ {% endif %}
+ {% for C in CsPage %}
+  <li><a id="cat{{ C.pk }}Tab" class="get-ref" href="#" data-toggle="tab" onclick="$.fn.getCategory({{ C.pk }})">{{ C.glpi_category }}</a></li>
+ {% endfor %}
+ {% if CsPage.has_next %}
+  <li><a onclick="$.fn.getCategories({{ CsPage.next_page_number }});">&darr; Suivante(s)</a></li>
+ {% endif %}
+</ul>
+

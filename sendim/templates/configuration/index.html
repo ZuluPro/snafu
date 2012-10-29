@@ -6,9 +6,9 @@
 <ul id="myTab" class="nav nav-tabs">
  <li class="active"><a href="#reference" data-toggle="tab">References</a></li>
  <li><a href="#traduction" data-toggle="tab">Traductions</a></li>
- <li><a href="#mail" data-toggle="tab">Template de Mail</a></li>
- <li><a href="#glpi" data-toggle="tab">Hosts</a></li>
  <li><a href="#user" data-toggle="tab">Utilisateurs</a></li>
+ <li><a href="#mail" data-toggle="tab">Template de Mail</a></li>
+ <li><a href="#glpi" data-toggle="tab">GLPI</a></li>
 </ul>
 
 <div id="myTabContent" class="tab-content">
@@ -18,14 +18,14 @@
  <div class="tab-pane fade" id="traduction">
   {% include "configuration/traduction/index.html" %}
  </div>
+ <div class="tab-pane fade" id="user">
+  {% include "configuration/user/index.html" %}
+ </div>
  <div class="tab-pane fade" id="mail">
   {% include "configuration/mail.html" %}
  </div>
  <div class="tab-pane fade" id="glpi">
-  {% include "configuration/glpi.html" %}
- </div>
- <div class="tab-pane fade" id="user">
-  {% include "configuration/user/index.html" %}
+  {% include "configuration/glpi/index.html" %}
  </div>
 </div>
 

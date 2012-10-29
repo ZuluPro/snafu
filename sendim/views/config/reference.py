@@ -5,7 +5,7 @@ from django.shortcuts import render, get_object_or_404
  
 from sendim.defs import *
 from sendim.models import Alert
-from sendim.forms import UserForm
+from sendim.forms import *
 from referentiel.defs import *
 from referentiel.models import Reference
 
@@ -81,14 +81,44 @@ def getAsWithoutRef(request) :
     })
 
 @login_required
-def getUserForm(request) :
+def getRefForm(request,alert_id=0) :
     """
-    Create a form
+    Create a BigForm for a given alert.
+    If alert_id is 0, it creates an empty form.
+
     This view is used with AJAX.
     """
+    data = {
+        'glpi_source':'Supervision',
+        'apply':True
+    }
+    if int(alert_id) :
+        A = Alert.objects.get(pk=alert_id)
+        data['host'] = A.host.pk
+        data['service'] = A.service.pk
+        Rs = Reference.objects.filter(host=A.host,service=A.service)
+        if Rs :
+           for R in Rs : 
+               data[R.status.status.lower()+'_criticity'] = R.mail_criticity
+               data[R.status.status.lower()+'_urgency'] = R.glpi_urgency
+               data[R.status.status.lower()+'_priority'] = R.glpi_priority
+               data[R.status.status.lower()+'_impact'] = R.glpi_impact
+               if not 'escalation_contact' in data : data['escalation_contact'] = R.escalation_contact
+               if not 'tendancy' in data : data['tendancy'] = R.tendancy
+               if not 'outage' in data : data['outage'] = R.outage
+               if not 'explanation' in data : data['explanation'] = R.explanation
+               if not 'origin' in data : data['origin'] = R.origin
+               if not 'procedure' in data : data['procedure'] = R.procedure
+               if not 'mail_type' in data : data['mail_type'] = R.mail_type
+               if not 'mail_group' in data : data['mail_group'] = R.mail_group
+               if not 'glpi_dst_group' in data : data['glpi_dst_group'] = R.glpi_dst_group
+               if not 'glpi_supplier' in data : data['glpi_supplier'] = R.glpi_supplier
+               if not 'glpi_category' in data : data['glpi_category'] = R.glpi_category
     
-    Form = UserForm
-    return render(request, 'configuration/user/form.html', {
-         'UserForm':Form
+    else : data = {}
+    
+    Form = ReferenceBigForm(data)
+    return render(request, 'configuration/reference/addref/form.html', {
+         'referenceBigForm':Form
     })
 

@@ -1,0 +1,21 @@
+<div class="row">
+ <h4 align="center">{{ H }}</h4>
+
+<dl>
+ <div class="span2">
+  <dt>ID GLPI:</dt>
+  <dd>{{ H.glpi_id|default:"(Aucun)" }}</dd>
+
+  <dt>Type d'équipement:</dt>
+  <dd>{{ H.host_type|default:"(Aucun)" }}</dd>
+ </div>
+
+</dl>
+ <div class="span1">
+  <div class="btn-group">
+   <button class="btn btn-danger" onclick="$.fn.delHost({{ H.pk }})">Supprimer</button>
+  </div>
+ </div>
+
+
+</div>

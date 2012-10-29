@@ -1,0 +1,18 @@
+<div class="row">
+ <h4 align="center">{{ C }}</h4>
+
+<dl>
+ <div class="span2">
+  <dt>ID GLPI:</dt>
+  <dd>{{ H.glpi_id|default:"(Aucun)" }}</dd>
+ </div>
+
+</dl>
+ <div class="span1">
+  <div class="btn-group">
+   <button class="btn btn-danger" onclick="$.fn.delCategory({{ C.pk }})">Supprimer</button>
+  </div>
+ </div>
+
+
+</div>

@@ -1,9 +1,9 @@
-from referentiel.models import *
 from django import forms
+from referentiel.models import *
 
 class ReferenceForm(forms.Form):
 	host = forms.ModelChoiceField(Host.objects.all().order_by('host') )
-	service = forms.ModelChoiceField(Service.objects.all() )
+	service = forms.ModelChoiceField(Service.objects.all().order_by('service') )
 	status = forms.ModelChoiceField(Status.objects.all() )
 
 	escalation_contact = forms.CharField(widget=forms.HiddenInput())
@@ -30,3 +30,10 @@ class TraductionForm(forms.Form):
 	status = forms.ModelChoiceField(Status.objects.all() )
 	traduction = forms.CharField(max_length=300)
 
+class HostForm(forms.ModelForm) :
+    class Meta:
+        model = Host
+
+class GlpiCategoryForm(forms.ModelForm) :
+    class Meta:
+        model = GlpiCategory

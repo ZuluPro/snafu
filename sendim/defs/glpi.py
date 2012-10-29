@@ -105,3 +105,35 @@ def getTicket(ticketId) :
      - ticketcategories_name
     """
     return glpiServer.glpi.getTicket({'session':idSession, 'ticket':ticketId})
+
+def get_hosts_from_glpi() :
+    loginInfo = doLogin()
+    hosts = list()
+    for itemtype in ('computer','networkequipment') :
+        data = {
+          'session':loginInfo['session'],
+          'itemtype': 'computer',
+          'limit':2000
+        }
+        for host in glpiServer.glpi.listObjects(data) :
+            if not host in hosts :
+                hosts.append(host)
+
+    doLogout()
+    return hosts
+
+#def get_categories_from_glpi() :
+#    loginInfo = doLogin()
+#    cats = list()
+#    for itemtype in ('computer','networkequipment') :
+#        data = {
+#          'session':loginInfo['session'],
+#          'itemtype': 'computer',
+#          'limit':2000
+#        }
+#        for host in glpiServer.glpi.listObjects(data) :
+#            if not host in hosts :
+#                hosts.append(host)
+#
+#    doLogout()
+#    return hosts

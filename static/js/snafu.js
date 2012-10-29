@@ -152,8 +152,8 @@ $(document).ready(function() {
  // GOTO ADDREF WITH AN Alert ATTR
   $.fn.getAlertRef = function(pk){
     $.get('/snafu/configuration/ref/alert/'+pk+'/form', {}, function(data) {
-      $('#addRef').html(data)
-      $('#addRefTab').tab('show')
+      $('#addRef').html(data);
+      $('#addRefTab').tab('show');
     })
   }
 
@@ -320,10 +320,144 @@ $(document).ready(function() {
     return false;
   });
 
+//////////////////////////////////////////////////
+
+  // GET HOST
+  $.fn.getHost = function(pk){
+    $('#hostContent').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/host/'+pk+'/get', function(data) {
+      $('#hostContent').html(data);
+    })
+  }
+
+  // MY HOST FILTER
+  $.fn.getHosts = function(){
+    $('#hostContent').html();
+    $('#Ho_tbody').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/host_q',{'q': $('#host_q').val() }, function(data) {
+      $('#Ho_tbody').html( data );
+    });
+  }
+
+ // GOTO ADDUSER
+  $.fn.getHostForm = function(){
+    $.get('/snafu/configuration/host/form', {}, function(data) {
+      $('#addHostContent').html(data)
+      $('#addHostTab').tab('show')
+    })
+  }
+
+ // ADD A USER FROM FORM
+  $.fn.addHost = function(){
+    $('#hostContent').html('');
+
+    if ( ! $('#hostForm input[name="id"]').val() ) { var host_id = 0; }
+    else { var host_id = $('#hostForm input[name="id"]').val(); };
+
+    $.ajax({ 
+      type: "POST", 
+      url: '/snafu/configuration/host/'+host_id+'/add', 
+      data: $('#hostForm').serialize(),
+      async: false,
+      cache: false,
+      success: function(data) {
+         $('#glpihostTab').html(data);
+         $('#HostListTab').tab('show');
+      },
+      error: function() { alert('err'); }
+    })
+  }
+
+  $('#hostForm').submit(function() {
+    $.fn.addHost();
+    return false;
+  });
+
+ // DEL HOST
+  $.fn.delHost = function(pk){
+    $('#HostContent').html('');
+    $.post('/snafu/configuration/host/'+pk+'/del',{ csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val() }, function(data) {
+      $('#glpihostTab').html(data)
+      $('#host'+pk+'Tab').hide('300');
+    })
+  }
+
+//////////////////////////////////////////////////
+
+  // GET A GLPI CATEGORY
+  $.fn.getCategory = function(pk){
+    $('#categoryContent').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/category/'+pk+'/get', function(data) {
+      $('#categoryContent').html(data);
+    })
+  }
+
+  // MY CAT FILTER
+  $.fn.getCategories = function(){
+    $('#categoryContent').html();
+    $('#Ca_tbody').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/category_q',{'q': $('#cat_q').val() }, function(data) {
+      $('#Ca_tbody').html( data );
+    });
+  }
+
+ // GOTO ADDCAT
+  $.fn.getCategoryForm = function(){
+    $.get('/snafu/configuration/category/form', {}, function(data) {
+      $('#addCategoryContent').html(data)
+      $('#addCategoryTab').tab('show')
+    })
+  }
+
+ // ADD A CAT FROM FORM
+  $.fn.addCategory = function(){
+    $('#categoryContent').html('');
+
+    if ( ! $('#categoryForm input[name="id"]').val() ) { var cat_id = 0; }
+    else { var cat_id = $('#hostForm input[name="id"]').val(); };
+
+    $.ajax({ 
+      type: "POST", 
+      url: '/snafu/configuration/category/'+cat_id+'/add', 
+      data: $('#categoryForm').serialize(),
+      async: false,
+      cache: false,
+      success: function(data) {
+         $('#categoryTab').html(data);
+         $('#CategoryListTab').tab('show');
+      },
+      error: function() { alert('err'); }
+    })
+  }
+
+  $('#categoryForm').submit(function() {
+    $.fn.addCategory();
+    return false;
+  });
+
+ // DEL CAT
+  $.fn.delCategory = function(pk){
+    $('#CategoryContent').html('');
+    $.post('/snafu/configuration/category/'+pk+'/del',{ csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val() }, function(data) {
+      $('#categoryTab').html(data)
+      $('#cat'+pk+'Tab').hide('300');
+    })
+  }
+
+
+//////////////////////////////////////////////////
  // ASK QUESTION BEFORE LAUNCH FUNCTION
   $.fn.Question = function(question, func){
     $('#infoModal').modal('hide');
     $('#infoModal').html(question, func);
+  }
+
+//////////////////////////////////////////////////
+  $.fn.getHostDiff = function(){
+    $('#hostDiff').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/host/diff',{}, function(data) {
+      $('#hostDiff').html(data);
+    });
   }
 
 });

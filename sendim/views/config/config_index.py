@@ -19,6 +19,8 @@ def configuration(request) :
      - Traductions
      - Mail templates
      - Users
+     - Hosts
+     - GLPI categories
     """
     
     Rs = Reference.objects.all()
@@ -26,12 +28,17 @@ def configuration(request) :
 
     Ts = Traduction.objects.all()
     TsPage = Paginator(Ts, 10).page(1)
+    AsWithoutTrad = Alert.objects.filter( Q(traduction=None), ~Q(status__status='OK'), ~Q(status__status='UP') )
+    AsWithoutTradPage = Paginator(AsWithoutTrad, 10).page(1)
 
     Us = User.objects.all()
     UsPage = Paginator(Us, 10).page(1)
 
-    AsWithoutTrad = Alert.objects.filter( Q(traduction=None), ~Q(status__status='OK'), ~Q(status__status='UP') )
-    AsWithoutTradPage = Paginator(AsWithoutTrad, 10).page(1)
+    Hs = Host.objects.all()
+    HsPage = Paginator(Hs, 10).page(1)
+
+    Cs = GlpiCategory.objects.all()
+    CsPage = Paginator(Cs, 10).page(1)
 
     return render(request, 'configuration/index.html', {
         'Rs':Rs,
@@ -49,10 +56,15 @@ def configuration(request) :
         'UsPage':UsPage,
         'UserForm':UserForm,
 
+        'Hs':Hs,
+        'HsPage':HsPage,
+
+        'Cs':Cs,
+        'CsPage':CsPage,
+
         'mailTemplates':MailTemplate.objects.all(),
         'mailTemplateForm':MailTemplateForm,
 
-        'hosts':Host.objects.filter(glpi_id=None),
         'title':'Snafu - Configuration'
     })
 

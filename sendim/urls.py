@@ -38,4 +38,14 @@ urlpatterns = patterns('',
     (r'^configuration/user/(?P<user_id>\d+)/(?P<action>(get|del|add))$', 'sendim.views.user'),
     (r'^configuration/user_q$', 'sendim.views.getUsers'),
     (r'^configuration/user/form$', 'sendim.views.getUserForm'),
+
+    (r'^configuration/host_q$', 'sendim.views.getHosts'),
+    (r'^configuration/host/(?P<host_id>\d+)/(?P<action>(get|del|add))$', 'sendim.views.host'),
+    (r'^configuration/host/form$', 'sendim.views.getHostForm'),
+    (r'^configuration/host/diff$', 'sendim.views.hostDiff'),
+
+    (r'^configuration/category_q$', 'sendim.views.getCategories'),
+    (r'^configuration/category/(?P<cat_id>\d+)/(?P<action>(get|del|add))$', 'sendim.views.category'),
+    (r'^configuration/category/form$', 'sendim.views.getGlpiCategoryForm'),
+    (r'^configuration/category/diff$', 'sendim.views.categoryDiff'),
 )
