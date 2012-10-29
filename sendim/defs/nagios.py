@@ -81,13 +81,15 @@ def reloadAlert() :
                 date=date
             )
             A.save() 
-    return None
+    return treatAlerts() 
 
 
 def treatAlerts() :
     """
     Link all new alerts to an event.
     """
+    As = list()
     for A in Alert.objects.filter(event=None) :
-        A.link()
-    return None
+        if A.link() :
+            As.append(A)
+    return As

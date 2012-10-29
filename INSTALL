@@ -31,6 +31,7 @@ What must include in settings.py :
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',
+    'django.contrib.messages.context_processors.messages',
     'sendim.context_processors.sendim_context',
 )
 

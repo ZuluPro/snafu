@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.forms.formsets import formset_factory
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect
+from django.contrib import messages
 
 from sendim.defs import *
 from sendim.models import *
@@ -32,12 +33,19 @@ def events(request) :
             A = E.getPrimaryAlert()
 
         if 'reloadAlert_q' in request.POST :
-            setMessage('Nagios',"Lecture de l'historique des alertes")
-            treatAlerts()
+            newAs = reloadAlert()
+            if newAs :
+                messages.add_message(
+                  request,
+                  messages.SUCCESS,
+                  u"<strong>Lecture des unit\xe9s de supervision</strong> : Effectu\xe9<br>"+''.join( [ u"<li>Cr\xe9ation de l'Alerte #"+str(A.pk)+" dans l'Event #"+str(A.event.pk)+"</il>" for A in newAs ] )
+                )
+            else : messages.add_message(request,messages.INFO,u"<strong>Lecture des unit\xe9s de supervision</strong> : Effectu\xe9<br>Aucune nouvelle alerte." )
 
         elif "sendmail_q" in request.POST :
-            sendMail( request.POST )
-            logprint("Mail sent for Event #"+str(eventPk) )
+            if sendMail( request.POST ) :
+                messages.add_message(request,messages.SUCCESS,u"Envoi d'un mail pour l'\xe9v\xe9nement #"+str(E.pk)+"." )
+                logprint("Mail sent for Event #"+str(eventPk) )
 
         elif "treatment_q" in request.POST :
 	    if E.criticity == '?' or not E.getPrimaryAlert().reference : 

@@ -16,11 +16,13 @@
  </div>
 
  <div class="span10">
-  {% if message %}
-   <div id="msg-box" class="alert alert-info" style="display: block;">
-    <strong>{{ message.title }}</strong> : {{ message.content }}
-    <button onclick="$('#msg-box').hide(250)" class="close">×</button>  
-   </div>
+  {% if messages %}
+   {% for message in messages %}
+    <div id="msg-box" class="alert alert-{{ message.tags }}" style="display: block;">
+     {{ message|safe }}
+     <button onclick="$('#msg-box').hide(250)" class="close">×</button>  
+    </div>
+   {% endfor %}
   {% endif %}
   <table class="table">
    <thead>

@@ -135,12 +135,12 @@
   {
     "model": "referentiel.mailcriticity",
     "pk": 1,
-    "fields": { "mailcriticity":"Mineur" }
+    "fields": { "mail_criticity":"Mineur" }
   },
   {
     "model": "referentiel.mailcriticity",
     "pk": 2,
-    "fields": { "mailcriticity":"Majeur" }
+    "fields": { "mail_criticity":"Majeur" }
   },
   {
     "model": "referentiel.status",
@@ -171,6 +171,14 @@
     "model": "referentiel.status",
     "pk": 6,
     "fields": { "status":"UP" }
+  },
+  {
+    "model": "sendim.mailtemplate",
+    "pk": 1,
+    "fields": {
+      "subject":"[ Incident $MAIL_TYPE$ - $CRITICITY$ ] $DATE$ - $MESSAGE$ sur $HOST$ - GLPI $GLPI$",
+      "body":"Bonjour,\nNos systèmes de supervision ont détécté une anomalie sur l'équipement $HOST$ le $JOUR$ à $HEURE$ : $TRADUCTION$\n\nUn ticket d'incident a été ouvert au lien suivant :\n$GLPI-URL$$GLPI$\n\nLog Nagios correspondant :\n$LOG$\n\nCordialement," 
+    }
   }
 ]
 

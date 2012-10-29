@@ -90,6 +90,7 @@ class Event(models.Model) :
             if not notOK :
                 self.closed = True
                 self.save()
+        return self.closed 
 
 class Alert(models.Model) :
     host = models.ForeignKey(Host)

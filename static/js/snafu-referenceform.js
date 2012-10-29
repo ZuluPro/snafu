@@ -1,5 +1,7 @@
 $(document).ready(function() {
 
+  $('#addRefBtn').hide();
+
   $('button[num]').live( 'click', function(){
     $.fn.validRef($(this).attr('num'));
     return false

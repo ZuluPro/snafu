@@ -7,6 +7,7 @@ or an error message which isn't an exception for show that in modal.
 In POST method, it will return a redirect to '/snafu/events'.
 """
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -103,7 +104,9 @@ def eventsAgr(request) :
     if request.method == 'POST' :
 #        if not request.POST['toAgr'] : 
 #            return HttpResponse(u"<center><h4>Veuillez choisir plusieurs \xe9v\xe9nements !<h4></center>")
-        agregate(request.POST.getlist('toAgr'), request.POST['choicedEvent'], request.POST['message'] )
+        aggregate(request.POST.getlist('toAgr'), request.POST['choicedEvent'], request.POST['message'] )
+        messages.add_message(request,messages.SUCCESS,u"<Aggr\xe9gation d'\xe9v\xe9nement avec succ\xe8s." )
+        
         return redirect('/snafu/events')
     else :
         if len(request.GET.getlist('events[]') ) < 2 :
@@ -121,8 +124,15 @@ def closeEvents(request) :
     In POST : Use Event.close() to make it on events' id given in POST['eventsPk'].
     """
     if request.method == 'POST' :
+        closedEs = list()
+        notClosedEs = list()
         for E in ( Event.objects.get(pk=pk) for pk in request.POST.getlist('eventsPk') ) :
             E.close()
+            if E.closed : closedEs.append(E)
+            else : notClosedEs.append(E)
+
+        if closedEs : messages.add_message(request,messages.INFO,u"Cl\xf4ture de:"+''.join(['<li>'+str(E)+'</li>' for E in closedEs ] ) )
+        if notClosedEs : messages.add_message(request,messages.ERROR,u"Ev\xe9nement non cl\xf4tr\xe9:"+''.join(['<li>'+str(E)+'</li>' for E in notClosedEs ] ) )
         return redirect('/snafu/events')
 
     else :
