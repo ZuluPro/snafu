@@ -2,6 +2,7 @@
 Function related to GLPI webservice.
 """
 
+from django.contrib import messages
 from django.conf import settings
 
 from sendim.models import *
@@ -17,7 +18,9 @@ def createTicket(E) :
     Add ticket number to Event.glpi.
     """
     loginInfo = doLogin()
-    if 'error' in loginInfo : raise UnableToConnectGLPI
+    if 'error' in loginInfo :
+        messages.add_message(request,messages.ERROR,u"Impossible de se connecter \xe0 GLPI.")
+        raise UnableToConnectGLPI
 
     R = E.getReference()
 
@@ -44,6 +47,7 @@ def createTicket(E) :
     # Sauvegarde dans BDD
     E.glpi = ticketInfo['id']
     E.save()
+    messages.add_message(request,messages.SUCCESS,"Ticket #"+str(ticketInfo['id'])+" associ\xe9 \xe0 Event #"+str(E.pk))
     logprint( "Ticket #"+str(ticketInfo['id'])+" associate to Event #"+str(E.pk), 'green')
 
     doLogout()

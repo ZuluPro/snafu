@@ -2,7 +2,7 @@ from sendim.models import Event
 
 from common import logprint
  
-def agregate(eventsPk, choicedEvent, message, glpi=None, mail=False, criticity='?') :
+def aggregate(eventsPk, choicedEvent, message, glpi=None, mail=False, criticity='?') :
     """
     Aggregate several events in one.
     """
@@ -27,3 +27,4 @@ def agregate(eventsPk, choicedEvent, message, glpi=None, mail=False, criticity='
         E.mail = mail
         E.criticity = criticity
         E.save()
+    return E

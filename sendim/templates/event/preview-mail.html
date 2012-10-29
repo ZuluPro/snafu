@@ -1,8 +1,18 @@
 {% extends 'base/base.html' %} 
 
+{% block body %}
+
+ {% if messages %}
+  {% for message in messages %}
+   <div id="msg-box" class="alert alert-{{ message.tags }}" style="display: block;">
+    {{ message|safe }}
+    <button onclick="$('#msg-box').hide(250)" class="close">×</button>
+   </div>
+  {% endfor %}
+ {% endif %}
+
 <h2>Prévisualisation du mail :</h2> 
 
-{% block body %}
  <form class="form-horizontal" action="/snafu/events" method="post">{% csrf_token %}
   <input type="hidden" name="eventPk" value="{{ E.pk }}">
   <fieldset>

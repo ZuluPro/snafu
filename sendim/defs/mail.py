@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.conf import settings
 
 from sendim.models import *
@@ -85,7 +86,7 @@ def sendMail(POST) :
 
     E.mail = True
     E.save()
-    print msg['Subject']
     msg['body'] = mailText
     addMail(E.glpi, msg)
 
+    return True

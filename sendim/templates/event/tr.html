@@ -16,7 +16,7 @@
     <input type="hidden" name="eventPk" value="{{ E.pk }}">
     <div class="btn-group">
      {% if E.criticity = '?' %}
-      <button class="btn btn-primary" name="treatment_q"><i class="icon-comment icon-white"></i></button>
+      <button class="btn btn-primary" data-content="Cliquez ici pour remplir la renseigner." rel="popover" data-original-title="Pas de référence" name="treatment_q"><i class="icon-comment icon-white"></i></button>
      {% else %}
        {% if not E.glpi %}
 
