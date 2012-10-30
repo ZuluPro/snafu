@@ -59,7 +59,10 @@ def events(request) :
             if not E.glpi :
                try :
                    E.glpi = createTicket(E)
-               except UnableToConnectGLPI : return redirect('/snafu/events')
+                   messages.add_message(request,messages.SUCCESS,"Ticket #"+str(E.glpi)+u" associ\xe9 \xe0 Event #"+str(E.pk))
+               except UnableToConnectGLPI :
+                   messages.add_message(request,messages.ERROR,u"Impossible de se connecter \xe0 GLPI.")
+                   return redirect('/snafu/events')
 
             # Constitution du mail
             msg = makeMail(E)

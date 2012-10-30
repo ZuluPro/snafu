@@ -48,4 +48,8 @@ urlpatterns = patterns('',
     (r'^configuration/category/(?P<cat_id>\d+)/(?P<action>(get|del|add))$', 'sendim.views.category'),
     (r'^configuration/category/form$', 'sendim.views.getGlpiCategoryForm'),
     #(r'^configuration/category/diff$', 'sendim.views.categoryDiff'),
+
+    (r'^configuration/template_q$', 'sendim.views.getMailTemplates'),
+    (r'^configuration/template/(?P<temp_id>\d+)/(?P<action>(get|del|add))$', 'sendim.views.mailTemplate'),
+    (r'^configuration/template/form$', 'sendim.views.getMailTemplateForm'),
 )

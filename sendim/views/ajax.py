@@ -105,7 +105,7 @@ def eventsAgr(request) :
 #        if not request.POST['toAgr'] : 
 #            return HttpResponse(u"<center><h4>Veuillez choisir plusieurs \xe9v\xe9nements !<h4></center>")
         aggregate(request.POST.getlist('toAgr'), request.POST['choicedEvent'], request.POST['message'] )
-        messages.add_message(request,messages.SUCCESS,u"<Aggr\xe9gation d'\xe9v\xe9nement avec succ\xe8s." )
+        messages.add_message(request,messages.SUCCESS,u"Aggr\xe9gation d'\xe9v\xe9nement avec succ\xe8s." )
         
         return redirect('/snafu/events')
     else :

@@ -31,7 +31,7 @@
         {% if glpi.connection %}
          <p class="btn btn-primary disabled" data-content="{{ glpi.connection }}" rel="popover" data-original-title="GLPI Hors service">{{ E.glpi }}</p>
         {% else %}
-         <a class="btn btn-primary" href="{{ glpi.ticket_url }}{{ E.glpi }}">{{ E.glpi }}</a>
+         <a class="btn btn-primary" target="_blank" href="{{ glpi.ticket_url }}{{ E.glpi }}">{{ E.glpi }}</a>
         {% endif %}
 
        {% endif %}
@@ -77,7 +77,7 @@
      {% if nagios.connection %}
      <li><a class="disabled" data-content="{{ nagios.connection }}" rel="popover" data-original-title="Nagios hors service">Vision Nagios</a></li>
      {% else %}
-     <li><a ref="{{ nagios.host_status_url }}{{ E.element }}">Vision Nagios</a></li>
+     <li><a target="_blank" href="{{ nagios.host_status_url }}{{ E.element }}">Vision Nagios</a></li>
      {% endif %}
     </ul>
    </div>

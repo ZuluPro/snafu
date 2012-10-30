@@ -236,7 +236,7 @@ $(document).ready(function() {
     })
   }
 
- // ADD A REF FROM FORM
+ // ADD A TRAD FROM FORM
   $.fn.addTrad = function(){
 
     if ( ! $('#tradForm input[name="id"]').val() ) { var trad_id = 0; }
@@ -260,6 +260,14 @@ $(document).ready(function() {
     return false;
   });
 
+ // DEL TRAD
+  $.fn.delTrad = function(pk){
+    $('#tradContent').html('');
+    $.post('/snafu/configuration/trad/'+pk+'/del',{ csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val() }, function(data) {
+      $('#traductionTab').html(data)
+      $('#trad'+pk+'Tab').hide('300');
+    })
+  }
 ///////////////////////////////////////////////////////////
   // GET USER
   $.fn.getUser = function(pk){
@@ -443,6 +451,66 @@ $(document).ready(function() {
       $('#cat'+pk+'Tab').hide('300');
     })
   }
+
+///////////////////////////////////////////////////////////
+  // GET MAIL TEMP
+  $.fn.getTemplate = function(pk){
+    $('#templateContent').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/template/'+pk+'/get', function(data) {
+      $('#templateContent').html(data);
+    })
+  }
+
+ // DEL A MAIL TEMP
+  $.fn.delTemplate = function(pk){
+    $('#templateContent').html('');
+    $.post('/snafu/configuration/template/'+pk+'/del',{ csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val() }, function(data) {
+      $('#templateCount').html(data);
+      $('#template'+pk+'Tab').hide('300');
+    })
+  }
+
+  // MY TEMPLATE FILTER
+  $.fn.getTemplates = function(){
+    $('#templateContent').html();
+    $('#MT_tbody').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+    $.get('/snafu/configuration/template_q',{'q': $('#template_q').val() }, function(data) {
+      $('#MT_tbody').html( data );
+    });
+  }
+
+ // GOTO ADD TEMPLATE
+  $.fn.getTemplateForm = function(){
+    $.get('/snafu/configuration/template/form', {}, function(data) {
+      $('#addTemplate').html(data)
+      $('#addTemplateTab').tab('show')
+    })
+  }
+
+ // ADD A MAIL TEMP
+  $.fn.addTemplate = function(){
+    $('#templateContent').html('');
+
+    if ( ! $('#templateForm input[name="id"]').val() ) { var temp_id = 0; }
+    else { var temp_id = $('#templateForm input[name="id"]').val(); };
+
+    $.ajax({ 
+      type: "POST", 
+      url: '/snafu/configuration/template/'+temp_id+'/add', 
+      data: $('#templateForm').serialize(),
+      async: false,
+      cache: false,
+      success: function(data) {
+         $('#templateTab').html(data);
+      },
+      error: function() { alert('err'); }
+    })
+  }
+
+  $('#templateForm').submit(function() {
+    $.fn.addTemplate();
+    return false;
+  });
 
 
 //////////////////////////////////////////////////

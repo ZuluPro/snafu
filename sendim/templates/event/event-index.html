@@ -18,9 +18,9 @@
  <div class="span10">
   {% if messages %}
    {% for message in messages %}
-    <div id="msg-box" class="alert alert-{{ message.tags }}" style="display: block;">
-     {{ message|safe }}
-     <button onclick="$('#msg-box').hide(250)" class="close">×</button>  
+    <div id="msg-{{ message.tags }}" class="alert alert-{{ message.tags }}" style="display: block;">
+     <p class="pull-right"><button class="close" onclick="$('#msg-{{ message.tags }}').hide(250)">×</button></p>
+     <div>{{ message|safe }}</div>
     </div>
    {% endfor %}
   {% endif %}
@@ -48,7 +48,7 @@
      <th colspan="8">
       <div class="btn-group">
        <button class="btn btn-mini disabled">Actions : </button>
-       <button class="btn btn-mini" onclick="$.fn.AgrForm()">Agreger</button>
+       <button class="btn btn-mini" onclick="$.fn.AgrForm()">Aggréger</button>
        <button class="btn btn-mini" onclick="$.fn.CPAForm()">Alerte primaire</button>
        <button class="btn btn-mini" onclick="$.fn.CloseForm()">Clôturer</button>
        <button class="btn btn-mini" onclick="$.fn.FollowUpForm()">Suivi GLPI</button>
