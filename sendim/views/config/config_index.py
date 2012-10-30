@@ -28,7 +28,7 @@ def configuration(request) :
 
     Ts = Traduction.objects.all()
     TsPage = Paginator(Ts, 10).page(1)
-    AsWithoutTrad = Alert.objects.filter( Q(traduction=None), ~Q(status__status='OK'), ~Q(status__status='UP') )
+    AsWithoutTrad = Alert.objects.filter( Q(traduction=None), ~Q(status__status='OK'), ~Q(status__status='UP'), ~Q(status__status='DOWN') )
     AsWithoutTradPage = Paginator(AsWithoutTrad, 10).page(1)
 
     Us = User.objects.all()
@@ -40,16 +40,19 @@ def configuration(request) :
     Cs = GlpiCategory.objects.all()
     CsPage = Paginator(Cs, 10).page(1)
 
+    MTs = MailTemplate.objects.all()
+    MTsPage = Paginator(MTs, 10).page(1)
+
     return render(request, 'configuration/index.html', {
         'Rs':Rs,
         'RsPage':RsPage,
-        'AsWithoutRef':Alert.objects.filter( Q(reference=None), ~Q(status__status='OK'), ~Q(status__status='UP') ),
+        'AsWithoutRef':Alert.objects.filter( Q(reference=None), ~Q(status__status='OK'), ~Q(status__status='UP'), ~Q(status__status='DOWN') ),
         'referenceBigForm':ReferenceBigForm,
 
         'Ts':Ts,
         'TsPage':TsPage,
         'traductionBigForm':TraductionBigForm,
-        'AsWithoutTrad':Alert.objects.filter( Q(traduction=None), ~Q(status__status='OK'), ~Q(status__status='UP') ),
+        'AsWithoutTrad':AsWithoutTrad,
         'AsWithoutTradPage':AsWithoutTradPage,
 
         'Us':Us,
@@ -62,7 +65,8 @@ def configuration(request) :
         'Cs':Cs,
         'CsPage':CsPage,
 
-        'mailTemplates':MailTemplate.objects.all(),
+        'MTs':MTs,
+        'MTsPage':MTsPage,
         'mailTemplateForm':MailTemplateForm,
 
         'title':'Snafu - Configuration'

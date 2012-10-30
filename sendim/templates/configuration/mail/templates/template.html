@@ -1,0 +1,15 @@
+<h4 align="center">{{ MT }}</h4>
+
+<dl>
+ <dt>Sujet :</dt>
+ <dd>{{ MT.subject }}</dd>
+
+ <dt>Corps :</dt>
+ <dd>{{ MT.body }}</dd>
+</dl>
+
+{% if MT.pk != 1 %}
+ <button class="btn btn-danger" onclick="$.fn.delTemplate({{ MT.pk }})">Supprimer</button>
+{% else %}
+ <p class="btn btn-danger disabled">Supprimer</p>
+{% endif %}

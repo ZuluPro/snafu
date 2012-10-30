@@ -1,0 +1,17 @@
+<ul class="nav nav-tabs nav-stacked">
+ {% if MTsPage.has_previous %}
+  <li><a onclick="$.fn.getTemplates({{ MTsPage.previous_page_number }});">&uarr; Précédents</a></li>
+ {% endif %}
+
+ {% for MT in MTsPage %}
+  <li>
+   <a id="template{{ MT.pk }}Tab" class="get-template" href="#" data-toggle="tab" onclick="$.fn.getTemplate({{ MT.pk }})">
+    {{ MT.pk }}
+   </a>
+  </li>
+ {% endfor %}
+
+ {% if MTsPage.has_next %}
+  <li><a onclick="$.fn.getTemplates({{ MTsPage.next_page_number }});">&darr; Suivant(s)</a></li>
+ {% endif %}
+</ul>

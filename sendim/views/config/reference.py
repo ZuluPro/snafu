@@ -56,7 +56,7 @@ def reference(request, ref_id, action="get") :
          
     return render(request, 'configuration/reference/tabs.html', {
         'Rs':Reference.objects.all(),
-        'AsWithoutRef':Alert.objects.filter( Q(reference=None), ~Q(status__status='OK'), ~Q(status__status='UP') )
+        'AsWithoutRef':Alert.objects.filter( Q(reference=None), ~Q(status__status='OK'), ~Q(status__status='UP'), ~Q(status__status='DOWN') )
     })
 
 
@@ -70,7 +70,7 @@ def getAlertWithoutRef(request,alert_id) :
 @login_required
 def getAsWithoutRef(request) :
     """Get references filtered by host and service."""
-    As = Alert.objects.filter(reference=None)
+    As = Alert.objects.filter( Q(reference=None), ~Q(status__status='OK'), ~Q(status__status='UP'), ~Q(status__status='DOWN') )
     if request.GET['q'] :
         As = (
             set( As.filter(host__host__icontains=request.GET['q']) ) |

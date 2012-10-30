@@ -52,7 +52,7 @@ def traduction(request, trad_id, action="get") :
          
     return render(request, 'configuration/traduction/tabs.html', {
         'Ts':Traduction.objects.all(),
-        'AsWithoutTrad':Alert.objects.filter( Q(traduction=None), ~Q(status__status='OK'), ~Q(status__status='UP') )
+        'AsWithoutTrad':Alert.objects.filter( Q(traduction=None), ~Q(status__status='OK'), ~Q(status__status='UP'), ~Q(status__status='DOWN') )
     })
 
 @login_required
@@ -67,8 +67,7 @@ def getAsWithoutTrad(request) :
     """
     Get alerts without traduction found by host and service.
     """
-    As = Alert.objects.filter(traduction=None)
-    print request.GET['q'],123
+    As = Alert.objects.filter( Q(traduction=None), ~Q(status__status='OK'), ~Q(status__status='UP'), ~Q(status__status='DOWN') )
     if request.GET['q'] :
         As = list ( (
             set( As.filter(host__host__icontains=request.GET['q']) ) |

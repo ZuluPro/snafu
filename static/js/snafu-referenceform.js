@@ -1,6 +1,8 @@
 $(document).ready(function() {
 
-  $('#addRefBtn').hide();
+  $('button[id="addRefBtn"]').each(function(index) {
+     $(this).hide();
+  });
 
   $('button[num]').live( 'click', function(){
     $.fn.validRef($(this).attr('num'));
@@ -10,7 +12,8 @@ $(document).ready(function() {
   $.fn.validRef = function(refId){
 
     var R = { treatment_q:true, eventPk:$('input[name=eventPk]').val() };
-    var refTabContent = $('#R'+refId+'TabContent')
+    var refTab = $('#R'+refId+'Tab');
+    var refTabContent = $('#R'+refId+'TabContent');
 
     $('div[class*="active"] input').each(function(index) {
       R[$(this).attr('name')] = $(this).val();
@@ -28,14 +31,17 @@ $(document).ready(function() {
       cache: false,
       error: function() { alert('err'); },
       success: function(data){
+        refTab.hide(250);
+        refTab.attr('class','hidden');
         refTabContent.hide(500);
+        $('li:not([class*=active]) a[data-toggle=tab]:not([class*=hidden]):first').tab('show')
       }
     });
     if ( $('form').length == 1 ) { 
       $('#submit').submit();
-    } else {
-      $('#alertTab a:not([style*="display: none"])').tab('show');
-    } ;
+    }// else {
+     
+   // } ;
   }
 
 });
