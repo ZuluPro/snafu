@@ -4,6 +4,7 @@ from django.db.utils import IntegrityError
 
 from referentiel.models import *
 from sendim.models import *
+from sendim.exceptions import UnableToConnectGLPI
 from sendim.defs import get_hosts_from_glpi#, get_users_from_glpi, get_groups_from_glpi
 
 from common import logprint
@@ -17,19 +18,22 @@ class Command(BaseCommand) :
             M.choosen = True
             M.save()
 
-        for host in get_hosts_from_glpi() :
-                try:
-                        H = Host(host=host['name'], glpi_id=host['id'], host_type='computer' )
-                        H.save()
-			logprint('Add computer : '+H.host, 'green')
+        try :
+            for host in get_hosts_from_glpi() :
+                try :
+                    H = Host(host=host['name'], glpi_id=host['id'], host_type='computer' )
+                    H.save()
+                    logprint('Add computer : '+H.host, 'green')
                 except IntegrityError : logprint('Computer ' +H.host+ ' already exists', 'yellow')
 
-        for host in get_hosts_from_glpi() :
+            for host in get_hosts_from_glpi() :
                 try:
-                        H = Host(host=host['name'], glpi_id=host['id'], host_type='networkequipment' )
-                        H.save()
-			logprint('Add network equipement '+H.host, 'green')
+                    H = Host(host=host['name'], glpi_id=host['id'], host_type='networkequipment' )
+                    H.save()
+                    logprint('Add network equipement '+H.host, 'green')
                 except IntegrityError : logprint('Network equipement ' +H.host+ ' already exists', 'yellow')
+        except UnableToConnectGLPI, e :
+            logprint('Impossible to connect to GLPI : '+str(e.message), 'red')
 
 #        for user in get_users_from_glpi() :
 #                try:
