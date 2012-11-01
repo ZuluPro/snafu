@@ -103,15 +103,15 @@ class ReferenceBigForm(forms.Form):
         self.__getitem__('mail_group'),
         ]
 
-class MailTemplateForm(forms.Form):
-    subject = forms.CharField(max_length=300, required=True)#, initial=MailTemplate.objects.get(choosen=True).subject )
-    body = forms.CharField(max_length=3000, required=True)#, initial=MailTemplate.objects.get(choosen=True).body, widget=forms.Textarea() )
-    comment = forms.CharField(max_length=3000, widget=forms.Textarea() )
-    choosen = forms.BooleanField()
+class MailTemplateForm(forms.ModelForm):
 
-    def __init__(self, *args, **kwargs):
-        super(MailTemplateForm, self).__init__(*args, **kwargs)
-        [ self.fields[key].widget.attrs.update({'style' : 'width:100%;'}) for key in self.fields.keys() ]
+    class Meta:
+        model = MailTemplate
+        widgets = {
+            'subject':forms.TextInput({'style' : 'width:100%;'}),
+            'body':forms.Textarea({'style' : 'width:100%;'}),
+            'comment':forms.Textarea({'style' : 'width:100%;','rows':3})
+        }
 
 class UserForm(forms.ModelForm):
     id = forms.IntegerField(required=False, initial=0, widget=widgets.HiddenInput)

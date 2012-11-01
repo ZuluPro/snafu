@@ -482,8 +482,8 @@ $(document).ready(function() {
  // GOTO ADD TEMPLATE
   $.fn.getTemplateForm = function(){
     $.get('/snafu/configuration/template/form', {}, function(data) {
-      $('#addTemplate').html(data)
-      $('#addTemplateTab').tab('show')
+      $('#addTemplateContent').html(data);
+      $('#addTemplateTab').tab('show');
     })
   }
 
