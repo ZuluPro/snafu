@@ -2,14 +2,15 @@ from django.conf import settings
 
 from sendim.models import *
 from referentiel.models import *
+from sendim.exceptions import UnableToConnectNagios 
+from sendim.connection import getOpener, checkNagios
+opener = getOpener()
 
 from common import *
-import HTMLParser
 import re, time, datetime
-
-from sendim.connection import getOpener
-opener = getOpener()
+import HTMLParser
 htmlparser = HTMLParser.HTMLParser()
+
 
 def opengraph(A, graph) :
     """Get a graph for an alert and a number representing the pnp view."""
@@ -23,6 +24,10 @@ def readNagios() :
     If alert is an host alert, service will be 'Host status.
     """
     
+    check = checkNagios()
+    if check :
+        raise UnableToConnectNagios(check)
+
     pagehandle = opener.open(settings.SNAFU['nagios-history']+'?host=all&archive=0&statetype=2&type=0&noflapping=on')
     problemlist = []
     for line in pagehandle.readlines()[::-1] :
