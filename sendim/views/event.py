@@ -36,7 +36,7 @@ def events(request) :
             try : 
                 newAs = reloadAlert()
                 if newAs :
-		messages.add_message(
+                    messages.add_message(
                       request,
                       messages.SUCCESS,
                       u"<b>Lecture des unit\xe9s de supervision</b> : Effectu\xe9<br>"+''.join( [ u"<li>Cr\xe9ation de l'Alerte #"+str(A.pk)+" dans l'Event #"+str(A.event.pk)+"</il>" for A in newAs ] )
