@@ -51,7 +51,7 @@ def mailTemplate(request, temp_id, action="get") :
  
     elif action == "add" :
          Form = MailTemplateForm(request.POST)
-         if not Form.is_valid() :
+         if Form.is_valid() :
              Form.save()
          
     return render(request, 'configuration/mail/templates/tabs.html', {
@@ -67,8 +67,8 @@ def getMailTemplateForm(request,temp_id=0) :
     This view is used with AJAX.
     """
     
-    Form = MailTemplateForm(data)
+    Form = MailTemplateForm()
     return render(request, 'configuration/mail/templates/form.html', {
-         'referenceBigForm':Form
+         'MailTemplateForm':Form
     })
 
