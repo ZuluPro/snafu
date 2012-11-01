@@ -1,11 +1,11 @@
 <ul class="nav nav-tabs nav-stacked">
  {% if UsPage.has_previous %}
-  <li><a onclick="$.fn.getUsers({{ UsPage.previous_page_number }});">&uarr; Précédents</a></li>
+  <li><a onclick="$.fn.snafu_object('list','user',{{ UsPage.previous_page_number }});">&uarr; Précédents</a></li>
  {% endif %}
 
  {% for U in UsPage %}
   <li>
-   <a id="user{{ U.pk }}Tab" class="get-user" href="#" data-toggle="tab" onclick="$.fn.getUser({{ U.pk }})">
+   <a id="user{{ U.pk }}Tab" class="get-user" href="#" data-toggle="tab" onclick="$.fn.snafu_object('get','user',{{ U.pk }})">
    {% if not U.first_name %}
     {{ U.username }}
    {% else %}
