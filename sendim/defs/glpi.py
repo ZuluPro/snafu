@@ -109,6 +109,8 @@ def getTicket(ticketId) :
 
 def get_hosts_from_glpi() :
     loginInfo = doLogin()
+    if 'error' in loginInfo :
+        raise UnableToConnectGLPI(loginInfo['error'])
     hosts = list()
     for itemtype in ('computer','networkequipment') :
         data = {
