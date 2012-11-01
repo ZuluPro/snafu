@@ -8,7 +8,7 @@ from django.contrib import messages
 from sendim.defs import *
 from sendim.models import *
 from sendim.forms import *
-from sendim.exceptions import UnableToConnectGLPI
+from sendim.exceptions import UnableToConnectGLPI,UnableToConnectNagios
 from referentiel.models import *
 from referentiel.forms import *
 from referentiel.defs import *
@@ -33,14 +33,17 @@ def events(request) :
             A = E.getPrimaryAlert()
 
         if 'reloadAlert_q' in request.POST :
-            newAs = reloadAlert()
-            if newAs :
-                messages.add_message(
-                  request,
-                  messages.SUCCESS,
-                  u"<strong>Lecture des unit\xe9s de supervision</strong> : Effectu\xe9<br>"+''.join( [ u"<li>Cr\xe9ation de l'Alerte #"+str(A.pk)+" dans l'Event #"+str(A.event.pk)+"</il>" for A in newAs ] )
-                )
-            else : messages.add_message(request,messages.INFO,u"<strong>Lecture des unit\xe9s de supervision</strong> : Effectu\xe9<br>Aucune nouvelle alerte." )
+            try : 
+                newAs = reloadAlert()
+                if newAs :
+		messages.add_message(
+                      request,
+                      messages.SUCCESS,
+                      u"<b>Lecture des unit\xe9s de supervision</b> : Effectu\xe9<br>"+''.join( [ u"<li>Cr\xe9ation de l'Alerte #"+str(A.pk)+" dans l'Event #"+str(A.event.pk)+"</il>" for A in newAs ] )
+                    )
+                else : messages.add_message(request,messages.INFO,u"<b>Lecture des unit\xe9s de supervision</b> : Effectu\xe9<br>Aucune nouvelle alerte." )
+            except UnableToConnectNagios, e :
+                messages.add_message(request,messages.ERROR,u"<b>Connexion \xe0 Nagios impossible</b>")
 
         elif "sendmail_q" in request.POST :
             if sendMail( request.POST ) :
