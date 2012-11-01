@@ -43,12 +43,18 @@ INSTALLED_APPS = (
     ...
 )
 
+import os
+BASEDIR = os.path.dirname(os.path.abspath(__file__))
+
 from sendim.local_settings import *
 
 ------------------------------------------------------------------------------
 3.
 ------------------------------------------------------------------------------
 What must include in sendim/local_settings.py :
+
+from django.conf import settings
+import os
 
 SNAFU = {
     'nagios-url': 'http://mywebsite/nagios/',
@@ -68,9 +74,9 @@ SNAFU = {
 
 }
 
-BASEDIR = "/path/to/your/project"
-
 LOGIN_URL = '/snafu/login'
+
+TEMPLATE_DIRS = ( os.path.join(settings.BASEDIR, 'sendim/templates'), )
 
 ------------------------------------------------------------------------------
 4.
