@@ -104,10 +104,10 @@ class ReferenceBigForm(forms.Form):
         ]
 
 class MailTemplateForm(forms.Form):
-    subject = forms.CharField(max_length=300, required=True, initial=MailTemplate.objects.get(choosen=True).subject )
-    body = forms.CharField(max_length=3000, required=True, initial=MailTemplate.objects.get(choosen=True).body, widget=forms.Textarea() )
+    subject = forms.CharField(max_length=300, required=True)#, initial=MailTemplate.objects.get(choosen=True).subject )
+    body = forms.CharField(max_length=3000, required=True)#, initial=MailTemplate.objects.get(choosen=True).body, widget=forms.Textarea() )
     comment = forms.CharField(max_length=3000, widget=forms.Textarea() )
-    choiced = forms.BooleanField()
+    choosen = forms.BooleanField()
 
     def __init__(self, *args, **kwargs):
         super(MailTemplateForm, self).__init__(*args, **kwargs)
