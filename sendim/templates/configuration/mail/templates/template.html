@@ -9,7 +9,7 @@
 </dl>
 
 {% if MT.pk != 1 %}
- <button class="btn btn-danger" onclick="$.fn.delTemplate({{ MT.pk }})">Supprimer</button>
+ <button class="btn btn-danger" onclick="$.fn.snafu_object('del','template',{{ MT.pk }})">Supprimer</button>
 {% else %}
  <p class="btn btn-danger disabled">Supprimer</p>
 {% endif %}

@@ -269,59 +269,6 @@ $(document).ready(function() {
     })
   }
 ///////////////////////////////////////////////////////////
-  // GET USER
-  $.fn.getUser = function(pk){
-    $('#userContent').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
-    $.get('/snafu/configuration/user/'+pk+'/get', function(data) {
-      $('#userContent').html(data);
-    })
-  }
-
- // DEL A USER FROM FORM
-  $.fn.delUser = function(pk){
-    $('#userContent').html('');
-    $.post('/snafu/configuration/user/'+pk+'/del',{ csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val() }, function(data) {
-      $('#userCount').html(data);
-      $('#user'+pk+'Tab').hide('300');
-    })
-  }
-
-  // MY USER FILTER
-  $.fn.getUsers = function(){
-    $('#userContent').html();
-    $('#U_tbody').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
-    $.get('/snafu/configuration/user_q',{'q': $('#user_q').val() }, function(data) {
-      $('#U_tbody').html( data );
-    });
-  }
-
- // GOTO ADDUSER
-  $.fn.getUserForm = function(){
-    $.get('/snafu/configuration/user/form', {}, function(data) {
-      $('#addUser').html(data)
-      $('#addUserTab').tab('show')
-    })
-  }
-
- // ADD A USER FROM FORM
-  $.fn.addUser = function(){
-    $('#userContent').html('');
-
-    if ( ! $('#userForm input[name="id"]').val() ) { var user_id = 0; }
-    else { var user_id = $('#userForm input[name="id"]').val(); };
-
-    $.ajax({ 
-      type: "POST", 
-      url: '/snafu/configuration/user/'+user_id+'/add', 
-      data: $('#userForm').serialize(),
-      async: false,
-      cache: false,
-      success: function(data) {
-         $('#userTab').html(data);
-      },
-      error: function() { alert('err'); }
-    })
-  }
 
   $('#userForm').submit(function() {
     $.fn.addUser();
@@ -330,181 +277,61 @@ $(document).ready(function() {
 
 //////////////////////////////////////////////////
 
-  // GET HOST
-  $.fn.getHost = function(pk){
-    $('#hostContent').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
-    $.get('/snafu/configuration/host/'+pk+'/get', function(data) {
-      $('#hostContent').html(data);
-    })
-  }
-
-  // MY HOST FILTER
-  $.fn.getHosts = function(){
-    $('#hostContent').html();
-    $('#Ho_tbody').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
-    $.get('/snafu/configuration/host_q',{'q': $('#host_q').val() }, function(data) {
-      $('#Ho_tbody').html( data );
-    });
-  }
-
- // GOTO ADDUSER
-  $.fn.getHostForm = function(){
-    $.get('/snafu/configuration/host/form', {}, function(data) {
-      $('#addHostContent').html(data)
-      $('#addHostTab').tab('show')
-    })
-  }
-
- // ADD A USER FROM FORM
-  $.fn.addHost = function(){
-    $('#hostContent').html('');
-
-    if ( ! $('#hostForm input[name="id"]').val() ) { var host_id = 0; }
-    else { var host_id = $('#hostForm input[name="id"]').val(); };
-
-    $.ajax({ 
-      type: "POST", 
-      url: '/snafu/configuration/host/'+host_id+'/add', 
-      data: $('#hostForm').serialize(),
-      async: false,
-      cache: false,
-      success: function(data) {
-         $('#glpihostTab').html(data);
-         $('#HostListTab').tab('show');
-      },
-      error: function() { alert('err'); }
-    })
-  }
-
   $('#hostForm').submit(function() {
     $.fn.addHost();
     return false;
   });
 
- // DEL HOST
-  $.fn.delHost = function(pk){
-    $('#HostContent').html('');
-    $.post('/snafu/configuration/host/'+pk+'/del',{ csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val() }, function(data) {
-      $('#glpihostTab').html(data)
-      $('#host'+pk+'Tab').hide('300');
-    })
-  }
-
 //////////////////////////////////////////////////
-
-  // GET A GLPI CATEGORY
-  $.fn.getCategory = function(pk){
-    $('#categoryContent').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
-    $.get('/snafu/configuration/category/'+pk+'/get', function(data) {
-      $('#categoryContent').html(data);
-    })
-  }
-
-  // MY CAT FILTER
-  $.fn.getCategories = function(){
-    $('#categoryContent').html();
-    $('#Ca_tbody').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
-    $.get('/snafu/configuration/category_q',{'q': $('#cat_q').val() }, function(data) {
-      $('#Ca_tbody').html( data );
-    });
-  }
-
- // GOTO ADDCAT
-  $.fn.getCategoryForm = function(){
-    $.get('/snafu/configuration/category/form', {}, function(data) {
-      $('#addCategoryContent').html(data)
-      $('#addCategoryTab').tab('show')
-    })
-  }
-
- // ADD A CAT FROM FORM
-  $.fn.addCategory = function(){
-    $('#categoryContent').html('');
-
-    if ( ! $('#categoryForm input[name="id"]').val() ) { var cat_id = 0; }
-    else { var cat_id = $('#hostForm input[name="id"]').val(); };
-
-    $.ajax({ 
-      type: "POST", 
-      url: '/snafu/configuration/category/'+cat_id+'/add', 
-      data: $('#categoryForm').serialize(),
-      async: false,
-      cache: false,
-      success: function(data) {
-         $('#categoryTab').html(data);
-         $('#CategoryListTab').tab('show');
-      },
-      error: function() { alert('err'); }
-    })
-  }
 
   $('#categoryForm').submit(function() {
     $.fn.addCategory();
     return false;
   });
 
- // DEL CAT
-  $.fn.delCategory = function(pk){
-    $('#CategoryContent').html('');
-    $.post('/snafu/configuration/category/'+pk+'/del',{ csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val() }, function(data) {
-      $('#categoryTab').html(data)
-      $('#cat'+pk+'Tab').hide('300');
-    })
-  }
-
 ///////////////////////////////////////////////////////////
-  // GET MAIL TEMP
-  $.fn.getTemplate = function(pk){
-    $('#templateContent').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
-    $.get('/snafu/configuration/template/'+pk+'/get', function(data) {
-      $('#templateContent').html(data);
-    })
-  }
+  $.fn.snafu_object = function(action, object, pk) {
+    if ( action == "get" ) {
+      $('#'+object+'Content').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+      $.get('/snafu/configuration/'+object+'/'+pk+'/get', function(data) {
+        $('#'+object+'Content').html(data);
+      });
+    } else if ( action == "del" ) {
+      $('#'+object+'Content').html('');
+      $.post('/snafu/configuration/'+object+'/'+pk+'/del',{ csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val() }, function(data) {
+        $('#'+object+'Count').html(data);
+        $('#'+object+pk+'Tab').hide('300');
+      });
+    } else if ( action == "list" ) {
+      $('#'+object+'Content').html();
+      $('#'+object+'-ul').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
+      request = { 'q': $('#'+object+'_q').val(), 'page': pk };
+      $.get('/snafu/configuration/'+object+'_q',request, function(data) {
+        $('#'+object+'-ul').html( data );
+      });
+    } else if ( action == "form" ) {
+      $.get('/snafu/configuration/'+object+'/form', {}, function(data) {
+        $('#add-'+object+'Content').html(data);
+        $('#add-'+object+'Tab').tab('show');
+      });
+    } else if ( action == "add" ) {
+      $('#'+object+'Content').html('');
 
- // DEL A MAIL TEMP
-  $.fn.delTemplate = function(pk){
-    $('#templateContent').html('');
-    $.post('/snafu/configuration/template/'+pk+'/del',{ csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val() }, function(data) {
-      $('#templateCount').html(data);
-      $('#template'+pk+'Tab').hide('300');
-    })
-  }
+      if ( ! $('#'+object+'Form input[name="id"]').val() ) { var temp_id = 0; }
+      else { var temp_id = $('#'+object+'Form input[name="id"]').val(); };
 
-  // MY TEMPLATE FILTER
-  $.fn.getTemplates = function(){
-    $('#templateContent').html();
-    $('#MT_tbody').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
-    $.get('/snafu/configuration/template_q',{'q': $('#template_q').val() }, function(data) {
-      $('#MT_tbody').html( data );
-    });
-  }
-
- // GOTO ADD TEMPLATE
-  $.fn.getTemplateForm = function(){
-    $.get('/snafu/configuration/template/form', {}, function(data) {
-      $('#addTemplateContent').html(data);
-      $('#addTemplateTab').tab('show');
-    })
-  }
-
- // ADD A MAIL TEMP
-  $.fn.addTemplate = function(){
-    $('#templateContent').html('');
-
-    if ( ! $('#templateForm input[name="id"]').val() ) { var temp_id = 0; }
-    else { var temp_id = $('#templateForm input[name="id"]').val(); };
-
-    $.ajax({ 
-      type: "POST", 
-      url: '/snafu/configuration/template/'+temp_id+'/add', 
-      data: $('#templateForm').serialize(),
-      async: false,
-      cache: false,
-      success: function(data) {
-         $('#templateTab').html(data);
-      },
-      error: function() { alert('err'); }
-    })
+      $.ajax({ 
+        type: "POST", 
+        url: '/snafu/configuration/'+object+'/'+temp_id+'/add', 
+        data: $('#'+object+'Form').serialize(),
+        async: false,
+        cache: false,
+        success: function(data) {
+           $('#'+object+'Tab').html(data);
+        },
+        error: function() { alert('err'); }
+      });
+    }
   }
 
   $('#templateForm').submit(function() {

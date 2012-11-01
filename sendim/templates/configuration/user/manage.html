@@ -2,9 +2,9 @@
  <br>
  <div class="input-append">
   <input id="user_q" type="text" placeholder="Nom, prénom" style="width:85%">
-  <button class="btn btn-primary" onclick="$.fn.getUsers()" style="width:5%"><i class="icon-search icon-white"></i></button>
+  <button class="btn btn-primary" onclick="$.fn.snafu_object('list','user')" style="width:5%"><i class="icon-search icon-white"></i></button>
  </div>
- <div id="U_tbody">
+ <div id="user-ul">
   {% include "configuration/user/ul.html" %}
  </div>
 </div>

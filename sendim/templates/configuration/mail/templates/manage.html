@@ -2,9 +2,9 @@
  <br>
  <div class="input-append">
   <input id="template_q" type="text" placeholder="Mot..." style="width:85%">
-  <button class="btn btn-primary" onclick="$.fn.getTemplates()" style="width:5%"><i class="icon-search icon-white"></i></button>
+  <button class="btn btn-primary" onclick="$.fn.snafu_object('list','template')" style="width:5%"><i class="icon-search icon-white"></i></button>
  </div>
- <div id="MT_tbody">
+ <div id="template-ul">
   {% include "configuration/mail/templates/ul.html" %}
  </div>
 </div>
