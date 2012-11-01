@@ -43,6 +43,9 @@ def configuration(request) :
     MTs = MailTemplate.objects.all()
     MTsPage = Paginator(MTs, 10).page(1)
 
+    MGs = MailGroup.objects.all()
+    MGsPage = Paginator(MGs, 10).page(1)
+
     return render(request, 'configuration/index.html', {
         'Rs':Rs,
         'RsPage':RsPage,
@@ -67,7 +70,9 @@ def configuration(request) :
 
         'MTs':MTs,
         'MTsPage':MTsPage,
-        'mailTemplateForm':MailTemplateForm,
+
+        'MGs':MGs,
+	'MGsPage':MGsPage,
 
         'title':'Snafu - Configuration'
     })

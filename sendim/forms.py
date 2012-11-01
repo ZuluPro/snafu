@@ -104,13 +104,21 @@ class ReferenceBigForm(forms.Form):
         ]
 
 class MailTemplateForm(forms.ModelForm):
-
     class Meta:
         model = MailTemplate
         widgets = {
             'subject':forms.TextInput({'style' : 'width:100%;'}),
             'body':forms.Textarea({'style' : 'width:100%;'}),
             'comment':forms.Textarea({'style' : 'width:100%;','rows':3})
+        }
+
+class MailGroupForm(forms.ModelForm):
+    class Meta:
+        model = MailGroup
+        widgets = {
+            'to':forms.TextInput({'style':'width:100%;'}),
+            'cc':forms.TextInput({'style':'width:100%;'}),
+            'ccm':forms.TextInput({'style':'width:100%;'})
         }
 
 class UserForm(forms.ModelForm):
