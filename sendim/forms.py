@@ -121,6 +121,10 @@ class MailGroupForm(forms.ModelForm):
             'ccm':forms.TextInput({'style':'width:100%;'})
         }
 
+class MailTypeForm(forms.ModelForm):
+    class Meta:
+        model = MailType
+
 class UserForm(forms.ModelForm):
     id = forms.IntegerField(required=False, initial=0, widget=widgets.HiddenInput)
     class Meta:

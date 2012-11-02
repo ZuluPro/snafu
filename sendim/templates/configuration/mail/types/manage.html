@@ -1,0 +1,13 @@
+<div class="span3">
+ <br>
+ <div class="input-append">
+  <input id="mailType_q" type="text" placeholder="Mot..." style="width:85%">
+  <button class="btn btn-primary" onclick="$.fn.snafu_object('list','mailType')" style="width:5%"><i class="icon-search icon-white"></i></button>
+ </div>
+ <div id="mailType-ul">
+  {% include "configuration/mail/types/ul.html" %}
+ </div>
+</div>
+
+<div id="mailTypeContent" class="span7">
+</div>

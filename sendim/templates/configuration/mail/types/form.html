@@ -1,0 +1,25 @@
+<form id="mailTypeForm" class="form-horizontal">
+ {% csrf_token %}
+ <fieldset>
+
+  <div class="row">
+
+   <div class="span8">
+   {% for field in MailTypeForm %}
+
+     <div class="control-group">
+      <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
+      <div class="controls">
+       {{ field }}
+      </div>
+     </div>
+
+   {% endfor %}
+   </div>
+
+  </div>
+
+ </fieldset>
+ <button class="btn btn-primary" onclick="$.fn.snafu_object('add','mailType'); return false;">Enregister</button>
+</form>
+

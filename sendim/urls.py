@@ -56,4 +56,8 @@ urlpatterns = patterns('',
     (r'^configuration/mailGroup_q$', 'sendim.views.getMailGroups'),
     (r'^configuration/mailGroup/(?P<mgroup_id>\d+)/(?P<action>(get|del|add))$', 'sendim.views.mailGroup'),
     (r'^configuration/mailGroup/form$', 'sendim.views.getMailGroupForm'),
+
+    (r'^configuration/mailType_q$', 'sendim.views.getMailTypes'),
+    (r'^configuration/mailType/(?P<mtype_id>\d+)/(?P<action>(get|del|add))$', 'sendim.views.mailType'),
+    (r'^configuration/mailType/form$', 'sendim.views.getMailTypeForm'),
 )
