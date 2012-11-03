@@ -22,8 +22,8 @@ def getReferences(request) :
     Rs = Reference.objects.all()
     if request.GET['q'] :
         Rs = list( (
-            set( Rs.filter(host__host__icontains=request.GET['q']) ) |
-            set( Rs.filter(service__service__icontains=request.GET['q']) )
+            set( Rs.filter(host__name__icontains=request.GET['q']) ) |
+            set( Rs.filter(service__name__icontains=request.GET['q']) )
         ) )
     Rs = Paginator(Rs, 10).page(request.GET.get('page',1))
     return render(request, 'configuration/reference/refs/ul.html', {
@@ -73,8 +73,8 @@ def getAsWithoutRef(request) :
     As = Alert.objects.filter( Q(reference=None), ~Q(status__status='OK'), ~Q(status__status='UP'), ~Q(status__status='DOWN') )
     if request.GET['q'] :
         As = (
-            set( As.filter(host__host__icontains=request.GET['q']) ) |
-            set( As.filter(service__service__icontains=request.GET['q']) )
+            set( As.filter(host__name__icontains=request.GET['q']) ) |
+            set( As.filter(service__name__icontains=request.GET['q']) )
         )
     return render(request, 'configuration/reference/alerts/ul.html', {
         'AsWithoutRef':As

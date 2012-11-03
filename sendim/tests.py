@@ -18,7 +18,7 @@ def createAlert(host=None,service=None,status=None, isDown=True) :
     Attributes may be choose with arguments.
     """
     if not host : host = choice(Host.objects.all())
-    else : host = Host.objects.get(host=host)
+    else : host = Host.objects.get(name=host)
 
     if not service : service = choice(Service.objects.all())
     else : service = Service.objects.get(service=service)

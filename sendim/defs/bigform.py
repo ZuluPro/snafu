@@ -13,8 +13,8 @@ def getFormSet(E=None):
     hosts = dict()
     if E :
         for A in E.getAlerts() :
-            if not A.host.host in hosts : hosts[A.host.host] = []
-            if not A.service.service in hosts[A.host.host] : hosts[A.host.host].append(A.service.service)
+            if not A.host.name in hosts : hosts[A.host.name] = []
+            if not A.service.name in hosts[A.host.name] : hosts[A.host.name].append(A.service.name)
     data = {
        'form-TOTAL_FORMS' : sum( [ len(v) for v in hosts.values() ] ),
        'form-INITIAL_FORMS': sum( [ len(v) for v in hosts.values() ] )
@@ -23,8 +23,8 @@ def getFormSet(E=None):
     ReferenceBigFormSet = formset_factory(ReferenceBigForm)
     for count,(host,services) in enumerate(hosts.items()) :                                          
         for service in services :
-            data['form-'+str(count)+'-host'] = Host.objects.get(host=host)
-            data['form-'+str(count)+'-service'] = Service.objects.get(service=service)
+            data['form-'+str(count)+'-host'] = Host.objects.get(name=host)
+            data['form-'+str(count)+'-service'] = Service.objects.get(name=service)
             data['form-'+str(count)+'-glpi_source'] = 'Supervision'                                  
             for status in ('warning','critical','unknown') :
                 data['form-'+str(count)+'-'+status+'_criticity'] = 1 

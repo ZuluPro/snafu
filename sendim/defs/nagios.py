@@ -14,7 +14,7 @@ htmlparser = HTMLParser.HTMLParser()
 
 def opengraph(A, graph) :
     """Get a graph for an alert and a number representing the pnp view."""
-    return opener.open(www+'pnp4nagios/image?host='+A.host.host+'&srv='+A.service.service.replace(' ','+')+'&view=1&source='+str(int(graph) ) ).read()
+    return opener.open(www+'pnp4nagios/image?host='+A.host.name+'&srv='+A.service.name.replace(' ','+')+'&view=1&source='+str(int(graph) ) ).read()
 
 def readNagios() :
     """
@@ -75,12 +75,12 @@ def reloadAlert() :
             logprint("Nagios parsing failed on date "+date, 'yellow' )
             date = datetime.datetime.now()
 
-        if not Alert.objects.filter(host__host__exact=host, service__service__exact=service, date=date ) :
-            if not Host.objects.filter(host=host) : Host(host=host).save();
-            if not Service.objects.filter(service=service) : Service(service=service).save()
+        if not Alert.objects.filter(host__name__exact=host, service__name__exact=service, date=date ) :
+            if not Host.objects.filter(name=host) : Host(name=host).save();
+            if not Service.objects.filter(name=service) : Service(name=service).save()
             A = Alert(
-                host = Host.objects.get(host=host),
-                service = Service.objects.get(service=service),
+                host = Host.objects.get(name=host),
+                service = Service.objects.get(name=service),
                 status = Status.objects.get(status=status),
                 info=info,
                 date=date

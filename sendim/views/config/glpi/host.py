@@ -67,11 +67,12 @@ def hostDiff(request) :
      - Hosts which is in GLPI's DB but not in project's one
     """
 
-    db_hosts = [ (H.host,H.glpi_id.__int__()) for H in Host.objects.all() if H.glpi_id ]
+    db_hosts = [ (H.name,H.glpi_id.__int__()) for H in Host.objects.all() if H.glpi_id ]
     glpi_hosts = [ (H.get('name','('+str(H['id'])+')'),int(H['id'])) for H in get_objects_from_glpi('host') ]
     ok_hosts = list( set(db_hosts) & set(glpi_hosts) )
 
-    in_both = list( set([ h for h,i in db_hosts ] & set([ h for h,i in glpi_hosts ]) )
+    in_both = list( set([ h for h,i in db_hosts ])  & set([ h for h,i in glpi_hosts ]) )
+    bad_id = list()
 
     no_id = [ (H.host,0) for H in Host.objects.filter(glpi_id=None) ]
     not_in_glpi = ( set(db_hosts) ^ set(glpi_hosts) ) & set(db_hosts)

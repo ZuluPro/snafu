@@ -29,7 +29,7 @@ def createTicket(E) :
     	'session':loginInfo['session'],
     	'type':1,
     	'category': R.glpi_category.glpi_id,
-    	'title': E.element.host+' '+E.message,
+    	'title': E.element.name+' '+E.message,
     	'content':content,
     	'recipient': R.glpi_dst_group.glpi_id,
     	'group':9,

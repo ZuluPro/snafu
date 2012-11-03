@@ -2,8 +2,8 @@ from django.contrib import admin
 from referentiel.models import *
 
 class HostAdmin(admin.ModelAdmin):
-    list_display = ('host','glpi_id', 'host_type')
-    search_fields = ('host','host_type')
+    list_display = ('name','glpi_id', 'host_type')
+    search_fields = ('name','host_type')
     list_filter = ('host_type',)
     list_editable = ('glpi_id', )
 
@@ -14,7 +14,7 @@ class TraductionAdmin(admin.ModelAdmin):
 
 class ReferenceAdmin(admin.ModelAdmin):
     list_display = ('service','host','mail_type','mail_group','status','mail_criticity','procedure','glpi_category', 'glpi_dst_group', 'glpi_supplier' )
-    search_fields = ('host__host', 'service__service')
+    search_fields = ('host__name', 'service__name')
     list_editable = ('host','mail_type','mail_group','status','mail_criticity', 'procedure', 'glpi_category', 'glpi_dst_group', 'glpi_supplier')
  
 class GlpiSupplierAdmin(admin.ModelAdmin) :

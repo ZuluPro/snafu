@@ -24,22 +24,22 @@ class Command(BaseCommand) :
                 try :
                     if 'name' in host :
                         H = Host.objects.create(
-                          host=host['name'],
+                          name=host['name'],
                           glpi_id=host['id'],
                           host_type='computer'
                         )
-                        logprint('Add computer : "'+H.host +'"', 'green')
+                        logprint('Add computer : "'+H.name +'"', 'green')
                 except IntegrityError : logprint('Computer ' +host['name']+ ' already exists', 'yellow')
 
             for host in get_objects_from_glpi('networkequipment') :
                 try :
                     if 'name' in host :
                         H = Host.objects.create(
-                          host=host['name'],
+                          name=host['name'],
                           glpi_id=host['id'],
                           host_type='networkequipment'
                         )
-                        logprint('Add computer : "'+H.host +'"', 'green')
+                        logprint('Add computer : "'+H.name +'"', 'green')
                 except IntegrityError : logprint('Computer ' +host['name']+ ' already exists', 'yellow')
 
 #            for host in get_hosts_from_glpi() :

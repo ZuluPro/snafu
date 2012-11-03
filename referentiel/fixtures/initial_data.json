@@ -2,7 +2,7 @@
   {
     "model": "referentiel.service",
     "pk": 1,
-    "fields": { "service":"Host status" }
+    "fields": { "name":"Host status" }
   },
   {
     "model": "referentiel.glpiurgency",

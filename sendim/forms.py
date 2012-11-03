@@ -11,7 +11,7 @@ class TraductionBigForm(forms.Form):
     It allow to add WARNING/CRITICAL/UNKNOWN traduction in one time.
     """
 
-    service = forms.ModelChoiceField(Service.objects.all().order_by('service') )
+    service = forms.ModelChoiceField(Service.objects.all().order_by('name') )
     warning = forms.CharField(max_length=300, required=True)
     critical = forms.CharField(max_length=300, required=True)
     unknown = forms.CharField(max_length=300, required=True)
@@ -22,8 +22,8 @@ class ReferenceBigForm(forms.Form):
     A form for Reference.
     It allow to add WARNING/CRITICAL/UNKNOWN reference in one time.
     """
-    host = forms.ModelChoiceField(Host.objects.all().order_by('host'), required=True )
-    service = forms.ModelChoiceField(Service.objects.all(), required=True  )
+    host = forms.ModelChoiceField(Host.objects.all().order_by('name'), required=True )
+    service = forms.ModelChoiceField(Service.objects.all().order_by('name'), required=True  )
     apply = forms.BooleanField()
 
     escalation_contact = forms.CharField()
@@ -57,11 +57,11 @@ class ReferenceBigForm(forms.Form):
     glpi_supplier = forms.ModelChoiceField(GlpiSupplier.objects.all())
 
     def host_as_text(self):
-        try : return Host.objects.get(pk=self['host'].value()).host
+        try : return Host.objects.get(pk=self['host'].value()).name
         except Event.DoesNotExist : return ''
 
     def service_as_text(self):
-        try : return Service.objects.get(pk=self['service'].value()).service
+        try : return Service.objects.get(pk=self['service'].value()).name
         except Event.DoesNotExist : return ''
 
     def warning(self):

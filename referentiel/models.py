@@ -9,7 +9,7 @@ class Host(models.Model):
         (u'computer',u'computer'),
         (u'networkequipment',u'networkequipment'),
     )
-    host = models.CharField(max_length=45, unique=True)
+    name = models.CharField(max_length=45, unique=True)
     glpi_id = models.IntegerField( blank=True, null=True,  default=None)
     host_type = models.CharField(max_length=16, blank=True, choices=HOST_TYPE_CHOICES)
 
@@ -38,29 +38,21 @@ class Host(models.Model):
 #        logprint("Add automaticaly Host "+self.host, 'green')            
             
     def __unicode__(self):
-        return self.host
+        return self.name
 
 class Service(models.Model):
-    service = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=128, unique=True)
 
     def __unicode__(self):
-        return self.service
+        return self.name
 
     def save(self, *args, **kwargs):
         if not self.pk :
             super(Service, self).save(*args, **kwargs)
-            logprint('Add automaticaly service : '+self.service, 'green')
+            logprint('Add automaticaly service : '+self.name, 'green')
 
 class Status(models.Model):
     status = models.CharField(max_length=10, unique=True)
-
-    def shortcut(self,name):
-        if match('ALL', name, 2) : status = Status.objects.all()
-        if match('OK', name, 2) : status = Status.objects.get(status='OK')
-        if match('UP', name, 2) : status = Status.objects.get(status='UP')
-        if match('DOWN', name, 2) : status = Status.objects.get(status='DOWN')
-        if match('serviceDown', name, 2) : status = Status.objects.filter(Q(status='WARNING') | Q(status='CRITICAL') | Q(status='UNKNOWN'))
-        return status
 
     def __unicode__(self):
         return self.status
@@ -160,7 +152,7 @@ class Reference(models.Model):
     glpi_supplier = models.ForeignKey(GlpiSupplier, blank=True, null=True)
 
     def __unicode__(self):
-        return self.host.host+' - '+self.service.service+' en '+self.status.status
+        return self.host.name+' - '+self.service.name+' en '+self.status.status
 
 class Traduction(models.Model):
     service = models.ForeignKey(Service)
@@ -168,5 +160,5 @@ class Traduction(models.Model):
     status = models.ForeignKey(Status)
 
     def __unicode__(self):
-        return self.service.service+' en '+self.status.status
+        return self.service.name+' en '+self.status.status
 

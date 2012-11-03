@@ -22,8 +22,8 @@ def eventHistory(request) :
     E = Event.objects.get( pk=request.GET['eventPk'])
     A = E.getPrimaryAlert()
     As = Alert.objects.filter(
-       host__host=E.element.host,
-       service__service=A.service.service
+       host=E.element,
+       service=A.service
     )
 
     return render(request, 'modal/eventHistory.html', {
@@ -66,7 +66,7 @@ def eventsFiltered(request) :
     except ValueError, e :
         return HttpResponseBadRequest(u'Donn\xe9es demand\xe9es invalides !')
          
-    if request.GET.get('element',False) : Es = Es.filter(element__host__contains=request.GET['element'])
+    if request.GET.get('element',False) : Es = Es.filter(element__name__contains=request.GET['element'])
     if request.GET.get('message',False) : Es = Es.filter(message__contains=request.GET['message'])
     #if request.GET.get('date',False) : pass 
 

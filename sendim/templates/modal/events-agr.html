@@ -1,35 +1,37 @@
 {% load addFontColor %}
 <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">×</button>
-    <h4>Agrégation d'évenements : </h4>
+ <button type="button" class="close" data-dismiss="modal">×</button>
+ <h4>Agrégation d'évenements : </h4>
 </div>
 
 <form method="POST" action="/snafu/event/agr">{% csrf_token %}
-    <div class="modal-body" id="referenceModalBody">
-        Vers quelle évenement agréger :
-        <select class="span4 input-small" name="choicedEvent">
-            {% for event in events %}
-            <option value="{{ event.pk }}">{{ event.pk }}: {{ event }}</option>
-            {% endfor %}
-        </select>
 
-        <input class='input' name="message" style="width:100%" value="{{ events.0.message }}">
+ <div class="modal-body" id="referenceModalBody">
+  Vers quelle évenement agréger :
+  <select class="span4 input-small" name="choicedEvent">
+   {% for event in events %}
+    <option value="{{ event.pk }}">{{ event.pk }}: {{ event }}</option>
+   {% endfor %}
+  </select>
 
-        <ul class="unstyled">
-        {% for event in events %}
-        <li><input type="checkbox" checked name="toAgr" value="{{ event.pk }}"></input>{{ event }}</li>
-            <ul>
-            {% for alert in alerts %}
-            {% if alert.event.pk == event.pk %}
-                <li>{{ alert.date|date:"Y/m/d - G:i:s" }} - {{ alert.service }} {{ alert.info|addFontColor:alert.status.status|safe }}</li>
-            {% endif %}
-            {% endfor %}
-            </ul>
-        {% endfor %}
-        </ul>
-    </div>
-    <div class="modal-footer">
-        <input class="btn btn-primary" type="submit" value="Agréger"></a>
-        <a href="#" class="btn" data-dismiss="modal">Fermer</a>
-    </div>
+  <input class='input' name="message" style="width:100%" value="{{ events.0.message }}">
+
+  <ul class="unstyled">
+   {% for event in events %}
+    <li><input type="checkbox" checked name="toAgr" value="{{ event.pk }}"></input>{{ event }}</li>
+    <ul>
+     {% for alert in alerts %}
+      {% if alert.event.pk == event.pk %}
+       <li>{{ alert.date|date:"Y/m/d - G:i:s" }} - {{ alert.service }} {{ alert.info|addFontColor:alert.status.status|safe }}</li>
+      {% endif %}
+     {% endfor %}
+    </ul>
+   {% endfor %}
+  </ul>
+ </div>
+
+ <div class="modal-footer">
+  <input class="btn btn-primary" type="submit" value="Agréger"></a>
+  <a href="#" class="btn" data-dismiss="modal">Fermer</a>
+ </div>
 </form>

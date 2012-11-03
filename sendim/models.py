@@ -18,7 +18,7 @@ class Event(models.Model) :
     closed = models.BooleanField(default=False)
 
     def __unicode__(self) :
-        return str(self.pk)+':'+self.element.host+' - '+self.message
+        return str(self.pk)+':'+self.element.name+' - '+self.message
 
     def getAlerts(self, isUp=True, withoutRef=False):
         """
@@ -79,13 +79,13 @@ class Event(models.Model) :
         else :
             hosts = {}
             for A in self.getAlerts() :
-                if not A.host.host in hosts : hosts[A.host.host] = []
-                if not A.service.service in hosts[A.host.host] : hosts[A.host.host].append(A.service.service)
+                if not A.host.name in hosts : hosts[A.host.name] = []
+                if not A.service.name in hosts[A.host.name] : hosts[A.host.name].append(A.service.name)
             ### Calcul de tout les service
             notOK = list()
             for host in hosts.keys() : 
                 for service in hosts[host] :
-                    if not self.getAlerts().filter(host__host=host,service__service=service,status=Status.objects.get(status='OK') ) :
+                    if not self.getAlerts().filter(host__name=host,service__name=service,status=Status.objects.get(status='OK') ) :
                         notOK.append( (host,service) )
             if not notOK :
                 self.closed = True
@@ -105,7 +105,7 @@ class Alert(models.Model) :
 
 
     def __unicode__(self) :
-        return self.host.host+' : '+self.service.service+' - '+ self.status.status
+        return self.host.name+' : '+self.service.name+' - '+ self.status.status
 
     def setPrimary(self):
         """Set alert as primary, set all event's alerts as not."""

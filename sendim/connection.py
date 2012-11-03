@@ -6,7 +6,7 @@ from urllib2 import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler, build
 from socket import SocketType,error,gaierror
 from urlparse import urlsplit
 
-glpiServer = xmlrpclib.Server(settings.SNAFU['glpi-xmlrpc'], encoding='ascii', verbose=False, allow_none=True)
+glpiServer = xmlrpclib.Server(settings.SNAFU['glpi-xmlrpc'], verbose=False, allow_none=True)
 
 def doLogin():
     """Make login on GLPI webservice.

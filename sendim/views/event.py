@@ -71,7 +71,7 @@ def events(request) :
             msg = makeMail(E)
 
             # Recuperation des graphs correspondant
-            graphList = readGraphs(E.element.host, A.service.service)
+            graphList = readGraphs(E.element.name, A.service.name)
     
             # Envoi du formulaire d'envoi de mail
             return render(request,'event/preview-mail.html', {
