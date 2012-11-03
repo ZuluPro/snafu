@@ -52,10 +52,10 @@ class Service(models.Model):
             logprint('Add automaticaly service : '+self.name, 'green')
 
 class Status(models.Model):
-    status = models.CharField(max_length=10, unique=True)
+    name = models.CharField(max_length=10, unique=True)
 
     def __unicode__(self):
-        return self.status
+        return self.name
 
 class MailType(models.Model):
     mail_type = models.CharField(max_length=128, unique=True)
@@ -152,7 +152,7 @@ class Reference(models.Model):
     glpi_supplier = models.ForeignKey(GlpiSupplier, blank=True, null=True)
 
     def __unicode__(self):
-        return self.host.name+' - '+self.service.name+' en '+self.status.status
+        return self.host.name+' - '+self.service.name+' en '+self.status.name
 
 class Traduction(models.Model):
     service = models.ForeignKey(Service)
@@ -160,5 +160,5 @@ class Traduction(models.Model):
     status = models.ForeignKey(Status)
 
     def __unicode__(self):
-        return self.service.name+' en '+self.status.status
+        return self.service.name+' en '+self.status.name
 

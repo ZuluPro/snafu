@@ -7,7 +7,7 @@
 <div class="modal-body" id="referenceModalBody">
  <ul>
   {% for A in As %}
-   <li>{{ A.date|date:"Y/m/d - G:i:s" }} - {{ A.service }} : {{ A.info|addFontColor:A.status.status|safe }}</li>
+   <li>{{ A.date|date:"Y/m/d - G:i:s" }} - {{ A.service }} : {{ A.info|addFontColor:A.status.name|safe }}</li>
   {% endfor %}
  </ul>
 </div>

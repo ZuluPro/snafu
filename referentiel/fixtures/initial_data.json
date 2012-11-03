@@ -145,32 +145,32 @@
   {
     "model": "referentiel.status",
     "pk": 1,
-    "fields": { "status":"WARNING" }
+    "fields": { "name":"WARNING" }
   },
   {
     "model": "referentiel.status",
     "pk": 2,
-    "fields": { "status":"CRITICAL" }
+    "fields": { "name":"CRITICAL" }
   },
   {
     "model": "referentiel.status",
     "pk": 3,
-    "fields": { "status":"UNKNOWN" }
+    "fields": { "name":"UNKNOWN" }
   },
   {
     "model": "referentiel.status",
     "pk": 4,
-    "fields": { "status":"DOWN" }
+    "fields": { "name":"DOWN" }
   },
   {
     "model": "referentiel.status",
     "pk": 5,
-    "fields": { "status":"OK" }
+    "fields": { "name":"OK" }
   },
   {
     "model": "referentiel.status",
     "pk": 6,
-    "fields": { "status":"UP" }
+    "fields": { "name":"UP" }
   },
   {
     "model": "sendim.mailtemplate",

@@ -40,8 +40,8 @@ def pushAlert(host,service,status,info,date=None):
     
     A = Alert(
         host = Host.objects.get(name=host),
-        service = Service.objects.get(service=service),
-        status = Status.objects.get(status=status),
+        service = Service.objects.get(name=service),
+        status = Status.objects.get(name=status),
         info = info,
         date = date
     )

@@ -81,7 +81,7 @@ def reloadAlert() :
             A = Alert(
                 host = Host.objects.get(name=host),
                 service = Service.objects.get(name=service),
-                status = Status.objects.get(status=status),
+                status = Status.objects.get(name=status),
                 info=info,
                 date=date
             )

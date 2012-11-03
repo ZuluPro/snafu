@@ -50,11 +50,11 @@ def postFormSet(_POST, is_a_set=True):
     service = Service.objects.get(pk=POST['service'])
 
     for status in ('WARNING','CRITICAL','UNKNOWN') :
-        if not Reference.objects.filter(host=host,service=service,status__status=status) :
+        if not Reference.objects.filter(host=host,service=service,status__name=status) :
             R = Reference(
                 host = host,
                 service = service,
-                status = Status.objects.get(status=status),
+                status = Status.objects.get(name=status),
 
                 escalation_contact = POST['escalation_contact'],
                 tendancy = POST['tendancy'],
@@ -85,12 +85,11 @@ def postFormSet(_POST, is_a_set=True):
 def postTraductionFormSet(POST) :
     service = Service.objects.get(pk=POST['service'])
     for status in ('warning','critical','unknown') :
-        T = Traduction(
+        T = Traduction.objects.create(
             service = service,
-            status = Status.objects.get(status=status),
+            status = Status.objects.get(name=status.upper()),
             traduction = POST[status]
         )
-        T.save()
 
     for A in Alert.objects.filter(service=service, traduction=None) :
         A.linkToTraduction()

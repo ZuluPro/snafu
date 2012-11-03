@@ -58,7 +58,7 @@ def sendMail(POST) :
         ("$DATE$", E.date.strftime('%d/%m/%y - %H:%M:%S')),
         ("$JOUR$", E.date.strftime('%d/%m/%y')),
         ("$HEURE$", E.date.strftime('%H:%M:%S')),
-        ("$LOG$" , '\n'.join( [ A.date.strftime('%d/%m/%y %H:%M:%S - ')+A.service.name+' en ' +A.status.status+' - '+A.info for A in E.getAlerts() ] ) )
+        ("$LOG$" , '\n'.join( [ A.date.strftime('%d/%m/%y %H:%M:%S - ')+A.service.name+' en ' +A.status.name+' - '+A.info for A in E.getAlerts() ] ) )
     ) 
     for pattern,string in subs :
         mailText = mailText.replace(pattern, string)

@@ -112,7 +112,7 @@ def EaddRef(request):
     host,service = postFormSet(request.POST)
 
     for status in ('WARNING','CRITICAL','UNKNOWN') :
-        As = E.getAlerts().filter(status__status=status) 
+        As = E.getAlerts().filter(status__name=status) 
         for _A in As: 
             _A.linkToReference()
 

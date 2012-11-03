@@ -24,13 +24,13 @@ def createAlert(host=None,service=None,status=None, isDown=True) :
     else : service = Service.objects.get(service=service)
 
     if not status :
-       if service.service == "Host status" :
-           if isDown : status = Status.objects.get(status='DOWN')
-           else : status = Status.objects.get(status='UP')
+       if service.name == "Host status" :
+           if isDown : status = Status.objects.get(name='DOWN')
+           else : status = Status.objects.get(name='UP')
        else :
-           if isDown : status = choice(Status.objects.exclude(Q(status='OK') | Q(status='UP') | Q(status='DOWN')))
-           else : status = choice(Status.objects.exclude(Q(status='UP') | Q(status='DOWN')))
-    else : status = Status.objects.get(status=status)
+           if isDown : status = choice(Status.objects.exclude(Q(name='OK') | Q(name='UP') | Q(name='DOWN')))
+           else : status = choice(Status.objects.exclude(Q(name='UP') | Q(name='DOWN')))
+    else : status = Status.objects.get(name=status)
 
     A = Alert(
        host = host,
@@ -46,14 +46,14 @@ def createAlertFrom(alert, status=None, isDown=True):
     Create a random alert from previous one given in argument.i
     Only status may be chosen.
     """
-    if alert.service.service == 'Host status' :
-        if alert.status == Status.objects.get(status='DOWN') : status = Status.objects.get(status='UP')
-        else : status = Status.objects.get(status='DOWN')
+    if alert.service.name == 'Host status' :
+        if alert.status == Status.objects.get(name='DOWN') : status = Status.objects.get(name='UP')
+        else : status = Status.objects.get(name='DOWN')
     else :
-        if status : Status.objects.get(status=status)
+        if status : Status.objects.get(name=status)
         else : 
-            status = Status.objects.exclude(Q(status='DOWN') | Q(status='UP'))
-            if isDown : status = choice(status.exclude(status='OK'))
+            status = Status.objects.exclude(Q(name='DOWN') | Q(name='UP'))
+            if isDown : status = choice(status.exclude(name='OK'))
             else : status = choice(status)
 
     A = Alert(
@@ -76,7 +76,7 @@ def createEvent(A, number=5, endUp=True):
     for i in xrange(number):
         sleep(1)
         if i == xrange(number)[-2] and endUp :
-            _A = createAlertFrom(A, status=Status.objects.get(status='OK'))
+            _A = createAlertFrom(A, status=Status.objects.get(name='OK'))
             _A.save()
             _A.link()
             break
@@ -95,7 +95,7 @@ def endEvent(E,number=3):
     for i in xrange(number):
         sleep(1)
         if i >= xrange(number)[-1] :
-          _A = createAlertFrom(A, status=Status.objects.get(status='OK'))
+          _A = createAlertFrom(A, status=Status.objects.get(name='OK'))
           _A.save()
           _A.link()
         else :  
