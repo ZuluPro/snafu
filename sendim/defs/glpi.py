@@ -107,21 +107,30 @@ def getTicket(ticketId) :
     """
     return glpiServer.glpi.getTicket({'session':idSession, 'ticket':ticketId})
 
-def get_hosts_from_glpi(itemtype='computer') :
+def get_objects_from_glpi(itemtype) :
     loginInfo = doLogin()
+
     if 'error' in loginInfo :
         raise UnableToConnectGLPI(loginInfo['error'])
+
+    elif itemtype == 'host' :
+        result = list()
+        for itemtype in ('computer','networkequipment') :
+            result += glpiServer.glpi.listObjects({'session':loginInfo['session'], 'itemtype':itemtype})
+
+    else :
+        data = {'session':loginInfo['session'], 'itemtype':itemtype} 
+        result = glpiServer.glpi.listObjects(data)
+
+    doLogout()
+    return result
+
+def get_hosts_from_glpi(itemtype='computer') :
     hosts = list()
-    data = {
-      'session':loginInfo['session'],
-      'itemtype':itemtype,
-      'limit':2000
-    }
-    for host in glpiServer.glpi.listObjects(data) :
+    for host in get_objects_from_glpi('computer') :
         if not host in hosts :
             hosts.append(host)
 
-    doLogout()
     return hosts
 
 def get_users_from_glpi() :

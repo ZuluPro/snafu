@@ -68,7 +68,8 @@ def hostDiff(request) :
     """
 
     db_hosts = [ (H.host,H.glpi_id.__int__()) for H in Host.objects.all() if H.glpi_id ]
-    glpi_hosts = [ (H['name'],int(H['id'])) for H in get_hosts_from_glpi() ]
+    glpi_hosts = [ (H.get('name','('+str(H['id'])+')'),int(H['id'])) for H in get_hosts_from_glpi() ]
+
     no_id = [ (H.host,0) for H in Host.objects.filter(glpi_id=None) ]
     bad_id = list()
     not_in_glpi = ( set(db_hosts) ^ set(glpi_hosts) ) & set(db_hosts)

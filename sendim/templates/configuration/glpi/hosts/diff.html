@@ -14,7 +14,7 @@
    <td>
     <ul class="unstyled">
      {% for H in diff.db %}
-      <li><a onclick="$('#HostListTab').tab('show'); $.fn.getHost({{ H.pk }});">{{ H.glpi_id }} - {{ H }}</a></li>
+      <li><a onclick="$('#HostListTab').tab('show'); $.fn.snafu_object('get','host',{{ H.pk }});">{{ H.glpi_id }} - {{ H }}</a></li>
      {% endfor %}
     </ul>
    </td>
