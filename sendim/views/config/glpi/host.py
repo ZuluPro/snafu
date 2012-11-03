@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404
 from referentiel.defs import *
 from referentiel.models import Host
 from referentiel.forms import HostForm
-from sendim.defs import get_hosts_from_glpi
+from sendim.defs import get_objects_from_glpi
 
 @login_required
 def getHosts(request) :
@@ -68,16 +68,19 @@ def hostDiff(request) :
     """
 
     db_hosts = [ (H.host,H.glpi_id.__int__()) for H in Host.objects.all() if H.glpi_id ]
-    glpi_hosts = [ (H.get('name','('+str(H['id'])+')'),int(H['id'])) for H in get_hosts_from_glpi() ]
+    glpi_hosts = [ (H.get('name','('+str(H['id'])+')'),int(H['id'])) for H in get_objects_from_glpi('host') ]
+    ok_hosts = list( set(db_hosts) & set(glpi_hosts) )
+
+    in_both = list( set([ h for h,i in db_hosts ] & set([ h for h,i in glpi_hosts ]) )
 
     no_id = [ (H.host,0) for H in Host.objects.filter(glpi_id=None) ]
-    bad_id = list()
     not_in_glpi = ( set(db_hosts) ^ set(glpi_hosts) ) & set(db_hosts)
     not_in_db = ( set(db_hosts) ^ set(glpi_hosts) ) & set(glpi_hosts)
 
     diff = {}
-    diff['db'] = Host.objects.all()
+    diff['db'] = Host.objects.all().order_by('glpi_id')
     diff['glpi'] = glpi_hosts
+    diff['ok'] = sorted(ok_hosts, key = lambda pair: pair[1])
     diff['no_id'] = no_id
     diff['bad_id'] = bad_id
     diff['not_in_glpi'] = not_in_glpi
