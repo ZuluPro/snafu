@@ -52,25 +52,25 @@ class Command(BaseCommand) :
             for user in get_objects_from_glpi('user') :
                 try:
                     GU = GlpiUser.objects.create(
-                      glpi_user=user['name'].encode('latin-1').decode('utf-8'),
+                      name=user['name'].encode('latin-1').decode('utf-8'),
                       glpi_id=user['id']
                     )
-                    logprint('Add GLPI user : '+GU.glpi_user, 'green')
+                    logprint('Add GLPI user : '+GU.name, 'green')
                 except IntegrityError : logprint('User "' +user['name']+ '" already exists', 'yellow')
 
             for group in get_objects_from_glpi('group') :
                 try:
                     GG = GlpiGroup.objects.create(
-                      glpi_group=group['name'].encode('latin-1').decode('utf-8'),
+                      name=group['name'].encode('latin-1').decode('utf-8'),
                       glpi_id=group['id']
                     )
-                    logprint('Add GLPI group : '+GG.glpi_group, 'green')
+                    logprint('Add GLPI group : '+GG.name, 'green')
                 except IntegrityError : logprint('Group "' +group['name']+ '" already exists', 'yellow')
 
             for supplier in get_objects_from_glpi('supplier') :
                 try:
                     S = GlpiSupplier.objects.create(
-                      glpi_supplier=supplier['name'].encode('latin-1').decode('utf-8'),
+                      name=supplier['name'].encode('latin-1').decode('utf-8'),
                       glpi_id=user['id']
                     )
                     logprint('Add GLPI supplier : "' +supplier['name']+ '"', 'green')
@@ -79,7 +79,7 @@ class Command(BaseCommand) :
             for category in get_objects_from_glpi('ITILCategory') :
                 try:
                     C = GlpiCategory.objects.create(
-                      glpi_category=category['name'].encode('latin-1').decode('utf-8'),
+                      name=category['name'].encode('latin-1').decode('utf-8'),
                       glpi_id=user['id']
                     )
                     logprint('Add GLPI ITIL category : "' +category['name']+ '"', 'green')

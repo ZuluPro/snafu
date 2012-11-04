@@ -18,7 +18,7 @@ class ReferenceAdmin(admin.ModelAdmin):
     list_editable = ('host','mail_type','status','mail_criticity', 'procedure', 'glpi_category', 'glpi_dst_group', 'glpi_supplier')
  
 class GlpiSupplierAdmin(admin.ModelAdmin) :
-    list_display = ( 'glpi_supplier', 'glpi_id' )
+    list_display = ( 'name', 'glpi_id' )
     list_editable = ('glpi_id', )
 
 class MailGroupAdmin(admin.ModelAdmin) :

@@ -80,53 +80,53 @@ class MailCriticity(models.Model):
 
 #### Objects GLPI
 class GlpiUrgency(models.Model):
-    glpi_urgency = models.CharField(max_length=128)
+    name = models.CharField(max_length=128)
     glpi_id = models.IntegerField(unique=True, blank=True)
 
     def __unicode__(self):
-        return self.glpi_urgency
+        return self.name
 
 class GlpiPriority(models.Model):
-    glpi_priority = models.CharField(max_length=128)
+    name = models.CharField(max_length=128)
     glpi_id = models.IntegerField(unique=True, blank=True)
 
     def __unicode__(self):
-        return self.glpi_priority
+        return self.name
 
 class GlpiCategory(models.Model):
-    glpi_category = models.CharField(max_length=150)
+    name = models.CharField(max_length=150)
     glpi_id = models.IntegerField(unique=True)
 
     def __unicode__(self):
-        return self.glpi_category
+        return self.name
 
 class GlpiUser(models.Model):
-    glpi_user = models.CharField(max_length=128)
+    name = models.CharField(max_length=128)
     glpi_id = models.IntegerField(unique=True)
 
     def __unicode__(self):
-        return self.glpi_user
+        return self.name
 
 class GlpiGroup(models.Model):
-    glpi_group = models.CharField(max_length=128)
+    name = models.CharField(max_length=128)
     glpi_id = models.IntegerField(unique=True)
 
     def __unicode__(self):
-        return self.glpi_group
+        return self.name
 
 class GlpiSupplier(models.Model):
-    glpi_supplier = models.CharField(max_length=128)
+    name = models.CharField(max_length=128)
     glpi_id = models.IntegerField(unique=True)
 
     def __unicode__(self):
-        return self.glpi_supplier
+        return self.name
 
 class GlpiImpact(models.Model):
-    glpi_impact = models.CharField(max_length=128)
+    name = models.CharField(max_length=128)
     glpi_id = models.IntegerField(unique=True)
 
     def __unicode__(self):
-        return self.glpi_impact
+        return self.name
 
 class Reference(models.Model):
     host = models.ForeignKey(Host)

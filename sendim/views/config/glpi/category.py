@@ -18,7 +18,7 @@ def getCategories(request) :
     """
     Cs = GlpiCategory.objects.all()
     if request.GET['q'] :
-        Cs = Cs.filter(glpi_category__icontains=request.GET['q'])  
+        Cs = Cs.filter(name__icontains=request.GET['q'])  
     Cs = Paginator(Cs, 10).page(request.GET.get('page',1))
 
     return render(request, 'configuration/glpi/categories/ul.html', {
