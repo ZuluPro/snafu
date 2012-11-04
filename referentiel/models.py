@@ -58,24 +58,25 @@ class Status(models.Model):
         return self.name
 
 class MailType(models.Model):
-    mail_type = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=50, unique=True)
 
     def __unicode__(self):
-        return self.mail_type
+        return self.name
 
 class MailGroup(models.Model):
-    mail_group = models.CharField(max_length=30, unique=True)
+    name = models.CharField(max_length=30, unique=True)
     to = models.CharField(max_length=150)
     cc = models.CharField(max_length=150)
     ccm = models.CharField(max_length=150)
+
     def __unicode__(self):
-        return self.mail_group
+        return self.name
 
 class MailCriticity(models.Model):
-    mail_criticity = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=20, unique=True)
 
     def __unicode__(self):
-        return self.mail_criticity
+        return self.name
 
 #### Objects GLPI
 class GlpiUrgency(models.Model):

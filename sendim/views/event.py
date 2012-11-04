@@ -118,7 +118,7 @@ def EaddRef(request):
 
             A = E.getPrimaryAlert()
             if _A.isPrimary : 
-                E.criticity = A.reference.mail_criticity.mail_criticity
+                E.criticity = A.reference.mail_criticity.name
                 E.save()
 
     return render(request, 'event/event-index.html', {

@@ -135,12 +135,12 @@
   {
     "model": "referentiel.mailcriticity",
     "pk": 1,
-    "fields": { "mail_criticity":"Mineur" }
+    "fields": { "name":"Mineur" }
   },
   {
     "model": "referentiel.mailcriticity",
     "pk": 2,
-    "fields": { "mail_criticity":"Majeur" }
+    "fields": { "name":"Majeur" }
   },
   {
     "model": "referentiel.status",

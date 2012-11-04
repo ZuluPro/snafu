@@ -16,7 +16,11 @@ def makeMail(E):
     a dictionnary which contains all mail attributes.
     """
     R = E.getPrimaryAlert().reference
-    MT = MailTemplate.objects.get(choosen=True)
+    if MailTemplate.objects.filter(choosen=True).exists() :
+        MT = MailTemplate.objects.get(choosen=True)
+    else :
+        MT = MailTemplate.objects.get(pk=1)
+
     msg = {}
     msg['from'] = settings.SNAFU['smtp-from']
     msg['to'] = R.mail_group.to
@@ -50,7 +54,7 @@ def sendMail(POST) :
     subs = (
         ("$HOST$", A.host.name),
         ("$MESSAGE$", E.message),
-        ("$MAIL_TYPE$", R.mail_type.mail_type),
+        ("$MAIL_TYPE$", R.mail_type.name),
         ("$CRITICITY$", E.criticity),
         ("$GLPI$" , str(E.glpi)),
         ("$GLPI-URL$", settings.SNAFU['glpi-url']+'front/ticket.form.php?id='),

@@ -21,7 +21,7 @@ def getMailGroups(request) :
     MGs = MailGroup.objects.all()
     if request.GET['q'] :
         MGs = list( (
-            set( MGs.filter(mail_group__icontains=request.GET['q']) ) |
+            set( MGs.filter(name__icontains=request.GET['q']) ) |
             set( MGs.filter(to__icontains=request.GET['q']) ) |
             set( MGs.filter(ccm__icontains=request.GET['q']) ) |
             set( MGs.filter(cc__icontains=request.GET['q']) )
