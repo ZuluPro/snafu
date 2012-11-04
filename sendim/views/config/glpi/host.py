@@ -2,6 +2,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+import django.utils.simplejson as json
 
 from referentiel.defs import *
 from referentiel.models import Host
@@ -46,9 +47,12 @@ def host(request, host_id, action="get") :
         H.delete()
     
     elif action == "add" :
-         Form = HostForm(request.POST)
-         if Form.is_valid() :
-             Form.save()
+         form = HostForm(request.POST)
+         if form.is_valid() :
+             form.save()
+         else : 
+             errors = json.dumps(form.errors)
+             return HttpResponse(errors, mimetype='application/json')
          
     return render(request, 'configuration/glpi/hosts/tabs.html', {
         'Hs':Host.objects.all(),

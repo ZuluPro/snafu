@@ -2,6 +2,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+import django.utils.simplejson as json
  
 from sendim.defs import *
 from sendim.forms import *
@@ -51,9 +52,12 @@ def mailGroup(request, mgroup_id, action="get") :
         MG.delete()
  
     elif action == "add" :
-         Form = MailGroupForm(request.POST)
-         if Form.is_valid() :
-             Form.save()
+         form = MailGroupForm(request.POST)
+         if form.is_valid() :
+             form.save()
+         else :
+             errors = json.dumps(form.errors)
+             return HttpResponse(errors, mimetype='application/json')
          
     return render(request, 'configuration/mail/groups/tabs.html', {
         'MGs':MailGroup.objects.all()

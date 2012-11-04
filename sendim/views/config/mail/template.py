@@ -2,6 +2,7 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+import django.utils.simplejson as json
  
 from sendim.defs import *
 from sendim.forms import *
@@ -50,9 +51,12 @@ def mailTemplate(request, temp_id, action="get") :
         MT.delete()
  
     elif action == "add" :
-         Form = MailTemplateForm(request.POST)
-         if Form.is_valid() :
-             Form.save()
+         form = MailTemplateForm(request.POST)
+         if form.is_valid() :
+             form.save()
+         else :
+             errors = json.dumps(form.errors)
+             return HttpResponse(errors, mimetype='application/json')
          
     return render(request, 'configuration/mail/templates/tabs.html', {
         'MTs':MailTemplate.objects.all()
