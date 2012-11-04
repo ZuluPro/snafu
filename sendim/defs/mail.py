@@ -16,8 +16,8 @@ def makeMail(E):
     a dictionnary which contains all mail attributes.
     """
     R = E.getPrimaryAlert().reference
-    if MailTemplate.objects.filter(choosen=True).exists() :
-        MT = MailTemplate.objects.get(choosen=True)
+    if MailTemplate.objects.filter(chosen=True).exists() :
+        MT = MailTemplate.objects.get(chosen=True)
     else :
         MT = MailTemplate.objects.get(pk=1)
 

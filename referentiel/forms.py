@@ -37,3 +37,8 @@ class HostForm(forms.ModelForm) :
 class GlpiCategoryForm(forms.ModelForm) :
     class Meta:
         model = GlpiCategory
+
+class MailGroup(forms.ModelForm) :
+    class Meta:
+        model = MailGroup
+

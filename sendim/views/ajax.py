@@ -77,7 +77,7 @@ def choosePrimaryAlert(request) :
     """
     Choose which alert will be primary.
     In GET : Return list of event's alerts.
-    In POST : Set primary alert from POST['choosenAlert'].
+    In POST : Set primary alert from POST['chosenAlert'].
     """
     if request.method == 'GET' :
         if not request.GET.get('eventPk') :
@@ -86,7 +86,7 @@ def choosePrimaryAlert(request) :
 
     if request.method == 'POST' :
         E = Event.objects.get(pk=request.POST['eventPk'])
-        A = Alert.objects.get(pk=request.POST['choosenAlert'])
+        A = Alert.objects.get(pk=request.POST['chosenAlert'])
         A.setPrimary()
 
     return render(request, 'modal/choosePrimaryAlert.html', {

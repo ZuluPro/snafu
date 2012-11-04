@@ -208,16 +208,16 @@ class MailTemplate(models.Model) :
     subject = models.CharField(max_length=200)
     body = models.CharField(max_length=2000)
     comment = models.CharField(max_length=300, blank=True,null=True)
-    choosen = models.BooleanField(default=False)
+    chosen = models.BooleanField(default=False)
 
     def setOn(self):
         """Set template as used, set all others not."""
-        previousMT = MailTemplate.objects.get(choosen=True)
-        previousMT.choosen = False
+        previousMT = MailTemplate.objects.get(chosen=True)
+        previousMT.chosen = False
         previousMT.save()
-        self.choosen = True
+        self.chosen = True
         self.save()
 
     def getOn():
         """Return the chosen template."""
-        return MailTemplate.objects.get(choosen=True)
+        return MailTemplate.objects.get(chosen=True)

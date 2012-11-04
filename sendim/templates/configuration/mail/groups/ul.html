@@ -6,7 +6,7 @@
  {% for MG in MGsPage %}
   <li>
    <a id="mailGroup{{ MG.pk }}Tab" class="get-template" href="#" data-toggle="tab" onclick="$.fn.snafu_object('get','mailGroup',{{ MG.pk }})">
-    {{ MG.mail_group }}
+    {{ MG.name }}
    </a>
   </li>
  {% endfor %}

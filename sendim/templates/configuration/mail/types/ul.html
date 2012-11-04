@@ -6,7 +6,7 @@
  {% for MTy in MTysPage %}
   <li>
    <a id="mailType{{ MTy.pk }}Tab" class="get-template" href="#" data-toggle="tab" onclick="$.fn.snafu_object('get','mailType',{{ MTy.pk }})">
-    {{ MTy.mail_type }}
+    {{ MTy.name }}
    </a>
   </li>
  {% endfor %}

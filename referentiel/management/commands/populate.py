@@ -13,10 +13,10 @@ class Command(BaseCommand) :
     args = None
     def handle(self, *args, **options) :
 
-        if not MailTemplate.objects.filter(choosen=True).exists() :
+        if not MailTemplate.objects.filter(chosen=True).exists() :
             if not MailTemplate.objects.all().exists() :
                 M = MailTemplate.objects.get(pk=1)
-                M.choosen = True
+                M.chosen = True
                 M.save()
 
         try :
