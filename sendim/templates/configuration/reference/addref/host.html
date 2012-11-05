@@ -4,7 +4,7 @@
 
   <div class="row">
 
-   {% for field in HostReferenceForm %}
+   {% for field in HostReferenceForm.visible_fields %}
     <div class="control-group">
      <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
      <div class="controls">
