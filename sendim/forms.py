@@ -15,7 +15,6 @@ class TraductionBigForm(forms.Form):
     warning = forms.CharField(max_length=300, required=True)
     critical = forms.CharField(max_length=300, required=True)
     unknown = forms.CharField(max_length=300, required=True)
-    apply = forms.BooleanField()
 
 class ReferenceBigForm(forms.Form):
     """
@@ -23,8 +22,7 @@ class ReferenceBigForm(forms.Form):
     It allow to add WARNING/CRITICAL/UNKNOWN reference in one time.
     """
     host = forms.ModelChoiceField(Host.objects.all().order_by('name'), required=True )
-    service = forms.ModelChoiceField(Service.objects.all().order_by('name'), required=True  )
-    apply = forms.BooleanField()
+    service = forms.ModelChoiceField(Service.objects.all().order_by('name'), required=True)
 
     escalation_contact = forms.CharField()
     tendancy = forms.CharField()
@@ -79,8 +77,7 @@ class ReferenceBigForm(forms.Form):
     def alertFields(self) : 
         return [ 
         self.__getitem__('host'),
-        self.__getitem__('service'),
-        self.__getitem__('apply'),
+        self.__getitem__('service')
         ]
 
     def glpiFields(self) : 
