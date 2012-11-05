@@ -1,0 +1,19 @@
+<form class="form-horizontal" id="hostReferenceForm">
+ <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+ <fieldset>
+
+  <div class="row">
+
+   {% for field in HostReferenceForm %}
+    <div class="control-group">
+     <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
+     <div class="controls">
+      {{ field }}
+     </div>
+    </div>
+   {% endfor %}
+
+ </fieldset>
+ <button id="addRefBtn" class="btn btn-primary" onclick="$.fn.snafu_object('add','hostReference'); return false;">Enregister</button>
+</form>
+

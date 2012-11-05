@@ -2,12 +2,14 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+import django.utils.simplejson as json
  
 from sendim.defs import *
 from sendim.models import Alert
 from sendim.forms import *
 from referentiel.defs import *
 from referentiel.models import Reference
+from referentiel.forms import *
 
 @login_required
 def getReferences(request) :
@@ -121,4 +123,42 @@ def getRefForm(request,alert_id=0) :
     return render(request, 'configuration/reference/addref/form.html', {
          'referenceBigForm':Form
     })
+
+@login_required
+def getHostReferenceForm(request,mgroup_id=0) :
+    """
+    Create a HostReferenceForm for a given alert.
+    If alert_id is 0, it creates an empty form.
+
+    This view is used with AJAX.
+    """
+
+    Form = HostReferenceForm()
+    return render(request, 'configuration/reference/addref/host.html', {
+         'HostReferenceForm':Form
+    })
+
+@login_required
+def addHostReference(request, ref_id=0) :
+    """
+    Get or delete a reference.
+
+    Delete :
+     - Return references count for put it in page.
+
+    This view is used with AJAX.
+    """
+    form = HostReferenceForm(request.POST)
+    if form.is_valid() :
+        form.save()
+    else :
+        errors = json.dumps(form.errors)
+        return HttpResponse(errors, mimetype='application/json')
+         
+    return render(request, 'configuration/reference/tabs.html', {
+        'Rs':Reference.objects.all(),
+        'AsWithoutRef':Alert.objects.filter( Q(reference=None), ~Q(status__name='OK'), ~Q(status__name='UP'), ~Q(status__name='DOWN') )
+    })
+
+
 

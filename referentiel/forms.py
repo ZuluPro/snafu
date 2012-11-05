@@ -5,9 +5,15 @@ class ReferenceForm(forms.ModelForm):
     class Meta:
         model = Reference
 
-class ReferenceHostStatusForm(ReferenceForm):
-    service = forms.ModelChoiceField(Service.objects.get(pk=1))
-    status = forms.ModelChoiceField(Status.objects.get(name='DOWN'))
+class HostReferenceForm(ReferenceForm):
+    service = forms.ModelChoiceField(
+      Service.objects.filter(pk=1),
+      initial=1
+    )
+    status = forms.ModelChoiceField(
+      Status.objects.filter(name='DOWN'),
+      initial=4
+    )
 
     def __init__(self, *args, **kwargs):
         super(ReferenceForm, self).__init__(*args, **kwargs)
