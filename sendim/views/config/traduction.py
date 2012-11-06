@@ -19,7 +19,7 @@ def getTraductions(request) :
     This view is used with AJAX and return traductions' tabs.
     """
     Ts = Traduction.objects.all()
-    if request.GET['q'] : Ts = Ts.filter(service__service__icontains=request.GET['q'])
+    if request.GET['q'] : Ts = Ts.filter(service__name__icontains=request.GET['q'])
 
     Ts = Paginator(Ts, 10).page(request.GET.get('page',1))
     return render(request, 'configuration/traduction/trads/ul.html', {
@@ -52,7 +52,7 @@ def traduction(request, trad_id, action="get") :
          
     return render(request, 'configuration/traduction/tabs.html', {
         'Ts':Traduction.objects.all(),
-        'AsWithoutTrad':Alert.objects.filter( Q(traduction=None), ~Q(status__status='OK'), ~Q(status__status='UP'), ~Q(status__status='DOWN') )
+        'AsWithoutTrad':Alert.objects.filter( Q(traduction=None), ~Q(status__name='OK'), ~Q(status__name='UP'), ~Q(status__name='DOWN') )
     })
 
 @login_required
@@ -67,11 +67,11 @@ def getAsWithoutTrad(request) :
     """
     Get alerts without traduction found by host and service.
     """
-    As = Alert.objects.filter( Q(traduction=None), ~Q(status__status='OK'), ~Q(status__status='UP'), ~Q(status__status='DOWN') )
+    As = Alert.objects.filter( Q(traduction=None), ~Q(status__name='OK'), ~Q(status__name='UP'), ~Q(status__name='DOWN') )
     if request.GET['q'] :
         As = list ( (
-            set( As.filter(host__host__icontains=request.GET['q']) ) |
-            set( As.filter(service__service__icontains=request.GET['q']) )
+            set( As.filter(host__name__icontains=request.GET['q']) ) |
+            set( As.filter(service__name__icontains=request.GET['q']) )
         ) )
     As = Paginator(As, 10).page(request.GET.get('page',1))
 
@@ -94,7 +94,7 @@ def getTradForm(request,alert_id=0) :
         Ts = Traduction.objects.filter(service=A.service)
         if Ts :
            for T in Ts :
-               data[T.status.status.lower()] = T.traduction
+               data[T.status.name.lower()] = T.traduction
 
     Form = TraductionBigForm(data)
     return render(request, 'configuration/traduction/form.html', {

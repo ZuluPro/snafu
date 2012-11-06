@@ -7,10 +7,10 @@ import django.utils.simplejson as json
 from sendim.defs import *
 from sendim.forms import *
 from referentiel.defs import *
-from sendim.models import MailTemplate
+from referentiel.models import MailType
 
 @login_required
-def getMailTemplates(request) :
+def getMailTypes(request) :
     """
     Get list of references filtered by host and service.
     Search GET['q'] in the 2 attributes and make a logical OR.
@@ -19,20 +19,17 @@ def getMailTemplates(request) :
 
     This view is used with AJAX and return references' tabs.
     """
-    MTs = MailTemplate.objects.all()
+    MTys = MailType.objects.all()
     if request.GET['q'] :
-        MTs = list( (
-            set( MTs.filter(subject__icontains=request.GET['q']) ) |
-            set( MTs.filter(body__icontains=request.GET['q']) ) |
-            set( MTs.filter(comment__icontains=request.GET['q']) )
-        ) )
-    MTs = Paginator(MTs, 10).page(request.GET.get('page',1))
-    return render(request, 'configuration/mail/templates/ul.html', {
-        'MTsPage':MTs
+        MTys = MTys.filter(mail_group__icontains=request.GET['q'])  
+
+    MTys = Paginator(MTys, 10).page(request.GET.get('page',1))
+    return render(request, 'configuration/mail/types/ul.html', {
+        'MTysPage':MTys
     })
 
 @login_required
-def mailTemplate(request, temp_id, action="get") :
+def mailType(request, mtype_id, action="get") :
     """
     Get or delete a reference.
 
@@ -42,28 +39,28 @@ def mailTemplate(request, temp_id, action="get") :
     This view is used with AJAX.
     """
     if action == "get" :
-        return render(request, 'configuration/mail/templates/template.html', {
-           'MT':get_object_or_404(MailTemplate, pk=temp_id)
+        return render(request, 'configuration/mail/types/type.html', {
+           'MTy':get_object_or_404(MailType, pk=mtype_id)
         })
 
     elif action == "del" :
-        MT = get_object_or_404(MailTemplate, pk=temp_id)
-        MT.delete()
+        MTy = get_object_or_404(MailType, pk=mtype_id)
+        MTy.delete()
  
     elif action == "add" :
-         form = MailTemplateForm(request.POST)
+         form = MailTypeForm(request.POST)
          if form.is_valid() :
              form.save()
          else :
              errors = json.dumps(form.errors)
              return HttpResponse(errors, mimetype='application/json')
          
-    return render(request, 'configuration/mail/templates/tabs.html', {
-        'MTs':MailTemplate.objects.all()
+    return render(request, 'configuration/mail/types/tabs.html', {
+        'MTys':MailType.objects.all()
     })
 
 @login_required
-def getMailTemplateForm(request,temp_id=0) :
+def getMailTypeForm(request,mtype_id=0) :
     """
     Create a BigForm for a given alert.
     If alert_id is 0, it creates an empty form.
@@ -71,8 +68,8 @@ def getMailTemplateForm(request,temp_id=0) :
     This view is used with AJAX.
     """
     
-    Form = MailTemplateForm()
-    return render(request, 'configuration/mail/templates/form.html', {
-         'MailTemplateForm':Form
+    Form = MailTypeForm()
+    return render(request, 'configuration/mail/types/form.html', {
+         'MailTypeForm':Form
     })
 

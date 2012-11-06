@@ -22,8 +22,8 @@ def getReferences(request) :
     Rs = Reference.objects.all()
     if request.GET['q'] :
         Rs = list( (
-            set( Rs.filter(host__host__icontains=request.GET['q']) ) |
-            set( Rs.filter(service__service__icontains=request.GET['q']) )
+            set( Rs.filter(host__name__icontains=request.GET['q']) ) |
+            set( Rs.filter(service__name__icontains=request.GET['q']) )
         ) )
     Rs = Paginator(Rs, 10).page(request.GET.get('page',1))
     return render(request, 'configuration/reference/refs/ul.html', {
@@ -56,7 +56,7 @@ def reference(request, ref_id, action="get") :
          
     return render(request, 'configuration/reference/tabs.html', {
         'Rs':Reference.objects.all(),
-        'AsWithoutRef':Alert.objects.filter( Q(reference=None), ~Q(status__status='OK'), ~Q(status__status='UP'), ~Q(status__status='DOWN') )
+        'AsWithoutRef':Alert.objects.filter( Q(reference=None), ~Q(status__name='OK'), ~Q(status__name='UP'), ~Q(status__name='DOWN') )
     })
 
 
@@ -70,11 +70,11 @@ def getAlertWithoutRef(request,alert_id) :
 @login_required
 def getAsWithoutRef(request) :
     """Get references filtered by host and service."""
-    As = Alert.objects.filter( Q(reference=None), ~Q(status__status='OK'), ~Q(status__status='UP'), ~Q(status__status='DOWN') )
+    As = Alert.objects.filter( Q(reference=None), ~Q(status__name='OK'), ~Q(status__name='UP'), ~Q(status__name='DOWN') )
     if request.GET['q'] :
         As = (
-            set( As.filter(host__host__icontains=request.GET['q']) ) |
-            set( As.filter(service__service__icontains=request.GET['q']) )
+            set( As.filter(host__name__icontains=request.GET['q']) ) |
+            set( As.filter(service__name__icontains=request.GET['q']) )
         )
     return render(request, 'configuration/reference/alerts/ul.html', {
         'AsWithoutRef':As
@@ -99,10 +99,10 @@ def getRefForm(request,alert_id=0) :
         Rs = Reference.objects.filter(host=A.host,service=A.service)
         if Rs :
            for R in Rs : 
-               data[R.status.status.lower()+'_criticity'] = R.mail_criticity
-               data[R.status.status.lower()+'_urgency'] = R.glpi_urgency
-               data[R.status.status.lower()+'_priority'] = R.glpi_priority
-               data[R.status.status.lower()+'_impact'] = R.glpi_impact
+               data[R.status.name.lower()+'_criticity'] = R.mail_criticity
+               data[R.status.name.lower()+'_urgency'] = R.glpi_urgency
+               data[R.status.name.lower()+'_priority'] = R.glpi_priority
+               data[R.status.name.lower()+'_impact'] = R.glpi_impact
                if not 'escalation_contact' in data : data['escalation_contact'] = R.escalation_contact
                if not 'tendancy' in data : data['tendancy'] = R.tendancy
                if not 'outage' in data : data['outage'] = R.outage

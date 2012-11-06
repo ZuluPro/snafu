@@ -2,13 +2,13 @@
   {
     "model": "referentiel.service",
     "pk": 1,
-    "fields": { "service":"Host status" }
+    "fields": { "name":"Host status" }
   },
   {
     "model": "referentiel.glpiurgency",
     "pk": 1,
     "fields": {
-      "glpi_urgency":"Très basse",
+      "name":"Très basse",
       "glpi_id":1
     }
   },
@@ -16,7 +16,7 @@
     "model": "referentiel.glpiurgency",
     "pk": 2,
     "fields": {
-      "glpi_urgency":"Basse",
+      "name":"Basse",
       "glpi_id":2
     }
   },
@@ -24,7 +24,7 @@
     "model": "referentiel.glpiurgency",
     "pk": 3,
     "fields": {
-      "glpi_urgency":"Moyenne",
+      "name":"Moyenne",
       "glpi_id":3
     }
   },
@@ -32,7 +32,7 @@
     "model": "referentiel.glpiurgency",
     "pk": 4,
     "fields": {
-      "glpi_urgency":"Haute",
+      "name":"Haute",
       "glpi_id":4
     }
   },
@@ -40,7 +40,7 @@
     "model": "referentiel.glpiurgency",
     "pk": 5,
     "fields": {
-      "glpi_urgency":"Très haute",
+      "name":"Très haute",
       "glpi_id":5
     }
   },
@@ -48,7 +48,7 @@
     "model": "referentiel.glpiimpact",
     "pk": 1,
     "fields": {
-      "glpi_impact":"Très bas",
+      "name":"Très bas",
       "glpi_id":1
     }
   },
@@ -56,7 +56,7 @@
     "model": "referentiel.glpiimpact",
     "pk": 2,
     "fields": {
-      "glpi_impact":"Bas",
+      "name":"Bas",
       "glpi_id":2
     }
   },
@@ -64,7 +64,7 @@
     "model": "referentiel.glpiimpact",
     "pk": 3,
     "fields": {
-      "glpi_impact":"Moyen",
+      "name":"Moyen",
       "glpi_id":3
     }
   },
@@ -72,7 +72,7 @@
     "model": "referentiel.glpiimpact",
     "pk": 4,
     "fields": {
-      "glpi_impact":"Haut",
+      "name":"Haut",
       "glpi_id":4
     }
   },
@@ -80,7 +80,7 @@
     "model": "referentiel.glpiimpact",
     "pk": 5,
     "fields": {
-      "glpi_impact":"Très haut",
+      "name":"Très haut",
       "glpi_id":5
     }
   },
@@ -88,7 +88,7 @@
     "model": "referentiel.glpipriority",
     "pk": 1,
     "fields": {
-      "glpi_priority":"Très basse",
+      "name":"Très basse",
       "glpi_id":1
     }
   },
@@ -96,7 +96,7 @@
     "model": "referentiel.glpipriority",
     "pk": 2,
     "fields": {
-      "glpi_priority":"Basse",
+      "name":"Basse",
       "glpi_id":2
     }
   },
@@ -104,7 +104,7 @@
     "model": "referentiel.glpipriority",
     "pk": 3,
     "fields": {
-      "glpi_priority":"Moyenne",
+      "name":"Moyenne",
       "glpi_id":3
     }
   },
@@ -112,7 +112,7 @@
     "model": "referentiel.glpipriority",
     "pk": 4,
     "fields": {
-      "glpi_priority":"Haute",
+      "name":"Haute",
       "glpi_id":4
     }
   },
@@ -120,7 +120,7 @@
     "model": "referentiel.glpipriority",
     "pk": 5,
     "fields": {
-      "glpi_priority":"Très haute",
+      "name":"Très haute",
       "glpi_id":5
     }
   },
@@ -128,49 +128,49 @@
     "model": "referentiel.glpipriority",
     "pk": 5,
     "fields": {
-      "glpi_priority":"Majeure",
+      "name":"Majeure",
       "glpi_id":6
     }
   },
   {
     "model": "referentiel.mailcriticity",
     "pk": 1,
-    "fields": { "mail_criticity":"Mineur" }
+    "fields": { "name":"Mineur" }
   },
   {
     "model": "referentiel.mailcriticity",
     "pk": 2,
-    "fields": { "mail_criticity":"Majeur" }
+    "fields": { "name":"Majeur" }
   },
   {
     "model": "referentiel.status",
     "pk": 1,
-    "fields": { "status":"WARNING" }
+    "fields": { "name":"WARNING" }
   },
   {
     "model": "referentiel.status",
     "pk": 2,
-    "fields": { "status":"CRITICAL" }
+    "fields": { "name":"CRITICAL" }
   },
   {
     "model": "referentiel.status",
     "pk": 3,
-    "fields": { "status":"UNKNOWN" }
+    "fields": { "name":"UNKNOWN" }
   },
   {
     "model": "referentiel.status",
     "pk": 4,
-    "fields": { "status":"DOWN" }
+    "fields": { "name":"DOWN" }
   },
   {
     "model": "referentiel.status",
     "pk": 5,
-    "fields": { "status":"OK" }
+    "fields": { "name":"OK" }
   },
   {
     "model": "referentiel.status",
     "pk": 6,
-    "fields": { "status":"UP" }
+    "fields": { "name":"UP" }
   },
   {
     "model": "sendim.mailtemplate",

@@ -1,10 +1,10 @@
 <div class="span3">
  <br>
  <div class="input-append">
-  <input id="cat_q" type="text" placeholder="Nom de catégorie" style="width:85%">
-  <button class="btn btn-primary" style="width:5%" onclick="$.fn.getCategories()"><i class="icon-search icon-white"></i></button>
+  <input id="category_q" type="text" placeholder="Nom de catégorie" style="width:85%">
+  <button class="btn btn-primary" style="width:5%" onclick="$.fn.snafu_object('list','category')"><i class="icon-search icon-white"></i></button>
  </div>
- <div id="Ca_tbody">
+ <div id="category-ul">
   {% include "configuration/glpi/categories/ul.html" %}
  </div>
 </div>

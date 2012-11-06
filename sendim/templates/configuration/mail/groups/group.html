@@ -1,0 +1,17 @@
+<h4 align="center">{{ MG }}</h4>
+
+<dl>
+ <dt>Nom :</dt>
+ <dd>{{ MG.name }}</dd>
+
+ <dt>To :</dt>
+ <dd>{{ MG.to }}</dd>
+
+ <dt>Cc :</dt>
+ <dd>{{ MG.cc }}</dd>
+
+ <dt>Ccm :</dt>
+ <dd>{{ MG.ccm }}</dd>
+</dl>
+
+<button class="btn btn-danger" onclick="$.fn.snafu_object('del','mailGroup',{{ MG.pk }})">Supprimer</button>

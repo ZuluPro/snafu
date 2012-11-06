@@ -71,7 +71,7 @@ def events(request) :
             msg = makeMail(E)
 
             # Recuperation des graphs correspondant
-            graphList = readGraphs(E.element.host, A.service.service)
+            graphList = readGraphs(E.element.name, A.service.name)
     
             # Envoi du formulaire d'envoi de mail
             return render(request,'event/preview-mail.html', {
@@ -112,13 +112,13 @@ def EaddRef(request):
     host,service = postFormSet(request.POST)
 
     for status in ('WARNING','CRITICAL','UNKNOWN') :
-        As = E.getAlerts().filter(status__status=status) 
+        As = E.getAlerts().filter(status__name=status) 
         for _A in As: 
             _A.linkToReference()
 
             A = E.getPrimaryAlert()
             if _A.isPrimary : 
-                E.criticity = A.reference.mail_criticity.mail_criticity
+                E.criticity = A.reference.mail_criticity.name
                 E.save()
 
     return render(request, 'event/event-index.html', {

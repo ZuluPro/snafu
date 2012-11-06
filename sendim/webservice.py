@@ -39,9 +39,9 @@ def pushAlert(host,service,status,info,date=None):
     elif type(date) == type('') : date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S' )
     
     A = Alert(
-        host = Host.objects.get(host=host),
-        service = Service.objects.get(service=service),
-        status = Status.objects.get(status=status),
+        host = Host.objects.get(name=host),
+        service = Service.objects.get(name=service),
+        status = Status.objects.get(name=status),
         info = info,
         date = date
     )

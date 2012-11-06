@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+import django.utils.simplejson as json
 
 from sendim.forms import UserForm
 
@@ -53,11 +54,14 @@ def user(request, user_id, action="get") :
 
     elif action == "add" :
         U = User()
-        Form = UserForm(request.POST, instance=U)
-        if Form.is_valid():
-            Form.save()
+        form = UserForm(request.POST, instance=U)
+        if form.is_valid():
+            form.save()
             U.set_password(request.POST['password'])
             U.save()
+        else :
+            errors = json.dumps(form.errors)
+            return HttpResponse(errors, mimetype='application/json')
 
         return render(request, 'configuration/user/tabs.html', {
             'Us':User.objects.all()

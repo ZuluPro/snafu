@@ -28,7 +28,7 @@ def configuration(request) :
 
     Ts = Traduction.objects.all()
     TsPage = Paginator(Ts, 10).page(1)
-    AsWithoutTrad = Alert.objects.filter( Q(traduction=None), ~Q(status__status='OK'), ~Q(status__status='UP'), ~Q(status__status='DOWN') )
+    AsWithoutTrad = Alert.objects.filter( Q(traduction=None), ~Q(status__name='OK'), ~Q(status__name='UP'), ~Q(status__name='DOWN') )
     AsWithoutTradPage = Paginator(AsWithoutTrad, 10).page(1)
 
     Us = User.objects.all()
@@ -43,10 +43,16 @@ def configuration(request) :
     MTs = MailTemplate.objects.all()
     MTsPage = Paginator(MTs, 10).page(1)
 
+    MGs = MailGroup.objects.all()
+    MGsPage = Paginator(MGs, 10).page(1)
+
+    MTys = MailType.objects.all()
+    MTysPage = Paginator(MTys, 10).page(1)
+
     return render(request, 'configuration/index.html', {
         'Rs':Rs,
         'RsPage':RsPage,
-        'AsWithoutRef':Alert.objects.filter( Q(reference=None), ~Q(status__status='OK'), ~Q(status__status='UP'), ~Q(status__status='DOWN') ),
+        'AsWithoutRef':Alert.objects.filter( Q(reference=None), ~Q(status__name='OK'), ~Q(status__name='UP'), ~Q(status__name='DOWN') ),
         'referenceBigForm':ReferenceBigForm,
 
         'Ts':Ts,
@@ -67,7 +73,12 @@ def configuration(request) :
 
         'MTs':MTs,
         'MTsPage':MTsPage,
-        'mailTemplateForm':MailTemplateForm,
+
+        'MGs':MGs,
+	'MGsPage':MGsPage,
+
+        'MTys':MTys,
+	'MTysPage':MTysPage,
 
         'title':'Snafu - Configuration'
     })
