@@ -57,6 +57,12 @@ def configuration(request) :
     GUs = GlpiUser.objects.all()
     GUsPage = Paginator(GUs, 10).page(1)
 
+    GGs = GlpiGroup.objects.all()
+    GGsPage = Paginator(GGs, 10).page(1)
+
+    Ss = GlpiSupplier.objects.all()
+    SsPage = Paginator(Ss, 10).page(1)
+
     return render(request, 'configuration/index.html', {
         'Rs':Rs,
         'RsPage':RsPage,
@@ -91,12 +97,27 @@ def configuration(request) :
         'GUs':GUs,
 	'GUsPage':GUsPage,
 
+        'GGs':GGs,
+	'GGsPage':GGsPage,
+
+        'Ss':Ss,
+	'SsPage':SsPage,
+
         'title':'Snafu - Configuration'
     })
 
 @login_required
 def confManager(request, action, model, object_id=0) :
-    if model == "glpiUser" :
+    if model == "hostReference" :
+        temp_dir = 'configuration/reference/host/'
+        Model = Reference
+        form = HostReferenceForm
+        element_key = 'R'
+        filter_key = 'Rs'
+        page_key = 'RsPage'
+        form_key = 'HostReferenceForm'
+
+    elif model == "glpiUser" :
         temp_dir = 'configuration/glpi/users/'
         Model = GlpiUser
         form = GlpiUserForm
@@ -104,6 +125,15 @@ def confManager(request, action, model, object_id=0) :
         filter_key = 'GUs'
         page_key = 'GUsPage'
         form_key = 'GlpiUserForm'
+
+    elif model == "glpiGroup" :
+        temp_dir = 'configuration/glpi/groups/'
+        Model = GlpiGroup
+        form = GlpiGroupForm
+        element_key = 'GG'
+        filter_key = 'GGs'
+        page_key = 'GGsPage'
+        form_key = 'GlpiGroupForm'
 
     elif model == "category" :
         temp_dir = 'configuration/glpi/categories/'
@@ -159,6 +189,15 @@ def confManager(request, action, model, object_id=0) :
         page_key = 'UsPage'
         form_key = 'UserForm'
 
+    elif model == "supplier" :
+        temp_dir = 'configuration/glpi/suppliers/'
+        Model = GlpiSupplier
+        form = GlpiSupplierForm
+        element_key = 'S'
+        filter_key = 'Ss'
+        page_key = 'SsPage'
+        form_key = 'GlpiSupplierForm'
+
     else : raise Http404
 
 
@@ -166,7 +205,7 @@ def confManager(request, action, model, object_id=0) :
         Objs = Model.objects.all()
         temp_file = 'ul.html'
 
-        if match(r"(glpiUser|category|host|mailGroup|mailType)",model) :
+        if match(r"(glpiUser|glpiGroup|supplier|category|host|mailGroup|mailType)",model) :
             Objs = Objs.filter(name__icontains=request.GET['q'])
 
         if model == "template" :
@@ -178,9 +217,9 @@ def confManager(request, action, model, object_id=0) :
 
         elif model == "mailGroup" :
             Objs = list( (
-              set( MGs.filter(to__icontains=request.GET['q']) ) |
-              set( MGs.filter(ccm__icontains=request.GET['q']) ) |
-              set( MGs.filter(cc__icontains=request.GET['q']) )
+              set( Objs.filter(to__icontains=request.GET['q']) ) |
+              set( Objs.filter(ccm__icontains=request.GET['q']) ) |
+              set( Objs.filter(cc__icontains=request.GET['q']) )
             ) )
 
         Objs = Paginator(Objs, 10).page(request.GET.get('page',1))
@@ -189,41 +228,47 @@ def confManager(request, action, model, object_id=0) :
           page_key : Objs
         })
 
-    elif action == 'get' :
+    elif action == 'form' :
+        form = form()
+        return render(request, temp_dir+'form.html', {
+          form_key : form
+        })
+
+    elif action == 'del' :
+        Obj = get_object_or_404(Model, pk=object_id)
+        Obj.delete()
+        return render(request, temp_dir+'tabs.html', {
+          filter_key : Model.objects.all()
+        })
+
+    elif match(r"^(get|add)$", action) :
         if model  == "glpiUser" : temp_file = 'user.html'
+        elif model  == "glpiGroup" : temp_file = 'group.html'
         elif model  == "user" : temp_file = 'user.html'
         elif model  == "category" : temp_file = 'category.html'
         elif model  == "host" : temp_file = 'host.html'
         elif model  == "template" : temp_file = 'template.html'
         elif model  == "mailGroup" : temp_file = 'group.html'
         elif model  == "mailType" : temp_file = 'type.html'
-
-        return render(request, temp_dir+temp_file, {
-           element_key : get_object_or_404(Model, pk=object_id)
-        })
-
-    elif action == 'form' :
-        form = form()
-        return render(request, temp_dir+'/form.html', {
-          form_key : form
-        })
-
-    elif action == 'del' :
-        temp_file = 'tabs.html'
-        Obj = get_object_or_404(Model, pk=object_id)
-        Obj.delete()
-
-    elif action == "add" :
-         form = form(request.POST)
-         if form.is_valid() :
-             form.save()
-         else :
-             errors = json.dumps(form.errors)
-             return HttpResponse(errors, mimetype='application/json')
+        elif model  == "supplier" : temp_file = 'supplier.html'
+        elif model  == "hostReference" : temp_file = 'ref.html'
+    
+        if action == "add" :
+             form = form(request.POST)
+             if form.is_valid() :
+                 form.save()
+                 return render(request, temp_dir+'tabs.html', {
+                   filter_key : Model.objects.all()
+                 })
+             else :
+                 errors = json.dumps(form.errors)
+                 return HttpResponse(errors, mimetype='application/json')
+    
+        elif action == 'get' :
+            return render(request, temp_dir+temp_file, {
+               element_key : get_object_or_404(Model, pk=object_id)
+            })
 
     else : raise Http404
 
-    return render(request, temp_dir+temp_file, {
-        filter_key : Model.objects.all()
-    })
 

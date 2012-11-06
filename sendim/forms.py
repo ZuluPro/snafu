@@ -101,7 +101,6 @@ class ReferenceBigForm(forms.Form):
         ]
 
     def save(self) :
-        print 123
         host = Host.objects.get(pk=self.data['host'])
         service = Service.objects.get(pk=self.data['service'])
     
@@ -160,6 +159,8 @@ class MailTypeForm(forms.ModelForm):
 
 class UserForm(forms.ModelForm):
     id = forms.IntegerField(required=False, initial=0, widget=widgets.HiddenInput)
+    confirm_password = forms.PasswordInput()
+
     class Meta:
         model = User
         exclude = ('last_login','date_joined','groups','user_permissions','active')

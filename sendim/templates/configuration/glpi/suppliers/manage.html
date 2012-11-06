@@ -1,0 +1,13 @@
+<div class="span3">
+ <br>
+ <div class="input-append">
+  <input id="supplier_q" type="text" placeholder="Nom" style="width:85%">
+  <button class="btn btn-primary" style="width:5%" onclick="$.fn.snafu_object('list','supplier')"><i class="icon-search icon-white"></i></button>
+ </div>
+ <div id="supplier-ul">
+  {% include "configuration/glpi/suppliers/ul.html" %}
+ </div>
+</div>
+
+<div id="supplierContent" class="span7">
+</div>

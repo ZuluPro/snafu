@@ -46,3 +46,11 @@ class GlpiUserForm(forms.ModelForm) :
     class Meta:
         model = GlpiUser
 
+class GlpiGroupForm(forms.ModelForm) :
+    class Meta:
+        model = GlpiGroup
+
+class GlpiSupplierForm(forms.ModelForm) :
+    class Meta:
+        model = GlpiSupplier
+
