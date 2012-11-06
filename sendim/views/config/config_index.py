@@ -2,7 +2,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 
 from sendim.models import Alert, MailTemplate
@@ -49,6 +49,9 @@ def configuration(request) :
     MTys = MailType.objects.all()
     MTysPage = Paginator(MTys, 10).page(1)
 
+    GUs = GlpiUser.objects.all()
+    GUsPage = Paginator(GUs, 10).page(1)
+
     return render(request, 'configuration/index.html', {
         'Rs':Rs,
         'RsPage':RsPage,
@@ -80,6 +83,58 @@ def configuration(request) :
         'MTys':MTys,
 	'MTysPage':MTysPage,
 
+        'GUs':GUs,
+	'GUsPage':GUsPage,
+
         'title':'Snafu - Configuration'
+    })
+
+@login_required
+def confManager(request, object, action, object_id=0) :
+    print object, action
+    if object == "glpiUser" :
+        temp_dir = 'configuration/glpi/users/'
+        Model = GlpiUser
+        form = GlpiUserForm
+        element_key = 'GU'
+        filter_key = 'GUs'
+        page_key = 'GUsPage'
+
+    if action == 'list' :
+        Objs = Model.objects.all()
+        temp_file = 'ul.html'
+
+        if object == "glpiUser" :
+            if request.GET['q'] :
+                Objs = Objs.filter(name__icontains=request.GET['q'])
+
+        Objs = Paginator(Objs, 10).page(request.GET.get('page',1))
+
+        return render(request, temp_dir+temp_file, {
+          page_key : Objs
+        })
+
+    elif action == 'get' :
+        if object == "glpiUser" : temp_file = 'user.html'
+
+        return render(request, temp_dir+temp_file, {
+           element_key : get_object_or_404(Model, pk=object_id)
+        })
+
+    elif action == 'delete' :
+        temp_file = 'tabs.html'
+        Obj = get_object_or_404(Model, pk=object_id)
+        Obj.delete()
+
+    elif action == "add" :
+         form = form(request.POST)
+         if form.is_valid() :
+             form.save()
+         else :
+             errors = json.dumps(form.errors)
+             return HttpResponse(errors, mimetype='application/json')
+
+    return render(request, temp_dir+temp_file, {
+        filter_key : Model.objects.all()
     })
 
