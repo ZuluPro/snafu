@@ -17,10 +17,7 @@ class Host(models.Model):
         return self.name
 
     def current_status(self) :
-        from sendim.models import Alert
-        if Alert.objects.filter(host=self, service__pk=1).exists() :
-            return Alert.objects.filter(host=self, service__pk=1).order_by('-date')[0]
-        else : return None
+        return Service.objects.get(pk=1).current_status(self.name)
 
 class Service(models.Model):
     name = models.CharField(max_length=128, unique=True)
@@ -32,6 +29,13 @@ class Service(models.Model):
         if not self.pk :
             super(Service, self).save(*args, **kwargs)
             logprint('Add automaticaly service : '+self.name, 'green')
+
+    def current_status(self, host) :
+        from sendim.models import Alert
+        if Alert.objects.filter(host__name=host, service=self).exists() :
+            return Alert.objects.filter(host__name=host, service=self).order_by('-date')[0]
+        else : return None
+
 
 class Status(models.Model):
     name = models.CharField(max_length=10, unique=True)
