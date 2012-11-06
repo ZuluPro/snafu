@@ -22,7 +22,7 @@ class ReferenceBigForm(forms.Form):
     It allow to add WARNING/CRITICAL/UNKNOWN reference in one time.
     """
     host = forms.ModelChoiceField(Host.objects.all().order_by('name'), required=True )
-    service = forms.ModelChoiceField(Service.objects.all().order_by('name'), required=True)
+    service = forms.ModelChoiceField(Service.objects.exclude(name='Host status').order_by('name'), required=True)
 
     escalation_contact = forms.CharField(required=False)
     tendancy = forms.CharField(required=False)
