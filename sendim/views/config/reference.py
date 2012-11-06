@@ -52,9 +52,11 @@ def reference(request, ref_id, action="get") :
         R.delete()
  
     elif action == "add" :
-         Form = ReferenceBigForm(request.POST)
-         if not Form.is_valid() :
-             postFormSet(request.POST, is_a_set=False)
+         form = ReferenceBigForm(request.POST)
+         for i in form.data.items() : print i
+         if form.is_valid() :
+             form.save()
+             #postFormSet(request.POST, is_a_set=False)
          
     return render(request, 'configuration/reference/tabs.html', {
         'Rs':Reference.objects.all(),
