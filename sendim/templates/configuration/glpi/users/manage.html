@@ -1,0 +1,13 @@
+<div class="span3">
+ <br>
+ <div class="input-append">
+  <input id="glpiUser_q" type="text" placeholder="Nom ou prénom" style="width:85%">
+  <button class="btn btn-primary" style="width:5%" onclick="$.fn.snafu_object('list','glpiUser')"><i class="icon-search icon-white"></i></button>
+ </div>
+ <div id="glpiUser-ul">
+  {% include "configuration/glpi/users/ul.html" %}
+ </div>
+</div>
+
+<div id="glpiUserContent" class="span7">
+</div>
