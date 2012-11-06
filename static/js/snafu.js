@@ -293,27 +293,31 @@ $(document).ready(function() {
   $.fn.snafu_object = function(action, object, pk) {
     if ( action == "get" ) {
       $('#'+object+'Content').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
-      $.get('/snafu/configuration/'+object+'/'+pk+'/get', function(data) {
+      $.get('/snafu/configuration/get/'+object+'/'+pk, function(data) {
         $('#'+object+'Content').html(data);
       });
+
     } else if ( action == "del" ) {
       $('#'+object+'Content').html('');
-      $.post('/snafu/configuration/'+object+'/'+pk+'/del',{ csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val() }, function(data) {
+      $.post('/snafu/configuration/del/'+object+'/'+pk,{ csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val() }, function(data) {
         $('#'+object+'Tab').html(data);
         $('#'+object+pk+'Tab').hide('300');
       });
+
     } else if ( action == "list" ) {
       $('#'+object+'Content').html();
       $('#'+object+'-ul').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
       request = { 'q': $('#'+object+'_q').val(), 'page': pk };
-      $.get('/snafu/configuration/'+object+'_q',request, function(data) {
+      $.get('/snafu/configuration/list/'+object, request, function(data) {
         $('#'+object+'-ul').html( data );
       });
+
     } else if ( action == "form" ) {
-      $.get('/snafu/configuration/'+object+'/form', {}, function(data) {
+      $.get('/snafu/configuration/form/'+object, {}, function(data) {
         $('#add-'+object+'Content').html(data);
         $('#add-'+object+'Tab').tab('show');
       });
+
     } else if ( action == "add" ) {
       $('#'+object+'Content').html('');
 
@@ -322,7 +326,7 @@ $(document).ready(function() {
 
       $.ajax({ 
         type: "POST", 
-        url: '/snafu/configuration/'+object+'/'+temp_id+'/add', 
+        url: '/snafu/configuration/add/'+object+'/'+temp_id, 
         data: $('#'+object+'Form').serialize(),
         async: false,
         cache: false,
@@ -348,11 +352,12 @@ $(document).ready(function() {
     }
   }
 
+//////////////////////////////////////////////////
+
   $('#templateForm').submit(function() {
     $.fn.addTemplate();
     return false;
   });
-
 
 //////////////////////////////////////////////////
  // ASK QUESTION BEFORE LAUNCH FUNCTION

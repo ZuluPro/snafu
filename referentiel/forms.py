@@ -34,11 +34,15 @@ class HostForm(forms.ModelForm) :
     class Meta:
         model = Host
 
+class MailGroupForm(forms.ModelForm) :
+    class Meta:
+        model = MailGroup
+
 class GlpiCategoryForm(forms.ModelForm) :
     class Meta:
         model = GlpiCategory
 
-class MailGroup(forms.ModelForm) :
+class GlpiUserForm(forms.ModelForm) :
     class Meta:
-        model = MailGroup
+        model = GlpiUser
 

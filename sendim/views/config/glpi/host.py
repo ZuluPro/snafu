@@ -20,7 +20,7 @@ def getHosts(request) :
     """
     Hs = Host.objects.all()
     if request.GET['q'] :
-        Hs = Hs.filter(host__icontains=request.GET['q'])  
+        Hs = Hs.filter(name__icontains=request.GET['q'])  
     Hs = Paginator(Hs, 10).page(request.GET.get('page',1))
 
     return render(request, 'configuration/glpi/hosts/ul.html', {
