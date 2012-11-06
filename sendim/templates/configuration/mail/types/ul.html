@@ -1,0 +1,17 @@
+<ul class="nav nav-tabs nav-stacked">
+ {% if MTysPage.has_previous %}
+  <li><a onclick="$.fn.snafu_object('list','mailType', {{ MTysPage.previous_page_number }});">&uarr; Précédents</a></li>
+ {% endif %}
+
+ {% for MTy in MTysPage %}
+  <li>
+   <a id="mailType{{ MTy.pk }}Tab" class="get-template" href="#" data-toggle="tab" onclick="$.fn.snafu_object('get','mailType',{{ MTy.pk }})">
+    {{ MTy.name }}
+   </a>
+  </li>
+ {% endfor %}
+
+ {% if MTysPage.has_next %}
+  <li><a onclick="$.fn.snafu_object('list','mailType',{{ MTysPage.next_page_number }});">&darr; Suivant(s)</a></li>
+ {% endif %}
+</ul>

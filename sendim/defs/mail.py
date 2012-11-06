@@ -16,7 +16,11 @@ def makeMail(E):
     a dictionnary which contains all mail attributes.
     """
     R = E.getPrimaryAlert().reference
-    MT = MailTemplate.objects.get(choosen=True)
+    if MailTemplate.objects.filter(chosen=True).exists() :
+        MT = MailTemplate.objects.get(chosen=True)
+    else :
+        MT = MailTemplate.objects.get(pk=1)
+
     msg = {}
     msg['from'] = settings.SNAFU['smtp-from']
     msg['to'] = R.mail_group.to
@@ -48,9 +52,9 @@ def sendMail(POST) :
     mailText = POST['body']
 
     subs = (
-        ("$HOST$", A.host.host),
+        ("$HOST$", A.host.name),
         ("$MESSAGE$", E.message),
-        ("$MAIL_TYPE$", R.mail_type.mail_type),
+        ("$MAIL_TYPE$", R.mail_type.name),
         ("$CRITICITY$", E.criticity),
         ("$GLPI$" , str(E.glpi)),
         ("$GLPI-URL$", settings.SNAFU['glpi-url']+'front/ticket.form.php?id='),
@@ -58,7 +62,7 @@ def sendMail(POST) :
         ("$DATE$", E.date.strftime('%d/%m/%y - %H:%M:%S')),
         ("$JOUR$", E.date.strftime('%d/%m/%y')),
         ("$HEURE$", E.date.strftime('%H:%M:%S')),
-        ("$LOG$" , '\n'.join( [ A.date.strftime('%d/%m/%y %H:%M:%S - ')+A.service.service+' en ' +A.status.status+' - '+A.info for A in E.getAlerts() ] ) )
+        ("$LOG$" , '\n'.join( [ A.date.strftime('%d/%m/%y %H:%M:%S - ')+A.service.name+' en ' +A.status.name+' - '+A.info for A in E.getAlerts() ] ) )
     ) 
     for pattern,string in subs :
         mailText = mailText.replace(pattern, string)

@@ -3,7 +3,7 @@
   <li><a onclick="$.fn.snafu_object('list','host',{{ HsPage.previous_page_number }});">&uarr; Précédents</a></li>
  {% endif %}
  {% for H in HsPage %}
-  <li><a id="host{{ H.pk }}Tab" class="get-ref" href="#" data-toggle="tab" onclick="$.fn.snafu_object('get','host',{{ H.pk }})">{{ H.host }} - {{ H.glpi_id|default_if_none:"(Pas d'id)" }}</a></li>
+  <li><a id="host{{ H.pk }}Tab" class="get-ref" href="#" data-toggle="tab" onclick="$.fn.snafu_object('get','host',{{ H.pk }})">{{ H.name }} - {{ H.glpi_id|default_if_none:"(Pas d'id)" }}</a></li>
  {% endfor %}
  {% if HsPage.has_next %}
   <li><a onclick="$.fn.snafu_object('list','host',{{ HsPage.next_page_number }});">&darr; Suivant(s)</a></li>

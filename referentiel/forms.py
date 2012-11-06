@@ -2,8 +2,8 @@ from django import forms
 from referentiel.models import *
 
 class ReferenceForm(forms.Form):
-	host = forms.ModelChoiceField(Host.objects.all().order_by('host') )
-	service = forms.ModelChoiceField(Service.objects.all().order_by('service') )
+	host = forms.ModelChoiceField(Host.objects.all().order_by('name') )
+	service = forms.ModelChoiceField(Service.objects.all().order_by('name') )
 	status = forms.ModelChoiceField(Status.objects.all() )
 
 	escalation_contact = forms.CharField(widget=forms.HiddenInput())
@@ -37,3 +37,8 @@ class HostForm(forms.ModelForm) :
 class GlpiCategoryForm(forms.ModelForm) :
     class Meta:
         model = GlpiCategory
+
+class MailGroup(forms.ModelForm) :
+    class Meta:
+        model = MailGroup
+

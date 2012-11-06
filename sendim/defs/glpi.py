@@ -29,7 +29,7 @@ def createTicket(E) :
     	'session':loginInfo['session'],
     	'type':1,
     	'category': R.glpi_category.glpi_id,
-    	'title': E.element.host+' '+E.message,
+    	'title': E.element.name+' '+E.message,
     	'content':content,
     	'recipient': R.glpi_dst_group.glpi_id,
     	'group':9,
@@ -107,23 +107,57 @@ def getTicket(ticketId) :
     """
     return glpiServer.glpi.getTicket({'session':idSession, 'ticket':ticketId})
 
-def get_hosts_from_glpi() :
+def get_objects_from_glpi(itemtype) :
+    loginInfo = doLogin()
+
+    if 'error' in loginInfo :
+        raise UnableToConnectGLPI(loginInfo['error'])
+
+    elif itemtype == 'host' :
+        result = list()
+        for itemtype in ('computer','networkequipment') :
+            result += glpiServer.glpi.listObjects({'session':loginInfo['session'], 'itemtype':itemtype})
+
+    else :
+        data = {'session':loginInfo['session'], 'itemtype':itemtype} 
+        result = glpiServer.glpi.listObjects(data)
+
+    doLogout()
+    return result
+
+def get_hosts_from_glpi(itemtype='computer') :
+    hosts = list()
+    for host in get_objects_from_glpi('computer') :
+        if not host in hosts :
+            hosts.append(host)
+
+    return hosts
+
+def get_users_from_glpi() :
     loginInfo = doLogin()
     if 'error' in loginInfo :
         raise UnableToConnectGLPI(loginInfo['error'])
-    hosts = list()
-    for itemtype in ('computer','networkequipment') :
-        data = {
-          'session':loginInfo['session'],
-          'itemtype': 'computer',
-          'limit':2000
-        }
-        for host in glpiServer.glpi.listObjects(data) :
-            if not host in hosts :
-                hosts.append(host)
+    users = list()
+    data = { 'session':loginInfo['session'] }
+    for user in glpiServer.glpi.listUsers(data) :
+        if not user in users :
+            users.append(user)
 
     doLogout()
-    return hosts
+    return users
+
+def get_groups_from_glpi() :
+    loginInfo = doLogin()
+    if 'error' in loginInfo :
+        raise UnableToConnectGLPI(loginInfo['error'])
+    groups = list()
+    data = { 'session':loginInfo['session'] }
+    for group in glpiServer.glpi.listGroups(data) :
+        if not group in groups :
+            groups.append(group)
+
+    doLogout()
+    return groups
 
 #def get_categories_from_glpi() :
 #    loginInfo = doLogin()

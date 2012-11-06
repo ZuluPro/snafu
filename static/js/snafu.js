@@ -299,7 +299,7 @@ $(document).ready(function() {
     } else if ( action == "del" ) {
       $('#'+object+'Content').html('');
       $.post('/snafu/configuration/'+object+'/'+pk+'/del',{ csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val() }, function(data) {
-        $('#'+object+'Count').html(data);
+        $('#'+object+'Tab').html(data);
         $('#'+object+pk+'Tab').hide('300');
       });
     } else if ( action == "list" ) {
@@ -326,8 +326,22 @@ $(document).ready(function() {
         data: $('#'+object+'Form').serialize(),
         async: false,
         cache: false,
-        success: function(data) {
-           $('#'+object+'Tab').html(data);
+        success: function(data, status, xhr) {
+           $('#msg-info').hide();
+           $('#msg-info').remove();
+
+           var ct = xhr.getResponseHeader("content-type") || "";
+           if (ct.indexOf('html') > -1) {
+             $('#'+object+'Tab').html(data);
+             $('#add-'+object+'Tab').tab('show');
+           } else if (ct.indexOf('json') > -1) {
+             var errors = JSON.parse(xhr.responseText);
+             $('#'+object+'Form').prepend('<div id="msg-info" class="alert alert-error" style="display: block;"><h4>Erreur(s) de formulaire :</h4><p class="pull-right"><button class="close" onclick="$(\'#msg-info\').hide(250); return false;">×</button></p><ul id="msg-content"></ul></div>');
+             for ( var k in errors) {
+               $('#msg-content').append('<li><b>'+k+'</b> : '+errors[k]+'</li>');
+             }
+            // $.fn.msg_box(xhr.responseText, '#'+object+'Form')
+           }  
         },
         error: function() { alert('err'); }
       });
@@ -354,6 +368,6 @@ $(document).ready(function() {
       $('#hostDiff').html(data);
     });
   }
-
+/////////////////////////////////////////////////
 });
 

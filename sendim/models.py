@@ -18,7 +18,7 @@ class Event(models.Model) :
     closed = models.BooleanField(default=False)
 
     def __unicode__(self) :
-        return str(self.pk)+':'+self.element.host+' - '+self.message
+        return str(self.pk)+':'+self.element.name+' - '+self.message
 
     def getAlerts(self, isUp=True, withoutRef=False):
         """
@@ -28,13 +28,13 @@ class Event(models.Model) :
          - withoutRef = If True excludes alerts without reference.
         """
         As = Alert.objects.filter(event=self).order_by('-pk')
-	if not isUp : As = As.exclude( Q(status__status__exact='OK') | Q(status__status__exact='UP') )
+	if not isUp : As = As.exclude( Q(status__name__exact='OK') | Q(status__name__exact='UP') )
 	if withoutRef : As = As.filter(reference=None)
         return As
 
     def getLastAlert(self, isUp=False):
         As = Alert.objects.filter(event=self).order_by('-pk')
-	if not isUp : As = As.exclude( Q(status__status__exact='OK') | Q(status__status__exact='UP') )
+	if not isUp : As = As.exclude( Q(status__name__exact='OK') | Q(status__name__exact='UP') )
         return As[0]
 
     def getPrimaryAlert(self):
@@ -79,13 +79,13 @@ class Event(models.Model) :
         else :
             hosts = {}
             for A in self.getAlerts() :
-                if not A.host.host in hosts : hosts[A.host.host] = []
-                if not A.service.service in hosts[A.host.host] : hosts[A.host.host].append(A.service.service)
+                if not A.host.name in hosts : hosts[A.host.name] = []
+                if not A.service.name in hosts[A.host.name] : hosts[A.host.name].append(A.service.name)
             ### Calcul de tout les service
             notOK = list()
             for host in hosts.keys() : 
                 for service in hosts[host] :
-                    if not self.getAlerts().filter(host__host=host,service__service=service,status=Status.objects.get(status='OK') ) :
+                    if not self.getAlerts().filter(host__name=host,service__name=service,status=Status.objects.get(name='OK') ) :
                         notOK.append( (host,service) )
             if not notOK :
                 self.closed = True
@@ -105,7 +105,7 @@ class Alert(models.Model) :
 
 
     def __unicode__(self) :
-        return self.host.host+' : '+self.service.service+' - '+ self.status.status
+        return self.host.name+' : '+self.service.name+' - '+ self.status.name
 
     def setPrimary(self):
         """Set alert as primary, set all event's alerts as not."""
@@ -153,7 +153,7 @@ class Alert(models.Model) :
         if self.event : E = self.event
 
         else : 
-            if match(r"^(UP|OK)$", self.status.status ) :
+            if match(r"^(UP|OK)$", self.status.name ) :
                 if Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None) :
 	            E = Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None).order_by('-pk')[0].event
 		    self.event = E
@@ -187,7 +187,7 @@ class Alert(models.Model) :
 
                 else :
                     lastA = Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None).order_by('-pk')[0]
-                    if (lastA.status in ( Status.objects.get(status='OK'), Status.objects.get(status='UP') )) or (lastA.event == None) :
+                    if (lastA.status in ( Status.objects.get(name='OK'), Status.objects.get(name='UP') )) or (lastA.event == None) :
                         E = Event (
                             element = self.host,
                             date = self.date,
@@ -208,16 +208,16 @@ class MailTemplate(models.Model) :
     subject = models.CharField(max_length=200)
     body = models.CharField(max_length=2000)
     comment = models.CharField(max_length=300, blank=True,null=True)
-    choosen = models.BooleanField(default=False)
+    chosen = models.BooleanField(default=False)
 
     def setOn(self):
         """Set template as used, set all others not."""
-        previousMT = MailTemplate.objects.get(choosen=True)
-        previousMT.choosen = False
+        previousMT = MailTemplate.objects.get(chosen=True)
+        previousMT.chosen = False
         previousMT.save()
-        self.choosen = True
+        self.chosen = True
         self.save()
 
     def getOn():
         """Return the chosen template."""
-        return MailTemplate.objects.get(choosen=True)
+        return MailTemplate.objects.get(chosen=True)

@@ -96,9 +96,9 @@
 		</thead>
 		<tbody>
 			{% for alert in alerts %}
-                        <tr status="{{ alert.status.status }}" host="{{ alert.host.host}}" service="{{ alert.service.service }}" date="{{ alert.date|date:'m-d-Y' }}" event="{{ alert.event.pk }}" style="background-color:{{ alert.status.status|getAlertColor }} ;">
+                        <tr status="{{ alert.status.status }}" host="{{ alert.host.name }}" service="{{ alert.service.service }}" date="{{ alert.date|date:'m-d-Y' }}" event="{{ alert.event.pk }}" style="background-color:{{ alert.status.status|getAlertColor }} ;">
 				<td>{{ alert.pk }}</td>
-				<td>{{ alert.host }}</td>
+				<td>{{ alert.name }}</td>
 				<td>{{ alert.service }}</td>
 				<td>{{ alert.status }}</td>
                                 <td>{{ alert.date|date:'m-d-Y' }}<br>{{ alert.date|date:'G:i:s' }}</td>

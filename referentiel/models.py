@@ -9,7 +9,7 @@ class Host(models.Model):
         (u'computer',u'computer'),
         (u'networkequipment',u'networkequipment'),
     )
-    host = models.CharField(max_length=45, unique=True)
+    name = models.CharField(max_length=45, unique=True)
     glpi_id = models.IntegerField( blank=True, null=True,  default=None)
     host_type = models.CharField(max_length=16, blank=True, choices=HOST_TYPE_CHOICES)
 
@@ -38,102 +38,95 @@ class Host(models.Model):
 #        logprint("Add automaticaly Host "+self.host, 'green')            
             
     def __unicode__(self):
-        return self.host
+        return self.name
 
 class Service(models.Model):
-    service = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=128, unique=True)
 
     def __unicode__(self):
-        return self.service
+        return self.name
 
     def save(self, *args, **kwargs):
         if not self.pk :
             super(Service, self).save(*args, **kwargs)
-            logprint('Add automaticaly service : '+self.service, 'green')
+            logprint('Add automaticaly service : '+self.name, 'green')
 
 class Status(models.Model):
-    status = models.CharField(max_length=10, unique=True)
-
-    def shortcut(self,name):
-        if match('ALL', name, 2) : status = Status.objects.all()
-        if match('OK', name, 2) : status = Status.objects.get(status='OK')
-        if match('UP', name, 2) : status = Status.objects.get(status='UP')
-        if match('DOWN', name, 2) : status = Status.objects.get(status='DOWN')
-        if match('serviceDown', name, 2) : status = Status.objects.filter(Q(status='WARNING') | Q(status='CRITICAL') | Q(status='UNKNOWN'))
-        return status
+    name = models.CharField(max_length=10, unique=True)
 
     def __unicode__(self):
-        return self.status
+        return self.name
 
 class MailType(models.Model):
-    mail_type = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=50, unique=True)
 
     def __unicode__(self):
-        return self.mail_type
+        return self.name
 
 class MailGroup(models.Model):
-    mail_group = models.CharField(max_length=30, unique=True)
+    name = models.CharField(max_length=30, unique=True)
     to = models.CharField(max_length=150)
     cc = models.CharField(max_length=150)
     ccm = models.CharField(max_length=150)
+
     def __unicode__(self):
-        return self.mail_group
+        return self.name
 
 class MailCriticity(models.Model):
-    mail_criticity = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=20, unique=True)
 
     def __unicode__(self):
-        return self.mail_criticity
+        return self.name
 
 #### Objects GLPI
 class GlpiUrgency(models.Model):
-    glpi_urgency = models.CharField(max_length=128)
+    name = models.CharField(max_length=128)
     glpi_id = models.IntegerField(unique=True, blank=True)
 
     def __unicode__(self):
-        return self.glpi_urgency
+        return self.name
 
 class GlpiPriority(models.Model):
-    glpi_priority = models.CharField(max_length=128)
+    name = models.CharField(max_length=128)
     glpi_id = models.IntegerField(unique=True, blank=True)
 
     def __unicode__(self):
-        return self.glpi_priority
+        return self.name
 
 class GlpiCategory(models.Model):
-    glpi_category = models.CharField(max_length=150)
+    name = models.CharField(max_length=150)
     glpi_id = models.IntegerField(unique=True)
 
     def __unicode__(self):
-        return self.glpi_category
+        return self.name
 
 class GlpiUser(models.Model):
-    glpi_user = models.CharField(max_length=128)
+    name = models.CharField(max_length=128)
     glpi_id = models.IntegerField(unique=True)
 
     def __unicode__(self):
-        return self.glpi_user
+        return self.name
 
 class GlpiGroup(models.Model):
-    glpi_group = models.CharField(max_length=128)
+    name = models.CharField(max_length=128)
     glpi_id = models.IntegerField(unique=True)
 
     def __unicode__(self):
-        return self.glpi_group
+        return self.name
 
 class GlpiSupplier(models.Model):
-    glpi_supplier = models.CharField(max_length=128)
+    name = models.CharField(max_length=128)
     glpi_id = models.IntegerField(unique=True)
 
     def __unicode__(self):
-        return self.glpi_supplier
+        return self.name
 
 class GlpiImpact(models.Model):
-    glpi_impact = models.CharField(max_length=128)
+    name = models.CharField(max_length=128)
     glpi_id = models.IntegerField(unique=True)
 
     def __unicode__(self):
-        return self.glpi_impact
+        return self.name
 
 class Reference(models.Model):
     host = models.ForeignKey(Host)
@@ -160,7 +153,7 @@ class Reference(models.Model):
     glpi_supplier = models.ForeignKey(GlpiSupplier, blank=True, null=True)
 
     def __unicode__(self):
-        return self.host.host+' - '+self.service.service+' en '+self.status.status
+        return self.host.name+' - '+self.service.name+' en '+self.status.name
 
 class Traduction(models.Model):
     service = models.ForeignKey(Service)
@@ -168,5 +161,5 @@ class Traduction(models.Model):
     status = models.ForeignKey(Status)
 
     def __unicode__(self):
-        return self.service.service+' en '+self.status.status
+        return self.service.name+' en '+self.status.name
 

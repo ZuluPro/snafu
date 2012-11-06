@@ -1,6 +1,7 @@
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+import django.utils.simplejson as json
 from django.shortcuts import render, get_object_or_404
 
 from referentiel.models import GlpiCategory
@@ -18,7 +19,7 @@ def getCategories(request) :
     """
     Cs = GlpiCategory.objects.all()
     if request.GET['q'] :
-        Cs = Cs.filter(glpi_category__icontains=request.GET['q'])  
+        Cs = Cs.filter(name__icontains=request.GET['q'])  
     Cs = Paginator(Cs, 10).page(request.GET.get('page',1))
 
     return render(request, 'configuration/glpi/categories/ul.html', {
@@ -45,9 +46,12 @@ def category(request, cat_id, action="get") :
         C.delete()
     
     elif action == "add" :
-         Form = GlpiCategoryForm(request.POST)
-         if Form.is_valid() :
-             Form.save()
+         form = GlpiCategoryForm(request.POST)
+         if form.is_valid() :
+             form.save()
+         else :
+             errors = json.dumps(form.errors)
+             return HttpResponse(errors, mimetype='application/json')
          
     return render(request, 'configuration/glpi/categories/tabs.html', {
         'Cs':GlpiCategory.objects.all(),
