@@ -1,44 +1,56 @@
 from django import forms
 from referentiel.models import *
 
-class ReferenceForm(forms.Form):
-	host = forms.ModelChoiceField(Host.objects.all().order_by('name') )
-	service = forms.ModelChoiceField(Service.objects.all().order_by('name') )
-	status = forms.ModelChoiceField(Status.objects.all() )
+class ReferenceForm(forms.ModelForm):
+    mail_criticity = forms.ModelChoiceField(MailCriticity.objects.all(), required=True, initial=1)
+    glpi_urgency = forms.ModelChoiceField(GlpiUrgency.objects.all(), required=True, initial=1)
+    glpi_priority = forms.ModelChoiceField(GlpiPriority.objects.all(), required=True, initial=1)
+    glpi_impact = forms.ModelChoiceField(GlpiImpact.objects.all(), required=True, initial=1)
+    glpi_source = forms.CharField(initial='Supervision')
+    
+    class Meta:
+        model = Reference
 
-	escalation_contact = forms.CharField(widget=forms.HiddenInput())
-	tendancy = forms.CharField(widget=forms.HiddenInput())
-	outage = forms.CharField(widget=forms.HiddenInput())
-	explanation = forms.CharField(widget=forms.HiddenInput())
-	origin = forms.CharField(widget=forms.HiddenInput())
-	procedure = forms.CharField(widget=forms.HiddenInput())
+class HostReferenceForm(ReferenceForm):
+    service = forms.ModelChoiceField(
+      Service.objects.filter(pk=1),
+      initial=1,
+      widget=forms.widgets.HiddenInput()
+    )
+    status = forms.ModelChoiceField(
+      Status.objects.filter(name='DOWN'),
+      initial=4,
+      widget=forms.widgets.HiddenInput()
+    )
 
-	mail_type = forms.ModelChoiceField(MailType.objects.all() )
-	mail_group = forms.ModelChoiceField(MailGroup.objects.all() )
-	mail_criticity = forms.ModelChoiceField(MailCriticity.objects.all() )
-
-	glpi_urgency = forms.ModelChoiceField(GlpiUrgency.objects.all(),widget=forms.HiddenInput())
-	glpi_priority = forms.ModelChoiceField(GlpiPriority.objects.all(),widget=forms.HiddenInput())
-	glpi_impact = forms.ModelChoiceField(GlpiImpact.objects.all(),widget=forms.HiddenInput() )
-	glpi_category = forms.ModelChoiceField(GlpiCategory.objects.all() ) ##
-	glpi_source = forms.CharField(max_length=128)
-	glpi_dst_group = forms.ModelChoiceField(GlpiGroup.objects.all() ) ##
-	glpi_supplier = forms.ModelChoiceField(GlpiSupplier.objects.all())
+    def __init__(self, *args, **kwargs):
+        super(ReferenceForm, self).__init__(*args, **kwargs)
 
 class TraductionForm(forms.Form):
-	service = forms.ModelChoiceField(Service.objects.all() )
-	status = forms.ModelChoiceField(Status.objects.all() )
-	traduction = forms.CharField(max_length=300)
+    class Meta:
+        model = Traduction
 
 class HostForm(forms.ModelForm) :
     class Meta:
         model = Host
 
+class MailGroupForm(forms.ModelForm) :
+    class Meta:
+        model = MailGroup
+
 class GlpiCategoryForm(forms.ModelForm) :
     class Meta:
         model = GlpiCategory
 
-class MailGroup(forms.ModelForm) :
+class GlpiUserForm(forms.ModelForm) :
     class Meta:
-        model = MailGroup
+        model = GlpiUser
+
+class GlpiGroupForm(forms.ModelForm) :
+    class Meta:
+        model = GlpiGroup
+
+class GlpiSupplierForm(forms.ModelForm) :
+    class Meta:
+        model = GlpiSupplier
 

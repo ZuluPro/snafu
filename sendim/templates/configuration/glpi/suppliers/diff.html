@@ -1,0 +1,56 @@
+<table class="table table-bordered">
+ <thead>
+  <tr>
+   <th>BDD</th>
+   <th>GLPI</th>
+   <th>Changé(s)</th>
+   <th>Pas dans GLPI</th>
+   <th>Pas dans BDD</th>
+  </tr>
+ </thead>
+ <tbody>
+  <tr>
+
+   <td>
+    <ul class="unstyled">
+     {% for H in diff.db %}
+      <li><a onclick="$('#HostListTab').tab('show'); $.fn.getHost({{ H.pk }});">{{ H.glpi_id }} - {{ H }}</a></li>
+     {% endfor %}
+    </ul>
+   </td>
+
+   <td>
+    <ul class="unstyled">
+     {% for H,id in diff.glpi %}
+      <li><a href="http://zuluglpi/glpi/front/computer.form.php?id={{ id }}" target=_blank>{{ id }} - {{ H }}</a></li>
+     {% endfor %}
+    </ul>
+   </td>
+
+   <td>
+    <ul class="unstyled">
+     {% for H,id,new_id in diff.changed %}
+      <li>{{ id }} - {{ H }} &rarr; {{ new_id }}</li>
+     {% endfor %}
+    </ul>
+   </td>
+
+   <td>
+    <ul class="unstyled">
+     {% for H,id in diff.not_in_glpi %}
+      <li>{{ id }} - {{ H }}</li>
+     {% endfor %}
+    </ul>
+   </td>
+
+   <td>
+    <ul class="unstyled">
+     {% for H,id in diff.not_in_db %}
+      <li>{{ id }} - {{ H }}</li>
+     {% endfor %}
+    </ul>
+   </td>
+
+  </tr>
+ </tbody>
+</table>

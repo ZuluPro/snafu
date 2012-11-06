@@ -1,0 +1,13 @@
+<div class="span3">
+ <br>
+ <div class="input-append">
+  <input id="glpiGroup_q" type="text" placeholder="Nom" style="width:85%">
+  <button class="btn btn-primary" style="width:5%" onclick="$.fn.snafu_object('list','glpiGroup')"><i class="icon-search icon-white"></i></button>
+ </div>
+ <div id="glpiGroup-ul">
+  {% include "configuration/glpi/groups/ul.html" %}
+ </div>
+</div>
+
+<div id="glpiGroupContent" class="span7">
+</div>

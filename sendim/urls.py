@@ -29,6 +29,9 @@ urlpatterns = patterns('',
     (r'^configuration/ref/alert/(?P<alert_id>\d+)$', 'sendim.views.getAlertWithoutRef'),
     (r'^configuration/ref/alert/(?P<alert_id>\d+)/form$', 'sendim.views.getRefForm'),
 
+    (r'^configuration/hostReference/form$', 'sendim.views.getHostReferenceForm'),
+    (r'^configuration/hostReference/(?P<ref_id>\d+)/add$', 'sendim.views.addHostReference'),
+
     (r'^configuration/trad_q$', 'sendim.views.getTraductions'),
     (r'^configuration/trad/(?P<trad_id>\d+)/(?P<action>(get|del|add))$', 'sendim.views.traduction'),
     (r'^configuration/trad/alert/tabs$', 'sendim.views.getAsWithoutTrad'),
@@ -60,4 +63,9 @@ urlpatterns = patterns('',
     (r'^configuration/mailType_q$', 'sendim.views.getMailTypes'),
     (r'^configuration/mailType/(?P<mtype_id>\d+)/(?P<action>(get|del|add))$', 'sendim.views.mailType'),
     (r'^configuration/mailType/form$', 'sendim.views.getMailTypeForm'),
+
+    (r'^configuration/(?P<action>\w+)/(?P<model>\w+)$', 'sendim.views.confManager'),
+    (r'^configuration/(?P<action>\w+)/(?P<model>\w+)/(?P<object_id>\d+)$', 'sendim.views.confManager'),
+    #(r'^configuration/mailType/(?P<mtype_id>\d+)/(?P<action>(get|del|add))$', 'sendim.views.mailType'),
+    #(r'^configuration/mailType/form$', 'sendim.views.getMailTypeForm'),
 )

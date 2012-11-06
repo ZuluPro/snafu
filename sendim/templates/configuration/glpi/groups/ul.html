@@ -1,0 +1,12 @@
+<ul  class="nav nav-tabs nav-stacked">
+ {% if GGsPage.has_previous %}
+  <li><a onclick="$.fn.snafu_object('list','glpiGroup',{{ GGsPage.previous_page_number }});">&uarr; Précédents</a></li>
+ {% endif %}
+ {% for GG in GGsPage %}
+  <li><a id="glpiGroup{{ GG.pk }}Tab" href="#" data-toggle="tab" onclick="$.fn.snafu_object('get','glpiGroup',{{ GG.pk }})">{{ GG.name }}</a></li>
+ {% endfor %}
+ {% if GGsPage.has_next %}
+  <li><a onclick="$.fn.snafu_object('list','glpiGroup',{{ GGsPage.next_page_number }});">&darr; Suivant(s)</a></li>
+ {% endif %}
+</ul>
+

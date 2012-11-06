@@ -15,7 +15,6 @@ class TraductionBigForm(forms.Form):
     warning = forms.CharField(max_length=300, required=True)
     critical = forms.CharField(max_length=300, required=True)
     unknown = forms.CharField(max_length=300, required=True)
-    apply = forms.BooleanField()
 
 class ReferenceBigForm(forms.Form):
     """
@@ -23,33 +22,32 @@ class ReferenceBigForm(forms.Form):
     It allow to add WARNING/CRITICAL/UNKNOWN reference in one time.
     """
     host = forms.ModelChoiceField(Host.objects.all().order_by('name'), required=True )
-    service = forms.ModelChoiceField(Service.objects.all().order_by('name'), required=True  )
-    apply = forms.BooleanField()
+    service = forms.ModelChoiceField(Service.objects.exclude(name='Host status').order_by('name'), required=True)
 
-    escalation_contact = forms.CharField()
-    tendancy = forms.CharField()
-    outage = forms.CharField()
-    explanation = forms.CharField()
-    origin = forms.CharField()
-    procedure = forms.CharField()
+    escalation_contact = forms.CharField(required=False)
+    tendancy = forms.CharField(required=False)
+    outage = forms.CharField(required=False)
+    explanation = forms.CharField(required=False)
+    origin = forms.CharField(required=False)
+    procedure = forms.CharField(required=False)
 
-    mail_type = forms.ModelChoiceField(MailType.objects.all(), required=True  )
-    mail_group = forms.ModelChoiceField(MailGroup.objects.all(), required=True  )
+    mail_type = forms.ModelChoiceField(MailType.objects.all(), required=True)
+    mail_group = forms.ModelChoiceField(MailGroup.objects.all(), required=True)
 
     warning_criticity = forms.ModelChoiceField(MailCriticity.objects.all(), required=True, initial=1 )
-    warning_urgency = forms.ModelChoiceField(GlpiUrgency.objects.all(), initial=3 )
-    warning_priority = forms.ModelChoiceField(GlpiPriority.objects.all(), initial=3 )
-    warning_impact = forms.ModelChoiceField(GlpiImpact.objects.all(), initial=4 )
+    warning_urgency = forms.ModelChoiceField(GlpiUrgency.objects.all(), initial=1)
+    warning_priority = forms.ModelChoiceField(GlpiPriority.objects.all(), initial=1)
+    warning_impact = forms.ModelChoiceField(GlpiImpact.objects.all(), initial=1)
 
     critical_criticity = forms.ModelChoiceField(MailCriticity.objects.all(), required=True, initial=1 )
-    critical_urgency = forms.ModelChoiceField(GlpiUrgency.objects.all(), initial=3)
-    critical_priority = forms.ModelChoiceField(GlpiPriority.objects.all(), initial=3)
-    critical_impact = forms.ModelChoiceField(GlpiImpact.objects.all(), initial=4 )
+    critical_urgency = forms.ModelChoiceField(GlpiUrgency.objects.all(), initial=1)
+    critical_priority = forms.ModelChoiceField(GlpiPriority.objects.all(), initial=1)
+    critical_impact = forms.ModelChoiceField(GlpiImpact.objects.all(), initial=1)
 
     unknown_criticity = forms.ModelChoiceField(MailCriticity.objects.all(), required=True, initial=1 )
-    unknown_urgency = forms.ModelChoiceField(GlpiUrgency.objects.all(), initial=3)
-    unknown_priority = forms.ModelChoiceField(GlpiPriority.objects.all(), initial=3)
-    unknown_impact = forms.ModelChoiceField(GlpiImpact.objects.all(),  initial=4)
+    unknown_urgency = forms.ModelChoiceField(GlpiUrgency.objects.all(), initial=1)
+    unknown_priority = forms.ModelChoiceField(GlpiPriority.objects.all(), initial=1)
+    unknown_impact = forms.ModelChoiceField(GlpiImpact.objects.all(),  initial=1)
 
     glpi_category = forms.ModelChoiceField(GlpiCategory.objects.all() ) 
     glpi_source = forms.CharField(initial='Supervision')
@@ -79,8 +77,7 @@ class ReferenceBigForm(forms.Form):
     def alertFields(self) : 
         return [ 
         self.__getitem__('host'),
-        self.__getitem__('service'),
-        self.__getitem__('apply'),
+        self.__getitem__('service')
         ]
 
     def glpiFields(self) : 
@@ -102,6 +99,41 @@ class ReferenceBigForm(forms.Form):
         self.__getitem__('mail_type'),
         self.__getitem__('mail_group'),
         ]
+
+    def save(self) :
+        host = Host.objects.get(pk=self.data['host'])
+        service = Service.objects.get(pk=self.data['service'])
+    
+        for status in ('WARNING','CRITICAL','UNKNOWN') :
+            if not Reference.objects.filter(host=host,service=service,status__name=status) :
+                R = Reference(
+                    host = host,
+                    service = service,
+                    status = Status.objects.get(name=status),
+    
+                    escalation_contact = self.data['escalation_contact'],
+                    tendancy = self.data['tendancy'],
+                    outage = self.data['outage'],
+                    explanation = self.data['explanation'],
+                    origin = self.data['origin'],
+                    procedure = self.data['procedure'],
+    
+                    mail_type = MailType.objects.get(pk=self.data['mail_type']),
+                    mail_group = MailGroup.objects.get(pk=self.data['mail_group']),
+    
+                    glpi_category = GlpiCategory.objects.get(pk=self.data['glpi_category']),
+                    glpi_source = self.data['glpi_source'],
+                    glpi_dst_group = GlpiGroup.objects.get(pk=self.data['glpi_dst_group']),
+                    glpi_supplier = GlpiSupplier.objects.get(pk=self.data['glpi_supplier'])
+                )
+                R.mail_criticity = MailCriticity.objects.get(pk=self.data[status.lower()+'_criticity'])
+                R.glpi_urgency = GlpiUrgency.objects.get(pk=self.data[status.lower()+'_urgency'])
+                R.glpi_priority = GlpiPriority.objects.get(pk=self.data[status.lower()+'_priority'])
+                R.glpi_impact = GlpiImpact.objects.get(pk=self.data[status.lower()+'_impact'])
+                R.save()
+
+        for A in Alert.objects.filter(host=host,service=service,reference=None) :
+            A.linkToReference()
 
 class MailTemplateForm(forms.ModelForm):
     class Meta:
@@ -127,6 +159,8 @@ class MailTypeForm(forms.ModelForm):
 
 class UserForm(forms.ModelForm):
     id = forms.IntegerField(required=False, initial=0, widget=widgets.HiddenInput)
+    confirm_password = forms.PasswordInput()
+
     class Meta:
         model = User
         exclude = ('last_login','date_joined','groups','user_permissions','active')
