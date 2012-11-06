@@ -222,7 +222,10 @@ def confManager(request, action, model, object_id=0) :
               set( Objs.filter(cc__icontains=request.GET['q']) )
             ) )
 
-        Objs = Paginator(Objs, 10).page(request.GET.get('page',1))
+        try :
+            Objs = Paginator(Objs, 10).page(request.GET.get('page',1))
+        except EmptyPage:
+            Objs = Paginator(Objs, 10).page(1)
 
         return render(request, temp_dir+temp_file, {
           page_key : Objs
