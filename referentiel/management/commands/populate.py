@@ -5,7 +5,7 @@ from django.db.utils import IntegrityError
 from referentiel.models import *
 from sendim.models import *
 from sendim.exceptions import UnableToConnectGLPI
-from sendim.defs import get_objects_from_glpi, get_hosts_from_glpi, get_users_from_glpi, get_groups_from_glpi
+from sendim.defs import get_objects_from_glpi
 
 from common import logprint
 

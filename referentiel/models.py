@@ -1,5 +1,6 @@
 from django.db.models import Q
 from django.db import models
+
 from common import *
 
 from re import match
@@ -141,9 +142,9 @@ class Reference(models.Model):
     def __unicode__(self):
         return self.host.name+' - '+self.service.name+' en '+self.status.name
 
-class Traduction(models.Model):
+class Translation(models.Model):
     service = models.ForeignKey(Service)
-    traduction = models.CharField(max_length=255)
+    translation = models.CharField(max_length=250)
     status = models.ForeignKey(Status)
 
     def __unicode__(self):

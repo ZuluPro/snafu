@@ -1,0 +1,19 @@
+<form class="form-horizontal" id="translationForm">
+ {% csrf_token %}
+ <fieldset>
+
+  <div class="row">
+   {% for field in TranslationBigForm.visible_fields %}
+    <div class="control-group">
+     <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
+     <div class="controls">
+      {{ field }}
+     </div>
+    </div>
+   {% endfor %}
+  </div>
+
+ </fieldset>
+ <button class="btn btn-primary" onclick="$.fn.snafu_object('add','translation'); return false;">Enregister</button>
+</form>
+

@@ -1,0 +1,11 @@
+<ul class="nav nav-tabs nav-stacked">
+ {% if AsWithoutTranslationPage.has_previous %}
+  <li><a onclick="$.fn.snafu_object('list', 'a_translation', {{ AsWithoutTranslationPage.previous_page_number }});">&uarr; Précédentes</a></li>
+ {% endif %}
+ {% for A in AsWithoutTranslationPage %}
+  <li><a id="a_translation{{ A.pk }}Tab" href="#" data-toggle="tab" onclick="$.fn.snafu_object('get', 'a_translation', {{ A.pk }})">{{ A.host }} - {{ A.service }} : {{ A.status }}</a></li>
+ {% endfor %}
+ {% if AsWithoutTranslationPage.has_next %}
+  <li><a onclick="$.fn.snafu_object('list', 'a_translation', {{ AsWithoutTranslationPage.next_page_number }});">&darr; Suivante(s)</a></li>
+ {% endif %}
+</ul>

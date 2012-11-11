@@ -1,4 +1,4 @@
-from referentiel.models import Reference, Traduction, Host, Service, Status
+from referentiel.models import Reference, Translation, Host, Service, Status
 from common import logprint
 
 def getReference(A, byHost=True, byService=True, byStatus=True ) :
@@ -12,8 +12,8 @@ def getReference(A, byHost=True, byService=True, byStatus=True ) :
 
     return R
 
-def getTraduction(A, byStatus=True ) :
-    Ts = Traduction.objects.all()
+def getTranslation(A, byStatus=True ) :
+    Ts = Translation.objects.all()
     if byStatus : Ts = Ts.filter(service=A.service, status=A.status)
 
     if not Ts : T = None ; logprint('No Translation for Alert #'+str(A.pk), 'yellow')

@@ -11,7 +11,7 @@ from sendim.models import Alert, MailTemplate
 from sendim.forms import *
 from referentiel.forms import *
 from referentiel.defs import *
-from referentiel.models import Host, Reference, Traduction
+from referentiel.models import Host, Reference, Translation
 
 from re import match
 
@@ -21,7 +21,7 @@ def configuration(request) :
     Index of configuration, this view is the only one which is request without AJAX.
     It gets all necessary data dor make menus:
      - References
-     - Traductions
+     - Translations
      - Mail templates
      - Users
      - Hosts
@@ -31,10 +31,10 @@ def configuration(request) :
     Rs = Reference.objects.all()
     RsPage = Paginator(Rs, 10).page(1)
 
-    Ts = Traduction.objects.all()
+    Ts = Translation.objects.all()
     TsPage = Paginator(Ts, 10).page(1)
-    AsWithoutTrad = Alert.objects.filter( Q(traduction=None), ~Q(status__name='OK'), ~Q(status__name='UP'), ~Q(status__name='DOWN') )
-    AsWithoutTradPage = Paginator(AsWithoutTrad, 10).page(1)
+    AsWithoutTranslation = Alert.objects.filter(translation=None)
+    AsWithoutTranslationPage = Paginator(AsWithoutTranslation, 10).page(1)
 
     Us = User.objects.all()
     UsPage = Paginator(Us, 10).page(1)
@@ -71,9 +71,9 @@ def configuration(request) :
 
         'Ts':Ts,
         'TsPage':TsPage,
-        'traductionBigForm':TraductionBigForm,
-        'AsWithoutTrad':AsWithoutTrad,
-        'AsWithoutTradPage':AsWithoutTradPage,
+        'translationBigForm':TranslationBigForm,
+        'AsWithoutTranslation':AsWithoutTranslation,
+        'AsWithoutTranslationPage':AsWithoutTranslationPage,
 
         'Us':Us,
         'UsPage':UsPage,
@@ -198,6 +198,24 @@ def confManager(request, action, model, object_id=0) :
         page_key = 'SsPage'
         form_key = 'GlpiSupplierForm'
 
+    elif model == "translation" :
+        temp_dir = 'configuration/translation/translation/'
+        Model = Translation
+        form = TranslationBigForm
+        element_key = 'T'
+        filter_key = 'Ts'
+        page_key = 'TsPage'
+        form_key = 'TranslationBigForm'
+
+    elif model == "a_translation" :
+        temp_dir = 'configuration/translation/alerts/'
+        Model = Alert
+        form = TranslationBigForm
+        element_key = 'A'
+        filter_key = 'AsWithoutTranslation'
+        page_key = 'AsWithoutTranslationPage'
+        form_key = 'TranslationBigForm'
+
     else : raise Http404
 
 
@@ -222,6 +240,21 @@ def confManager(request, action, model, object_id=0) :
               set( Objs.filter(cc__icontains=request.GET['q']) )
             ) )
 
+        elif model == "translation" :
+            Objs = list( (
+              set( Objs.filter(service__name__icontains=request.GET['q']) ) |
+              set( Objs.filter(status__name__icontains=request.GET['q']) ) |
+              set( Objs.filter(translation__icontains=request.GET['q']) )
+            ) )
+
+        elif model == "a_translation" :
+            Objs = Objs.filter(translation=None)
+            Objs = list( (
+              set( Objs.filter(host__name__icontains=request.GET['q']) ) |
+              set( Objs.filter(service__name__icontains=request.GET['q']) ) |
+              set( Objs.filter(status__name__icontains=request.GET['q']) )
+            ) )
+
         try :
             Objs = Paginator(Objs, 10).page(request.GET.get('page',1))
         except EmptyPage:
@@ -232,7 +265,13 @@ def confManager(request, action, model, object_id=0) :
         })
 
     elif action == 'form' :
-        form = form()
+        if model == "a_translation" :
+            data = {}
+            A = Alert.objects.get(pk=object_id)
+            if A.status.name == "DOWN" :
+                form = TranslationForm({'status':4,'service':1})
+            else : form = form({'service':A.service.pk})
+        else : form = form()
         return render(request, temp_dir+'form.html', {
           form_key : form
         })
@@ -255,17 +294,22 @@ def confManager(request, action, model, object_id=0) :
         elif model  == "mailType" : temp_file = 'type.html'
         elif model  == "supplier" : temp_file = 'supplier.html'
         elif model  == "hostReference" : temp_file = 'ref.html'
+        elif model  == "translation" : temp_file = 'translation.html'
+        elif model  == "a_translation" : temp_file = 'alert.html'
     
         if action == "add" :
-             form = form(request.POST)
-             if form.is_valid() :
-                 form.save()
-                 return render(request, temp_dir+'tabs.html', {
-                   filter_key : Model.objects.all()
-                 })
-             else :
-                 errors = json.dumps(form.errors)
-                 return HttpResponse(errors, mimetype='application/json')
+            if "translation" in model and request.POST['service'] == '1' :
+                form = TranslationForm
+
+            form = form(request.POST)
+            if form.is_valid() :
+                form.save()
+                return render(request, temp_dir+'tabs.html', {
+                  filter_key : Model.objects.all()
+                })
+            else :
+                errors = json.dumps(form.errors)
+                return HttpResponse(errors, mimetype='application/json')
     
         elif action == 'get' :
             return render(request, temp_dir+temp_file, {

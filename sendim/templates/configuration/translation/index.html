@@ -1,0 +1,19 @@
+<div class="tabbable tabs-left">
+ <ul id="translationTab" class="nav nav-tabs nav-stacked">
+  {% include "configuration/translation/tabs.html" %}
+ </ul>
+ 
+ <div id="translationTabContent" class="tab-content">
+  <div class="tab-pane fade in active" id="translationList">
+   {% include "configuration/translation/translation/manage.html" %}
+  </div>
+
+  <div class="tab-pane fade" id="a_translationList">
+   {% include "configuration/translation/alerts/manage.html" %}
+  </div>
+
+  <div class="tab-pane fade" id="add-translationContent">
+  </div>
+
+ </div>
+</div> 

@@ -5,8 +5,8 @@
 
 {% csrf_token %}
 <ul id="myTab" class="nav nav-tabs">
- <li class="active"><a href="#reference" data-toggle="tab">References</a></li>
- <li><a href="#traduction" data-toggle="tab">Traductions</a></li>
+ <li class="active"><a href="#reference" data-toggle="tab">Références</a></li>
+ <li><a href="#translation" data-toggle="tab">Traductions</a></li>
  <li><a href="#user" data-toggle="tab">Utilisateurs</a></li>
  <li><a href="#mail" data-toggle="tab">Mail</a></li>
  <li><a href="#glpi" data-toggle="tab">GLPI</a></li>
@@ -16,8 +16,8 @@
  <div class="tab-pane fade in active" id="reference">
   {% include "configuration/reference/index.html" %}
  </div>
- <div class="tab-pane fade" id="traduction">
-  {% include "configuration/traduction/index.html" %}
+ <div class="tab-pane fade" id="translation">
+  {% include "configuration/translation/index.html" %}
  </div>
  <div class="tab-pane fade" id="user">
   {% include "configuration/user/index.html" %}

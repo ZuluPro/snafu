@@ -7,10 +7,10 @@ class HostAdmin(admin.ModelAdmin):
     list_filter = ('host_type',)
     list_editable = ('glpi_id', )
 
-class TraductionAdmin(admin.ModelAdmin):
-    list_display = ('service','traduction')
-    search_fields = ('service','traduction')
-    list_editable = ('traduction',)
+class TranslationAdmin(admin.ModelAdmin):
+    list_display = ('service','translation')
+    search_fields = ('service','translation')
+    list_editable = ('translation',)
 
 class ReferenceAdmin(admin.ModelAdmin):
     list_display = ('service','host','mail_type','mail_group','status','mail_criticity','procedure','glpi_category', 'glpi_dst_group', 'glpi_supplier' )
@@ -42,4 +42,4 @@ admin.site.register(GlpiSupplier, GlpiSupplierAdmin)
 admin.site.register(GlpiImpact)
 
 admin.site.register(Reference , ReferenceAdmin)
-admin.site.register(Traduction,TraductionAdmin)
+admin.site.register(Translation,TranslationAdmin)

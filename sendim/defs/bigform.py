@@ -82,16 +82,16 @@ def postFormSet(_POST, is_a_set=True):
 
     return host,service
 
-def postTraductionFormSet(POST) :
+def postTranslationFormSet(POST) :
     service = Service.objects.get(pk=POST['service'])
     for status in ('warning','critical','unknown') :
-        T = Traduction.objects.create(
+        T = Translation.objects.create(
             service = service,
             status = Status.objects.get(name=status.upper()),
-            traduction = POST[status]
+            translation = POST[status]
         )
 
-    for A in Alert.objects.filter(service=service, traduction=None) :
-        A.linkToTraduction()
+    for A in Alert.objects.filter(service=service, translation=None) :
+        A.linkToTranslation()
 
     return service

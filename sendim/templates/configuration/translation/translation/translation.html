@@ -4,15 +4,14 @@
  <div class="span9">
   <dl>
    <dt>Traduction:</dt>
-   <dd>{{ T.traduction }}</dd>
+   <dd>{{ T.translation }}</dd>
   </dl>
  </div>
 
  <div class="span1">
   <div class="btn-group">
-   <button class="btn btn-danger" onclick="$.fn.delTrad({{ T.pk }})">Supprimer</button>
+   <button class="btn btn-danger" onclick="$.fn.snafu_object('del','translation',{{ T.pk }})">Supprimer</button>
   </div>
  </div>
-
 
 </div>

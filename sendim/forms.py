@@ -5,16 +5,31 @@ from django.forms import widgets, formsets
 from referentiel.models import *
 from sendim.models import *
 
-class TraductionBigForm(forms.Form):
+class TranslationBigForm(forms.Form):
     """
-    A form for Traduction.
-    It allow to add WARNING/CRITICAL/UNKNOWN traduction in one time.
+    A form for Translation.
+    It allow to add WARNING/CRITICAL/UNKNOWN translation in one time.
     """
 
     service = forms.ModelChoiceField(Service.objects.all().order_by('name') )
     warning = forms.CharField(max_length=300, required=True)
     critical = forms.CharField(max_length=300, required=True)
     unknown = forms.CharField(max_length=300, required=True)
+
+    def save(self) :
+        service = Service.objects.get(pk=self.data['service'])
+    
+        for status in ('WARNING','CRITICAL','UNKNOWN') :
+            if not Translation.objects.filter(service=service,status__name=status).exists() :
+                T = Translation(
+                    service = service,
+                    status = Status.objects.get(name=status)
+                )
+                T.translation = self.data[status.lower()]
+                T.save()
+
+        for A in Alert.objects.filter(service=service,translation=None) :
+            A.linkToTranslation()
 
 class ReferenceBigForm(forms.Form):
     """

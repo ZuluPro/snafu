@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django.db import models
 
-from referentiel.models import Host, Status, Service, Reference, Traduction
+from referentiel.models import Host, Status, Service, Reference, Translation
 from referentiel.defs import *
 
 from common import *
@@ -100,7 +100,7 @@ class Alert(models.Model) :
     info = models.CharField(max_length=300)
     event = models.ForeignKey(Event, blank=True, null=True)
     reference = models.ForeignKey(Reference, blank=True, null=True, on_delete=models.SET_NULL)
-    traduction = models.ForeignKey(Traduction, blank=True, null=True, on_delete=models.SET_NULL)
+    translation = models.ForeignKey(Translation, blank=True, null=True, on_delete=models.SET_NULL)
     isPrimary = models.BooleanField(default=False)
 
 
@@ -131,13 +131,13 @@ class Alert(models.Model) :
             if self.reference : self.save()
         return self.reference
 
-    def linkToTraduction(self, force=False, byStatus=True):
+    def linkToTranslation(self, force=False, byStatus=True):
         """
-        Search if a traduction matches with the alert.
+        Search if a translation matches with the alert.
         In case, link alert to it.
         """
-        if ( self.traduction and force ) or not self.traduction : 
-            self.traduction = getTraduction(self, byStatus)
+        if ( self.translation and force ) or not self.translation : 
+            self.translation = getTranslation(self, byStatus)
             self.save()
         return self.reference
 
@@ -169,16 +169,16 @@ class Alert(models.Model) :
                     mail_criticity = R.mail_criticity
                     self.reference = R
 
-                if not self.traduction : T = getTraduction(self)
-                if T == None : traduction=self.info
-                else : traduction = T.traduction
+                if not self.translation : T = getTranslation(self)
+                if T == None : translation=self.info
+                else : translation = T.translation
 
                 if not Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk) :
                     E = Event (
                         element = self.host,
                         date = self.date,
                         criticity = mail_criticity,
-                        message = traduction
+                        message = translation
                     )
 	            E.save()
                     self.event = E
@@ -192,7 +192,7 @@ class Alert(models.Model) :
                             element = self.host,
                             date = self.date,
                             criticity = mail_criticity,
-                            message = traduction
+                            message = translation
                         )
                         E.save()
                         self.event = E

@@ -26,9 +26,17 @@ class HostReferenceForm(ReferenceForm):
     def __init__(self, *args, **kwargs):
         super(ReferenceForm, self).__init__(*args, **kwargs)
 
-class TraductionForm(forms.Form):
+class TranslationForm(forms.ModelForm):
     class Meta:
-        model = Traduction
+        model = Translation
+
+    def save(self, *args, **kwargs) :
+        from sendim.models import Alert
+        T = super(TranslationForm, self).save(*args, **kwargs)
+        for A in Alert.objects.filter(service=self.data['service'], translation=None) :
+            A.translation = T
+            A.save(force_update=True)
+            print A.translation
 
 class HostForm(forms.ModelForm) :
     class Meta:

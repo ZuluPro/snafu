@@ -291,6 +291,7 @@ $(document).ready(function() {
 
 ///////////////////////////////////////////////////////////
   $.fn.snafu_object = function(action, object, pk) {
+    if ( ! pk ) { pk = 0; }
     if ( action == "get" ) {
       $('#'+object+'Content').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
       $.get('/snafu/configuration/get/'+object+'/'+pk, function(data) {
@@ -313,7 +314,8 @@ $(document).ready(function() {
       });
 
     } else if ( action == "form" ) {
-      $.get('/snafu/configuration/form/'+object, {}, function(data) {
+      $.get('/snafu/configuration/form/'+object+'/'+pk, {}, function(data) {
+        if ( object == "a_translation" ) { object = "translation"; }
         $('#add-'+object+'Content').html(data);
         $('#add-'+object+'Tab').tab('show');
       });
