@@ -17,6 +17,12 @@ class MailTemplateAdmin(admin.ModelAdmin) :
     search_fields = ('subject','body' )
     list_filter = ( 'chosen', )
 
+class SupervisorAdmin(admin.ModelAdmin) :
+    list_display = ('pk', 'name','login','index' )
+    search_fields = ('supervisor_type', )
+    search_fields = ('name', 'index', 'supervisor_type',)
+
 admin.site.register(Event, EventAdmin)
 admin.site.register(Alert, AlertAdmin)
 admin.site.register(MailTemplate, MailTemplateAdmin)
+admin.site.register(Supervisor, SupervisorAdmin)

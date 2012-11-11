@@ -17,6 +17,9 @@ class Event(models.Model) :
     mail = models.BooleanField(default=False)
     closed = models.BooleanField(default=False)
 
+    class Meta:
+        app_label = 'sendim'
+
     def __unicode__(self) :
         return str(self.pk)+':'+self.element.name+' - '+self.message
 
@@ -103,6 +106,8 @@ class Alert(models.Model) :
     translation = models.ForeignKey(Translation, blank=True, null=True, on_delete=models.SET_NULL)
     isPrimary = models.BooleanField(default=False)
 
+    class Meta:
+        app_label = 'sendim'
 
     def __unicode__(self) :
         return self.host.name+' : '+self.service.name+' - '+ self.status.name
@@ -210,6 +215,9 @@ class MailTemplate(models.Model) :
     comment = models.CharField(max_length=300, blank=True,null=True)
     chosen = models.BooleanField(default=False)
 
+    class Meta:
+        app_label = 'sendim'
+
     def setOn(self):
         """Set template as used, set all others not."""
         previousMT = MailTemplate.objects.get(chosen=True)
@@ -221,3 +229,5 @@ class MailTemplate(models.Model) :
     def getOn():
         """Return the chosen template."""
         return MailTemplate.objects.get(chosen=True)
+
+

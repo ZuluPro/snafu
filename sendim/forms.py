@@ -182,3 +182,8 @@ class UserForm(forms.ModelForm):
         widgets = {
             'password':widgets.PasswordInput()
         }
+
+class SupervisorForm(forms.ModelForm):
+    class Meta:
+        model = Supervisor
+
