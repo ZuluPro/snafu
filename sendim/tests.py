@@ -21,7 +21,7 @@ def createAlert(host=None,service=None,status=None, isDown=True) :
     else : host = Host.objects.get(name=host)
 
     if not service : service = choice(Service.objects.all())
-    else : service = Service.objects.get(service=service)
+    else : service = Service.objects.get(name=service)
 
     if not status :
        if service.name == "Host status" :

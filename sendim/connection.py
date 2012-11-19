@@ -45,28 +45,3 @@ def checkSmtp():
         S.close()
     except (error,gaierror), e : smtpStatus = e
     return smtpStatus
-
-def getOpener():
-    """Get urllib2.OpenerDirector configured to access to Nagios."""
-    
-    www = settings.SNAFU['nagios-url']
-    username = settings.SNAFU['nagios-login']
-    password = settings.SNAFU['nagios-password']
-    
-    passman = HTTPPasswordMgrWithDefaultRealm()
-    passman.add_password(None, www, username, password)
-    authhandler = HTTPBasicAuthHandler(passman)
-    opener = build_opener(authhandler)
-    install_opener(opener)
-    return opener
-
-def checkNagios():
-    """Make a connection test with Nagios opener.
-    Return an HTML status code."""
-    opener = getOpener()
-    try :
-        opener.open(settings.SNAFU['nagios-url'], timeout=2)
-        nagiosStatus = False 
-    except (error,gaierror,URLError), e : 
-        nagiosStatus = e
-    return nagiosStatus

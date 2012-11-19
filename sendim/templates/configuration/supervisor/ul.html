@@ -1,0 +1,12 @@
+<ul  class="nav nav-tabs nav-stacked">
+ {% if SsPage.has_previous %}
+  <li><a onclick="$.fn.snafu_object('list','supervisor',{{ SsPage.previous_page_number }});">&uarr; Précédents</a></li>
+ {% endif %}
+ {% for S in SsPage %}
+  <li><a id="supervisor{{ S.pk }}Tab" href="#" data-toggle="tab" onclick="$.fn.snafu_object('get','supervisor',{{ S.pk }})">{{ S.name }}</a></li>
+ {% endfor %}
+ {% if SsPage.has_next %}
+  <li><a onclick="$.fn.snafu_object('list','supervisor',{{ SsPage.next_page_number }});">&darr; Suivant(s)</a></li>
+ {% endif %}
+</ul>
+

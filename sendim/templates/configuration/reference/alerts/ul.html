@@ -1,5 +1,11 @@
-<ul  class="nav nav-tabs nav-stacked">
- {% for A in AsWithoutRef %}
-  <li><a id="AWithoutRef{{ A.pk }}Tab" href="#" data-toggle="tab" onclick="$.fn.getAlertWithoutRef({{ A.pk }})">{{ A.host }} - {{ A.service }} : {{ A.status }}</a></li>
+<ul class="nav nav-tabs nav-stacked">
+ {% if AsWithoutReferencePage.has_previous %}
+  <li><a onclick="$.fn.snafu_object('list', 'a_reference', {{ AsWithoutReferencePage.previous_page_number }});">&uarr; Précédentes</a></li>
+ {% endif %}
+ {% for A in AsWithoutReferencePage %}
+  <li><a id="a_reference{{ A.pk }}Tab" href="#" data-toggle="tab" onclick="$.fn.snafu_object('get', 'a_reference', {{ A.pk }})">{{ A.host }} - {{ A.service }} : {{ A.status }}</a></li>
  {% endfor %}
+ {% if AsWithoutReferencePage.has_next %}
+  <li><a onclick="$.fn.snafu_object('list', 'a_reference', {{ AsWithoutReferencePage.next_page_number }});">&darr; Suivante(s)</a></li>
+ {% endif %}
 </ul>

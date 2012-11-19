@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 import django.utils.simplejson as json
 
-from sendim.models import Alert, MailTemplate
+from sendim.models import Alert, MailTemplate, Supervisor
 from sendim.forms import *
 from referentiel.forms import *
 from referentiel.defs import *
@@ -26,15 +26,21 @@ def configuration(request) :
      - Users
      - Hosts
      - GLPI categories
+     ...
     """
     
     Rs = Reference.objects.all()
     RsPage = Paginator(Rs, 10).page(1)
+    AsWithoutReference = Alert.objects.filter(reference=None).exclude(Q(status__name='OK') | Q(status__name='UP'))
+    AsWithoutReferencePage = Paginator(AsWithoutReference, 10).page(1)
 
     Ts = Translation.objects.all()
     TsPage = Paginator(Ts, 10).page(1)
-    AsWithoutTranslation = Alert.objects.filter(translation=None)
+    AsWithoutTranslation = Alert.objects.filter(translation=None).exclude(Q(status__name='OK') | Q(status__name='UP'))
     AsWithoutTranslationPage = Paginator(AsWithoutTranslation, 10).page(1)
+
+    Ss = Supervisor.objects.all()
+    SsPage = Paginator(Ss, 10).page(1)
 
     Us = User.objects.all()
     UsPage = Paginator(Us, 10).page(1)
@@ -60,20 +66,25 @@ def configuration(request) :
     GGs = GlpiGroup.objects.all()
     GGsPage = Paginator(GGs, 10).page(1)
 
-    Ss = GlpiSupplier.objects.all()
-    SsPage = Paginator(Ss, 10).page(1)
+    GSs = GlpiSupplier.objects.all()
+    GSsPage = Paginator(GSs, 10).page(1)
 
     return render(request, 'configuration/index.html', {
         'Rs':Rs,
         'RsPage':RsPage,
-        'AsWithoutRef':Alert.objects.filter( Q(reference=None), ~Q(status__name='OK'), ~Q(status__name='UP'), ~Q(status__name='DOWN') ),
-        'referenceBigForm':ReferenceBigForm,
+        'ReferenceForm':ReferenceForm,
+        'AsWithoutReference':AsWithoutReference,
+        'AsWithoutReferencePage':AsWithoutReferencePage,
 
         'Ts':Ts,
         'TsPage':TsPage,
         'translationBigForm':TranslationBigForm,
         'AsWithoutTranslation':AsWithoutTranslation,
         'AsWithoutTranslationPage':AsWithoutTranslationPage,
+
+        'Ss':Ss,
+        'SsPage':SsPage,
+        'SupervisorForm':SupervisorForm,
 
         'Us':Us,
         'UsPage':UsPage,
@@ -100,14 +111,17 @@ def configuration(request) :
         'GGs':GGs,
 	'GGsPage':GGsPage,
 
-        'Ss':Ss,
-	'SsPage':SsPage,
+        'GSs':GSs,
+	'GSsPage':GSsPage,
 
         'title':'Snafu - Configuration'
     })
 
 @login_required
 def confManager(request, action, model, object_id=0) :
+    """
+    AJAX view for add, delete or get objects from DB.
+    """
     if model == "hostReference" :
         temp_dir = 'configuration/reference/host/'
         Model = Reference
@@ -115,7 +129,7 @@ def confManager(request, action, model, object_id=0) :
         element_key = 'R'
         filter_key = 'Rs'
         page_key = 'RsPage'
-        form_key = 'HostReferenceForm'
+        form_key = 'ReferenceForm'
 
     elif model == "glpiUser" :
         temp_dir = 'configuration/glpi/users/'
@@ -193,9 +207,9 @@ def confManager(request, action, model, object_id=0) :
         temp_dir = 'configuration/glpi/suppliers/'
         Model = GlpiSupplier
         form = GlpiSupplierForm
-        element_key = 'S'
-        filter_key = 'Ss'
-        page_key = 'SsPage'
+        element_key = 'GS'
+        filter_key = 'GSs'
+        page_key = 'GSsPage'
         form_key = 'GlpiSupplierForm'
 
     elif model == "translation" :
@@ -215,6 +229,33 @@ def confManager(request, action, model, object_id=0) :
         filter_key = 'AsWithoutTranslation'
         page_key = 'AsWithoutTranslationPage'
         form_key = 'TranslationBigForm'
+
+    elif model == "reference" :
+        temp_dir = 'configuration/reference/refs/'
+        Model = Reference
+        form = ReferenceForm
+        element_key = 'R'
+        filter_key = 'Rs'
+        page_key = 'RsPage'
+        form_key = 'ReferenceForm'
+
+    elif model == "a_reference" :
+        temp_dir = 'configuration/reference/alerts/'
+        Model = Alert
+        form = ReferenceForm
+        element_key = 'A'
+        filter_key = 'AsWithoutReference'
+        page_key = 'AsWithoutReferencePage'
+        form_key = 'ReferenceForm'
+
+    elif model == "supervisor" :
+        temp_dir = 'configuration/supervisor/'
+        Model = Supervisor
+        form = SupervisorForm
+        element_key = 'S'
+        filter_key = 'Ss'
+        page_key = 'SsPage'
+        form_key = 'SupervisorForm'
 
     else : raise Http404
 
@@ -240,6 +281,22 @@ def confManager(request, action, model, object_id=0) :
               set( Objs.filter(cc__icontains=request.GET['q']) )
             ) )
 
+        elif model == "reference" :
+            Objs = Objs.exclude(Q(status__name='OK') | Q(status__name='UP'))
+            Objs = list( (
+              set( Objs.filter(host__name__icontains=request.GET['q']) ) |
+              set( Objs.filter(service__name__icontains=request.GET['q']) ) |
+              set( Objs.filter(status__name__icontains=request.GET['q']) )
+            ) )
+
+        elif model == "a_reference" :
+            Objs = Objs.filter(reference=None).exclude(Q(status__name='OK') | Q(status__name='UP'))
+            Objs = list( (
+              set( Objs.filter(host__name=request.GET['q']) ) |
+              set( Objs.filter(service__name__icontains=request.GET['q']) ) |
+              set( Objs.filter(status__name__icontains=request.GET['q']) )
+            ) )
+
         elif model == "translation" :
             Objs = list( (
               set( Objs.filter(service__name__icontains=request.GET['q']) ) |
@@ -248,11 +305,17 @@ def confManager(request, action, model, object_id=0) :
             ) )
 
         elif model == "a_translation" :
-            Objs = Objs.filter(translation=None)
+            Objs = Objs.filter(translation=None).exclude(Q(status__name='OK') | Q(status__name='UP'))
             Objs = list( (
               set( Objs.filter(host__name__icontains=request.GET['q']) ) |
               set( Objs.filter(service__name__icontains=request.GET['q']) ) |
               set( Objs.filter(status__name__icontains=request.GET['q']) )
+            ) )
+
+        elif model == "supervisor" :
+            Objs = list( (
+              set( Objs.filter(name__icontains=request.GET['q']) ) |
+              set( Objs.filter(index__icontains=request.GET['q']) ) 
             ) )
 
         try :
@@ -265,22 +328,35 @@ def confManager(request, action, model, object_id=0) :
         })
 
     elif action == 'form' :
-        if model == "a_translation" :
-            data = {}
+        if match(r"^a_(reference|translation)$", model) :
             A = Alert.objects.get(pk=object_id)
+
+            data = {
+              'glpi_source':'Supervision',
+              'host':A.host,
+            }
             if A.status.name == "DOWN" :
-                form = TranslationForm({'status':4,'service':1})
-            else : form = form({'service':A.service.pk})
-        else : form = form()
+                data['service'] = 1
+                data['status'] = 4
+                data['form_type'] = 'host'
+                if model == "a_translation" : form = TranslationForm
+                elif model == "a_reference" : form = HostReferenceForm
+            else : 
+                data['service'] = A.service
+                data['status'] = A.status
+                data['form_type'] = 'simple'
+                if model == "a_translation" : form = TranslationForm
+                elif model == "a_reference" : form = ReferenceForm
+        else : data = {}
         return render(request, temp_dir+'form.html', {
-          form_key : form
+          form_key : form(data)
         })
 
     elif action == 'del' :
         Obj = get_object_or_404(Model, pk=object_id)
         Obj.delete()
         return render(request, temp_dir+'tabs.html', {
-          filter_key : Model.objects.all()
+          filter_key : Model.objects.all(),
         })
 
     elif match(r"^(get|add)$", action) :
@@ -293,12 +369,13 @@ def confManager(request, action, model, object_id=0) :
         elif model  == "mailGroup" : temp_file = 'group.html'
         elif model  == "mailType" : temp_file = 'type.html'
         elif model  == "supplier" : temp_file = 'supplier.html'
-        elif model  == "hostReference" : temp_file = 'ref.html'
+        elif model  == "reference" : temp_file = 'ref.html'
         elif model  == "translation" : temp_file = 'translation.html'
-        elif model  == "a_translation" : temp_file = 'alert.html'
+        elif model  == "supervisor" : temp_file = 'supervisor.html'
+        elif match(r"^a_(translation|reference)$", model) : temp_file = 'alert.html'
     
         if action == "add" :
-            if "translation" in model and request.POST['service'] == '1' :
+            if ( "translation" in model and request.POST['service'] == '1' ) or 'translation' in request.POST :
                 form = TranslationForm
 
             form = form(request.POST)

@@ -18,7 +18,7 @@ $(document).ready(function() {
     <input type="hidden" name="eventPk" value="{{ E.pk }}">
     <div class="modal-body" id="CPAModalBody">
         Quel est l'alerte primaire :
-        <select class="span4" size="{{ As|length }}" name="choosenAlert">
+        <select class="span4" size="{{ As|length }}" name="chosenAlert">
             {% for A in As %}
             <option value="{{ A.pk }}"{% if A.isPrimary %} selected="selected"{% endif %}>{{ A.pk }}: {{ A }}</option>
             {% endfor %}

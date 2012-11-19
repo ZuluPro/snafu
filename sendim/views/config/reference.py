@@ -85,63 +85,19 @@ def getAsWithoutRef(request) :
     })
 
 @login_required
-def getRefForm(request,alert_id=0) :
-    """
-    Create a BigForm for a given alert.
-    If alert_id is 0, it creates an empty form.
+def getRefForm(request,_type='simple') :
+    
+    if _type == 'simple' : Form = ReferenceForm()
+    elif _type == 'host' : Form = HostReferenceForm()
+    elif _type == 'big' : Form = ReferenceBigForm()
 
-    This view is used with AJAX.
-    """
-    data = {
-        'glpi_source':'Supervision',
-        'apply':True
-    }
-    if int(alert_id) :
-        A = Alert.objects.get(pk=alert_id)
-        data['host'] = A.host.pk
-        data['service'] = A.service.pk
-        Rs = Reference.objects.filter(host=A.host,service=A.service)
-        if Rs :
-           for R in Rs : 
-               data[R.status.name.lower()+'_criticity'] = R.mail_criticity
-               data[R.status.name.lower()+'_urgency'] = R.glpi_urgency
-               data[R.status.name.lower()+'_priority'] = R.glpi_priority
-               data[R.status.name.lower()+'_impact'] = R.glpi_impact
-               if not 'escalation_contact' in data : data['escalation_contact'] = R.escalation_contact
-               if not 'tendancy' in data : data['tendancy'] = R.tendancy
-               if not 'outage' in data : data['outage'] = R.outage
-               if not 'explanation' in data : data['explanation'] = R.explanation
-               if not 'origin' in data : data['origin'] = R.origin
-               if not 'procedure' in data : data['procedure'] = R.procedure
-               if not 'mail_type' in data : data['mail_type'] = R.mail_type
-               if not 'mail_group' in data : data['mail_group'] = R.mail_group
-               if not 'glpi_dst_group' in data : data['glpi_dst_group'] = R.glpi_dst_group
-               if not 'glpi_supplier' in data : data['glpi_supplier'] = R.glpi_supplier
-               if not 'glpi_category' in data : data['glpi_category'] = R.glpi_category
-    
-    else : data = {}
-    
-    Form = ReferenceBigForm(data)
-    return render(request, 'configuration/reference/addref/form.html', {
-         'referenceBigForm':Form
+    return render(request, 'configuration/reference/form.html', {
+         'ReferenceForm':Form,
+         'FormType':type(Form)
     })
 
 @login_required
-def getHostReferenceForm(request,mgroup_id=0) :
-    """
-    Create a HostReferenceForm for a given alert.
-    If alert_id is 0, it creates an empty form.
-
-    This view is used with AJAX.
-    """
-
-    Form = HostReferenceForm()
-    return render(request, 'configuration/reference/addref/host.html', {
-         'HostReferenceForm':Form
-    })
-
-@login_required
-def addHostReference(request, ref_id=0) :
+def addReference(request, ref_id=0) :
     """
     Get or delete a reference.
 
@@ -150,16 +106,20 @@ def addHostReference(request, ref_id=0) :
 
     This view is used with AJAX.
     """
-    form = HostReferenceForm(request.POST)
-    if form.is_valid() :
-        form.save()
+    if request.POST['form_type'] == 'simple' : Form = ReferenceForm(request.POST)
+    elif request.POST['form_type'] == 'host' : Form = HostReferenceForm(request.POST)
+    elif request.POST['form_type'] == 'big' : Form = ReferenceBigForm(request.POST)
+    else : Form = ReferenceForm(request.POST)
+
+    if Form.is_valid() :
+        Form.save()
     else :
-        errors = json.dumps(form.errors)
+        errors = json.dumps(Form.errors)
         return HttpResponse(errors, mimetype='application/json')
          
     return render(request, 'configuration/reference/tabs.html', {
         'Rs':Reference.objects.all(),
-        'AsWithoutRef':Alert.objects.filter( Q(reference=None), ~Q(status__name='OK'), ~Q(status__name='UP'), ~Q(status__name='DOWN') )
+        'AsWithoutReference':Alert.objects.filter( Q(reference=None), ~Q(status__name='OK'), ~Q(status__name='UP'))
     })
 
 

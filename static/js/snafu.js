@@ -97,6 +97,7 @@ $(document).ready(function() {
     $('input').attr('checked',false);
   }
 
+/////////////////////////////////////////
   // REF DETAILS
   $.fn.refDetail = function(){
     $.get('/snafu/configuration/ref',{ refPk:$(this).attr('pk') }, function(data) {
@@ -159,28 +160,42 @@ $(document).ready(function() {
 
  // ADD A REF FROM FORM
   $.fn.addRef = function(){
-    $('#userContent').html('');
-
-    if ( ! $('#refForm input[name="id"]').val() ) { var ref_id = 0; }
-    else { var ref_id = $('#refForm input[name="id"]').val(); };
 
     $.ajax({ 
       type: "POST", 
-      url: '/snafu/configuration/ref/'+ref_id+'/add', 
-      data: $('#refForm').serialize(),
+      url: '/snafu/configuration/ref/add', 
+      data: $('#referenceForm').serialize(),
       async: false,
       cache: false,
-      success: function(data) {
-         $('#referenceTab').html(data);
+      success: function(data, status, xhr) {
+         $('#msg-info').hide();
+         $('#msg-info').remove();
+
+         var ct = xhr.getResponseHeader("content-type") || "";
+         if (ct.indexOf('html') > -1) {
+           $('#referenceTab').html(data);
+           $('#add-ReferenceTab').tab('show');
+         } else if (ct.indexOf('json') > -1) {
+           var errors = JSON.parse(xhr.responseText);
+           $('#referenceForm').prepend('<div id="msg-info" class="alert alert-error" style="display: block;"><h4>Erreur(s) de formulaire :</h4><p class="pull-right"><button class="close" onclick="$(\'#msg-info\').hide(250); return false;">×</button></p><ul id="msg-content"></ul></div>');
+           for ( var k in errors) {
+             $('#msg-content').append('<li><b>'+k+'</b> : '+errors[k]+'</li>');
+           }
+         }  
       },
       error: function() { alert('err'); }
     })
   }
 
-  $('#refForm').submit(function() {
-    $.fn.addRef();
-    return false;
-  });
+ // GOTO ADDREF WITH AN Alert ATTR
+  $.fn.getRefForm = function(type){
+    if ( ! type ) { var type = 'simple'; }
+    $.get('/snafu/configuration/ref/form/'+type, {}, function(data) {
+      $('#add-referenceContent').html(data);
+      $('#add-referenceTab').tab('show');
+      $('#'+type+'Ref-tab').tab('show');
+    })
+  }
 
  // TRANSFORM <p> INTO INPUT
  // $.fn.createInput = function(pk,attr,val){
@@ -207,14 +222,6 @@ $(document).ready(function() {
     }, function(data) {
       $('#T_tbody').html(data);
     });
-  }
-
- // GET ALERT WITHOUT REF
-  $.fn.getAlertWithoutTrad = function(pk){
-    $('#tradAlertContent').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
-    $.get('/snafu/configuration/trad/alert/'+pk, function(data) {
-      $('#tradAlertContent').html(data);
-    })
   }
 
  // GET ALERTS WITHOUT REF
@@ -316,6 +323,7 @@ $(document).ready(function() {
     } else if ( action == "form" ) {
       $.get('/snafu/configuration/form/'+object+'/'+pk, {}, function(data) {
         if ( object == "a_translation" ) { object = "translation"; }
+        else if ( object == "a_reference" ) { object = "reference"; }
         $('#add-'+object+'Content').html(data);
         $('#add-'+object+'Tab').tab('show');
       });

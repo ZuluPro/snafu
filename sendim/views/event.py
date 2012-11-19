@@ -33,17 +33,12 @@ def events(request) :
             A = E.getPrimaryAlert()
 
         if 'reloadAlert_q' in request.POST :
-            try : 
-                newAs = reloadAlert()
-                if newAs :
-                    messages.add_message(
-                      request,
-                      messages.SUCCESS,
-                      u"<b>Lecture des unit\xe9s de supervision</b> : Effectu\xe9<br>"+''.join( [ u"<li>Cr\xe9ation de l'Alerte #"+str(A.pk)+" dans l'Event #"+str(A.event.pk)+"</il>" for A in newAs ] )
-                    )
-                else : messages.add_message(request,messages.INFO,u"<b>Lecture des unit\xe9s de supervision</b> : Effectu\xe9<br>Aucune nouvelle alerte." )
-            except UnableToConnectNagios, e :
-                messages.add_message(request,messages.ERROR,u"<b>Connexion \xe0 Nagios impossible</b>")
+            for S in Supervisor.objects.filter(active=True) :
+                try :
+                    S.parse() 
+                    messages.add_message(request,messages.SUCCESS,u"<b>Connexion \xe0 "+S.name+u" \xe9ff\xe9ctu\xe9 !</b>")
+                except UnableToConnectNagios, e :
+                    messages.add_message(request,messages.ERROR,u"<b>Connexion \xe0 "+S.name+u" \xe9chou\xe9e !</b>")
 
         elif "sendmail_q" in request.POST :
             if sendMail( request.POST ) :

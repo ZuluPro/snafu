@@ -1,7 +1,7 @@
 from django.conf import settings
 
 from sendim.models import Alert
-from sendim.connection import checkNagios, checkSmtp, doLogin, checkGlpi
+from sendim.connection import checkSmtp, doLogin, checkGlpi
 
 def sendim_context(request):
     return {

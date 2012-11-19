@@ -28,9 +28,9 @@ def getFormSet(E=None):
             data['form-'+str(count)+'-glpi_source'] = 'Supervision'                                  
             for status in ('warning','critical','unknown') :
                 data['form-'+str(count)+'-'+status+'_criticity'] = 1 
-                data['form-'+str(count)+'-'+status+'_urgency'] = 3
-                data['form-'+str(count)+'-'+status+'_priority'] = 3
-                data['form-'+str(count)+'-'+status+'_impact'] = 4                                    
+                data['form-'+str(count)+'-'+status+'_urgency'] = 1
+                data['form-'+str(count)+'-'+status+'_priority'] = 1
+                data['form-'+str(count)+'-'+status+'_impact'] = 1                                    
        
     return ReferenceBigFormSet(data)
 
@@ -42,7 +42,7 @@ def postFormSet(_POST, is_a_set=True):
     if is_a_set :
         POST = dict()
         for k,v in _POST.items() :
-            if 'form-' in k :
+            if k.startswith('form-') :
                 POST[k[7:]] = v
     else : POST = _POST
 

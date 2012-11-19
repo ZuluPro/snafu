@@ -1,10 +1,9 @@
-<form class="form-horizontal" id="hostReferenceForm">
+<form class="form-horizontal" id="supervisorForm">
  <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
  <fieldset>
 
   <div class="row">
-
-   {% for field in HostReferenceForm.visible_fields %}
+   {% for field in SupervisorForm %}
     <div class="control-group">
      <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
      <div class="controls">
@@ -12,12 +11,9 @@
      </div>
     </div>
    {% endfor %}
-
-   {% for field in HostReferenceForm.hidden_fields %}
-    {{ field }}
-   {% endfor %}
+  </div>
 
  </fieldset>
- <button id="addRefBtn" class="btn btn-primary" onclick="$.fn.snafu_object('add','hostReference'); return false;">Enregister</button>
+ <button class="btn btn-primary" onclick="$.fn.snafu_object('add','supervisor'); return false;">Enregister</button>
 </form>
 

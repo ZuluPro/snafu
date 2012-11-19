@@ -5,7 +5,8 @@
 
 {% csrf_token %}
 <ul id="myTab" class="nav nav-tabs">
- <li class="active"><a href="#reference" data-toggle="tab">Références</a></li>
+ <li class="active"><a href="#supervisor" data-toggle="tab">Superviseur(s)</a></li>
+ <li><a href="#reference" data-toggle="tab">Références</a></li>
  <li><a href="#translation" data-toggle="tab">Traductions</a></li>
  <li><a href="#user" data-toggle="tab">Utilisateurs</a></li>
  <li><a href="#mail" data-toggle="tab">Mail</a></li>
@@ -13,7 +14,10 @@
 </ul>
 
 <div id="myTabContent" class="tab-content">
- <div class="tab-pane fade in active" id="reference">
+ <div class="tab-pane fade in active" id="supervisor">
+  {% include "configuration/supervisor/index.html" %}
+ </div>
+ <div class="tab-pane fade" id="reference">
   {% include "configuration/reference/index.html" %}
  </div>
  <div class="tab-pane fade" id="translation">

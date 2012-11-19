@@ -16,7 +16,7 @@
 
 <div class="btn-group">
  {% if user.is_superuser %}
-  <button class="btn btn-danger" onclick="$.fn.resetPassword({{ U.pk }})">Réinitialisation du mot de passe</button>
-  <button class="btn btn-danger" onclick="$.fn.snafu_object('del','user',{{ U.pk }})">Supprimer</button>
+  <!-- <button class="btn btn-danger" onclick="$.fn.resetPassword({{ U.pk }})">Réinitialisation du mot de passe</button> --!>
+  <button class="btn btn-danger{% if U == user %} disabled{% endif %}" onclick="$.fn.snafu_object('del','user',{{ U.pk }})">Supprimer</button>
  {% endif %}
 </div>

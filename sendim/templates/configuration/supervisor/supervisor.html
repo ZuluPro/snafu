@@ -1,0 +1,38 @@
+{% load hide_text %}
+
+<div class="row">
+ <h4 align="center">{{ S }}</h4>
+
+ <dl>
+  <div class="span6">
+   <dt>Nom:</dt>
+   <dd>{{ S.name }}</dd>
+
+   <dt>Login:</dt>
+   <dd>{{ S.login }}</dd>
+
+   <dt>Mot de passe:</dt>
+   <dd>{{ S.password|hide_text }}</dd>
+
+   <dt>URL d'index:</dt>
+   <dd>{{ S.index }}</dd>
+
+   <dt>URL de status:</dt>
+   <dd>{{ S.status }}</dd>
+
+   <dt>URL d'historique:</dt>
+   <dd>{{ S.history }}</dd>
+
+   <dt>Type de supervisor:</dt>
+   <dd>{{ S.supervisor_type }}</dd>
+  </div>
+ </dl>
+
+ <div class="span1">
+  <div class="btn-group">
+   <button class="btn btn-danger" onclick="$.fn.snafu_object('del','supervisor',{{ S.pk }})">Supprimer</button>
+  </div>
+ </div>
+
+
+</div>

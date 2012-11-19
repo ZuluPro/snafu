@@ -57,11 +57,6 @@ from django.conf import settings
 import os
 
 SNAFU = {
-    'nagios-url': 'http://mywebsite/nagios/',
-    'nagios-status': 'http://mywebsite/cgi-bin/nagios3/status.cgi',
-    'nagios-history': 'http://mywebsite/nagios/cgi-bin/nagios3/history.cgi',
-    'nagios-login': 'foo',
-    'nagios-password': 'b@r',
     'glpi-url':'https://mywebiste/glpi/',
     'glpi-xmlrpc':'https://mywebsite/glpi/plugins/webservices/xmlrpc.php',
     'glpi-login':'Foo',
@@ -96,3 +91,9 @@ After configuration launch the next command for initialize database :
 
   $ ./manage.py syncdb
   $ ./manage.py populate
+
+------------------------------------------------------------------------------
+6.
+------------------------------------------------------------------------------
+Before work with SNAFU you must add a supervisor.
+Goto '/snafu/configuration' for add this.
