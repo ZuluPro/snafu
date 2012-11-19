@@ -68,6 +68,7 @@ def eventsFiltered(request) :
          
     if request.GET.get('element',False) : Es = Es.filter(element__name__contains=request.GET['element'])
     if request.GET.get('message',False) : Es = Es.filter(message__contains=request.GET['message'])
+    #if request.GET.get('service',False) : Es = Es.filter(message__contains=request.GET['message'])
     #if request.GET.get('date',False) : pass 
 
     return render(request, 'event/tr.html', { 'Es':Es.order_by('-date')[:100] })
