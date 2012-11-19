@@ -380,7 +380,10 @@ def confManager(request, action, model, object_id=0) :
 
             form = form(request.POST)
             if form.is_valid() :
-                form.save()
+                Obj = form.save()
+                if model  == "user" :
+                    Obj.set_password(request.POST['password'])
+                    Obj.save()
                 return render(request, temp_dir+'tabs.html', {
                   filter_key : Model.objects.all()
                 })

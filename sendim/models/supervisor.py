@@ -36,6 +36,9 @@ class Supervisor(models.Model) :
         app_label = 'sendim'
     
     def getOpener(self):
+        """
+        Return a custom urllib2 opener for logged request to supervisor.
+        """
         passman = HTTPPasswordMgrWithDefaultRealm()
         passman.add_password(None, self.index, self.login, self.password)
         authhandler = HTTPBasicAuthHandler(passman)
@@ -65,7 +68,7 @@ class Supervisor(models.Model) :
         Parse Nagios history page and return a list of alert with
         host, service, status, info and date all in string format.
         
-        If alert is an host alert, service will be 'Host status.
+        If alert is an host alert, service will be 'Host status'.
         """
     
         from sendim.models import Alert

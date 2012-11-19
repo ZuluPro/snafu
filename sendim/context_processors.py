@@ -5,11 +5,6 @@ from sendim.connection import checkSmtp, doLogin, checkGlpi
 
 def sendim_context(request):
     return {
-        'nagios': { 
-            'index_url':settings.SNAFU['nagios-url'],
-            'host_status_url':settings.SNAFU['nagios-status']+'?host=',
-            1:1#'connection':checkNagios()
-        },
         'alert': {
             'without_ref':Alert.objects.filter(reference=None).count()
         },

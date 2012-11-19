@@ -35,13 +35,15 @@
      <th>Message</th>
      <th><i class="icon-cog"></i></th>
      <th>
-      {% if not nagios.connection %}
+      {# if not nagios.connection #}
        <form action"." method=POST style="margin: 0px 0px 0px">{% csrf_token %}
         <button class="btn btn-primary" type="submit" name="reloadAlert_q"><i class="icon-refresh icon-white"></i></button>
        </form>
-      {% else %}
-       <p class="btn btn-primary disabled" data-content="{{ nagios.connection }}" rel="popover" data-original-title="Nagios Hors service"><i class="icon-refresh icon-white"></i></p>
-      {% endif %}
+      {# else #}
+       <!-- <p class="btn btn-primary disabled" data-content="{{ nagios.connection }}" rel="popover" data-original-title="Nagios Hors service">
+             <i class="icon-refresh icon-white"></i>
+            </p> --!>
+      {# endif #}
      </th>
     </tr>
     <tr>

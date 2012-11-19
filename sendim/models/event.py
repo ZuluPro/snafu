@@ -35,7 +35,7 @@ class Event(models.Model) :
 	if withoutRef : As = As.filter(reference=None)
         return As
 
-    def getLastAlert(self, isUp=False):
+    def get_last_alert(self, isUp=False):
         As = Alert.objects.filter(event=self).order_by('-pk')
 	if not isUp : As = As.exclude( Q(status__name__exact='OK') | Q(status__name__exact='UP') )
         return As[0]
