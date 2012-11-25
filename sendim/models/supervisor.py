@@ -111,7 +111,7 @@ class Supervisor(models.Model) :
             if not Alert.objects.filter(host__name__exact=host, service__name__exact=service, date=date ).exists() :
                 if not Host.objects.filter(name=host) : Host(name=host).save();
                 if not Service.objects.filter(name=service) : Service(name=service).save()
-                A = Alert(
+                A = Alert.objects.create(
                     host = Host.objects.get(name=host),
                     service = Service.objects.get(name=service),
                     status = Status.objects.get(name=status),

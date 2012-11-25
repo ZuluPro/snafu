@@ -39,7 +39,7 @@ def events(request) :
                 messages.add_message(request,messages.SUCCESS,u"Envoi d'un mail pour l'\xe9v\xe9nement #"+str(E.pk)+"." )
                 logprint("Mail sent for Event #"+str(eventPk) )
 
-        elif "treatment_q" in request.POST :
+        if "treatment_q" in request.POST :
 	    if E.criticity == '?' or not E.getPrimaryAlert().reference : 
 		
 		Forms = getFormSet(E)
