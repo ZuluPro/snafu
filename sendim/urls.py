@@ -5,6 +5,7 @@ urlpatterns = patterns('',
 
     (r'^login$', 'sendim.views.snafu_login'),
     (r'^logout$', 'sendim.views.snafu_logout'),
+    (r'^apropos$', 'sendim.views.apropos'),
 
     (r'^events$', 'sendim.views.events'),
 
