@@ -16,14 +16,10 @@
  </div>
 
  <div class="span10">
-  {% if messages %}
-   {% for message in messages %}
-    <div id="msg-{{ message.tags }}" class="alert alert-{{ message.tags }}" style="display: block;">
-     <p class="pull-right"><button class="close" onclick="$(this).parent().parent().hide(250)">×</button></p>
-     <div>{{ message|safe }}</div>
-    </div>
-   {% endfor %}
-  {% endif %}
+  <div id="messages">
+   {% include "messages.html" %}
+  </div>
+
   <table class="table">
    <thead>
     <tr>
@@ -36,9 +32,7 @@
      <th><i class="icon-cog"></i></th>
      <th>
       {# if not nagios.connection #}
-       <form action"." method=POST style="margin: 0px 0px 0px">{% csrf_token %}
-        <button class="btn btn-primary" type="submit" name="reloadAlert_q"><i class="icon-refresh icon-white"></i></button>
-       </form>
+        <button class="btn btn-primary" onclick="$.fn.reloadAlerts()"><i class="icon-refresh icon-white"></i></button>
       {# else #}
        <!-- <p class="btn btn-primary disabled" data-content="{{ nagios.connection }}" rel="popover" data-original-title="Nagios Hors service">
              <i class="icon-refresh icon-white"></i>

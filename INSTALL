@@ -8,6 +8,8 @@ For SNAFU webserver :
     - django >= 1.4.x
     - python >= 2.7.x
     - django-tracking
+    - celery
+    - django-celery
     - pytz
 
 For GLPI webserver :
@@ -49,6 +51,7 @@ INSTALLED_APPS = (
     'sendim',
     'referentiel',
     'tracking',
+    'djcelery',
     ...
 )
 

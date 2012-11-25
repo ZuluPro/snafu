@@ -12,9 +12,23 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseBadRequest
 
+from sendim import tasks
 from sendim.models import *
 from sendim.defs import *
 from referentiel.models import *
+
+@login_required
+def reload_alerts(request) :
+    for S in Supervisor.objects.filter(active=True) :
+        S_status = S.checkNagios()
+        if not S_status :
+            tasks.reload_alerts.delay(S)
+            messages.add_message(request,messages.INFO,u'<b>Lecture de '+S.name+u" commenc\xe9e !</b>")
+        else:
+            messages.add_message(request, messages.ERROR,'<b>Erreur de lecture de '+S.name+' : '+str(S_status)+'</b>')
+    return render(request, 'messages.html', {
+        'messages':messages.get_messages(request),
+    } )
 
 @login_required
 def eventHistory(request) :

@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     (r"^event/choosePrimaryAlert$", 'sendim.views.choosePrimaryAlert'),
     (r"^event/close$", 'sendim.views.closeEvents'),
     (r"^event/followup$", 'sendim.views.followUp'),
+    (r"^event/reloadAlerts$", 'sendim.views.reload_alerts'),
 
     (r'^event/filter$', 'sendim.views.eventsFiltered'),
     (r'^event/addref$', 'sendim.views.EaddRef'),

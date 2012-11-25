@@ -21,6 +21,26 @@ $(document).ready(function() {
       });
   }
 
+  // RELOAD ALERTS
+  $.fn.reloadAlerts = function(){
+    $.ajax({ 
+      type: "POST", 
+      url: '/snafu/event/reloadAlerts', 
+      data: $('[name=csrfmiddlewaretoken]:first').serialize(),
+      async: false,
+      cache: false,
+      error: function() {
+        $('#infoModal').html( 'Erreur de communication avec le serveur' );
+        $('#infoModal').modal('show');
+      },
+      success: function(data) {
+        $('#messages').hide();
+        $('#messages').html( data );
+        $('#messages').show(300);
+      },
+    });
+  }
+
   // USE AJAX POST IN #infoModal
   $.fn.PostModal = function(){
     $.ajax({ 

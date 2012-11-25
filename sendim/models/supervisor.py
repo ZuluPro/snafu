@@ -49,17 +49,17 @@ class Supervisor(models.Model) :
     def __unicode__(self):
         return self.name
 
-    def checkNagios(self):
+    def checkNagios(self,timeout=2):
         """
         Make a connection test with Nagios opener.
         Return an HTML status code.
         """
         opener = self.getOpener()
         try :
-            f = opener.open(self.index, timeout=2)
+            f = opener.open(self.index, timeout=timeout)
             if 'login' in f.url : nagiosStatus = True
             else : nagiosStatus = False
-        except (error,gaierror,URLError), e :
+        except (error,gaierror,URLError,ValueError), e :
             nagiosStatus = e
         return nagiosStatus
 
@@ -72,6 +72,7 @@ class Supervisor(models.Model) :
         """
     
         from sendim.models import Alert
+        from common import *
         check = self.checkNagios()
         if check :
            raise UnableToConnectNagios(check)
@@ -98,15 +99,16 @@ class Supervisor(models.Model) :
                         re.sub( r".*ALERT: [^;]*;[^;]*;[^;]*;[^;]*;([^;]*).*<br clear='all' />$" , r"\1" , line ),
                         re.sub( r".*>\[([^\]]*)\].*" , r"\1" , line ) ] )
 
+        Es_dict = dict()
         for host,service,status,info,date in problemlist :
             try : date = datetime.fromtimestamp( time.mktime( time.strptime(date, "%Y-%m-%d %H:%M:%S")) )
             except ValueError:
                 try : date = datetime.fromtimestamp( time.mktime( time.strptime(date, "%m-%d-%Y %H:%M:%S")) )
                 except ValueError:
-                    logprint("Nagios parsing failed on date "+date, 'yellow' )
+                    ##logprint("Nagios parsing failed on date "+date, 'yellow' )
                     date = datetime.now()
     
-            if not Alert.objects.filter(host__name__exact=host, service__name__exact=service, date=date ) :
+            if not Alert.objects.filter(host__name__exact=host, service__name__exact=service, date=date ).exists() :
                 if not Host.objects.filter(name=host) : Host(name=host).save();
                 if not Service.objects.filter(name=service) : Service(name=service).save()
                 A = Alert(
@@ -118,3 +120,6 @@ class Supervisor(models.Model) :
                 )
                 A.save()
                 A.link()
+                if not A.event in Es_dict : Es_dict[A.event.pk] = []
+                Es_dict[A.event.pk].append(A.pk)
+        return Es_dict

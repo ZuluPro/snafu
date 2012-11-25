@@ -49,12 +49,12 @@ class Event(models.Model) :
         except Alert.DoesNotExist :
             if self.getAlerts() :
                 A = self.getAlerts()[0]
-                logprint("Event #"+str(self.pk)+" had no primary alert, set to the first Alert #"+str(A.pk), 'red')
+                #logprint("Event #"+str(self.pk)+" had no primary alert, set to the first Alert #"+str(A.pk), 'red')
                 A.setPrimary()
                 return A
             else :
                 self.delete()
-                logprint("Event #"+str(self.pk)+" had no alert, it has been deleted", 'red')
+                #logprint("Event #"+str(self.pk)+" had no alert, it has been deleted", 'red')
         except Alert.MultipleObjectsReturned :
             A = self.getAlerts().filter(isPrimary=True)[0]
             A.setPrimary()
@@ -120,11 +120,11 @@ class Alert(models.Model) :
                 if A is self : continue
                 A.isPrimary = False
                 A.save()
-                logprint("Set alert #" +str(A.pk)+ " as not primary", 'pink')
+                #logprint("Set alert #" +str(A.pk)+ " as not primary", 'pink')
            
         self.isPrimary = True
         self.save()
-        logprint("Set primary alert for Event#"+str(self.event.pk)+" to Alert #"+str(self.pk), 'pink') 
+        #logprint("Set primary alert for Event#"+str(self.event.pk)+" to Alert #"+str(self.pk), 'pink') 
 
     def linkToReference(self, force=False, byHost=True, byService=True, byStatus=True):
         """
@@ -164,7 +164,7 @@ class Alert(models.Model) :
 		    self.event = E
 	            self.save()
                 else :
-                    logprint("Incoherence for link Alert #"+str(self.pk)+ ", Alert has no father", 'red')
+                    #logprint("Incoherence for link Alert #"+str(self.pk)+ ", Alert has no father", 'red')
                     return None
             else :
                 if not self.reference : R = getReference(self)

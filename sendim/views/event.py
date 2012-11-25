@@ -25,20 +25,14 @@ def events(request) :
      - sendmail_q : Send a mail for a given event.
      - treatment_q : Make exploitation processes.
     """
+    from sendim.tasks import reload_alerts
+
     if request.method == 'POST' :
 
         if 'eventPk' in request.POST :
             eventPk = request.POST["eventPk"]
             E = Event.objects.get(pk=eventPk)
             A = E.getPrimaryAlert()
-
-        if 'reloadAlert_q' in request.POST :
-            for S in Supervisor.objects.filter(active=True) :
-                try :
-                    S.parse() 
-                    messages.add_message(request,messages.SUCCESS,u"<b>Connexion \xe0 "+S.name+u" \xe9ff\xe9ctu\xe9 !</b>")
-                except UnableToConnectNagios, e :
-                    messages.add_message(request,messages.ERROR,u"<b>Connexion \xe0 "+S.name+u" \xe9chou\xe9e !</b>")
 
         elif "sendmail_q" in request.POST :
             if sendMail( request.POST ) :

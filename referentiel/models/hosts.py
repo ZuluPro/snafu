@@ -30,7 +30,7 @@ class Service(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk :
             super(Service, self).save(*args, **kwargs)
-            logprint('Add automaticaly service : '+self.name, 'green')
+            #logprint('Add automaticaly service : '+self.name, 'green')
 
     def current_status(self, host) :
         from sendim.models import Alert
