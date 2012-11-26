@@ -1,0 +1,22 @@
+<form class="form-horizontal" id="referenceForm">
+ <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+ <fieldset>
+
+  {% for field in ReferenceForm.visible_fields %}
+   <div class="control-group">
+    <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
+    <div class="controls">
+     {{ field }}
+    </div>
+   </div>
+  {% endfor %}
+
+  {% for field in ReferenceForm.hidden_fields %}
+   {{ field }}
+  {% endfor %}
+
+ </fieldset>
+ <button class="btn btn-primary" onclick="$.fn.addRef(); return false;">Enregister</button>
+</form>
+
+

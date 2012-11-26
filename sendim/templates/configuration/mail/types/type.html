@@ -1,8 +1,19 @@
-<h4 align="center">{{ MTy }}</h4>
+<div class="row">
+ <h4 align="center">{{ MTy }}</h4>
 
-<dl>
- <dt>Nom :</dt>
- <dd>{{ MTy.name }}</dd>
-</dl>
+ <div class="span5">
+  <dl>
+   <dt>Nom :</dt>
+   <dd>{{ MTy.name }}</dd>
+  </dl>
+ </div>
 
-<button class="btn btn-danger" onclick="$.fn.snafu_object('del','mailType',{{ MTy.pk }})">Supprimer</button>
+ <div class="span2">
+  <div class="btn-group btn-group-vertical">
+   <button class="btn btn-danger" onclick="$.fn.snafu_object('del','mailType',{{ MTy.pk }})">Supprimer</button>
+   <button class="btn btn-primary" data-toggle="button" onclick="$.fn.snafu_object('update','mailType',{{ MTy.pk }})">Modifier</button>
+   <button class="btn" style="display:none;" onclick="$.fn.snafu_object('get','mailType',{{ MTy.pk }})">Annuler</button>
+  </div>
+ </div>
+
+</div>

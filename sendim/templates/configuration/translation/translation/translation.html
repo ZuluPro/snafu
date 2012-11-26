@@ -1,16 +1,18 @@
 <div class="row">
  <h4 align="center">{{ T }}</h4>
 
- <div class="span9">
+ <div class="span5">
   <dl>
    <dt>Traduction:</dt>
    <dd>{{ T.translation }}</dd>
   </dl>
  </div>
 
- <div class="span1">
-  <div class="btn-group">
+ <div class="span2">
+  <div class="btn-group btn-group-vertical">
    <button class="btn btn-danger" onclick="$.fn.snafu_object('del','translation',{{ T.pk }})">Supprimer</button>
+   <button class="btn btn-primary" data-toggle="button" onclick="$.fn.snafu_object('update','translation',{{ T.pk }})">Modifier</button>
+   <button class="btn" style="display:none;" onclick="$.fn.snafu_object('get','translation',{{ T.pk }})">Annuler</button>
   </div>
  </div>
 

@@ -1,22 +1,31 @@
-<h4 align="center">{{ U }}</h4>
+<div class="row">
+ <h4 align="center">{{ U }}</h4>
 
-<dl>
- <dt>Username:</dt>
- <dd>{{ U.username }}</dd>
+ <div class="span5">
+  <dl>
+   <dt>Username:</dt>
+   <dd>{{ U.username }}</dd>
 
- <dt>First name:</dt>
- <dd>{{ U.first_name|default:"(Aucun)" }}</dd>
+   <dt>First name:</dt>
+   <dd>{{ U.first_name|default:"(Aucun)" }}</dd>
 
- <dt>Last name:</dt>
- <dd>{{ U.last_name|default:"(Aucun)" }}</dd>
+   <dt>Last name:</dt>
+   <dd>{{ U.last_name|default:"(Aucun)" }}</dd>
 
- <dt>Email:</dt>
- <dd>{{ U.email|default:"(Aucun)" }}</dd>
-</dl>
+   <dt>Email:</dt>
+   <dd>{{ U.email|default:"(Aucun)" }}</dd>
+  </dl>
+ </div>
 
-<div class="btn-group">
- {% if user.is_superuser %}
-  <!-- <button class="btn btn-danger" onclick="$.fn.resetPassword({{ U.pk }})">Réinitialisation du mot de passe</button> --!>
-  <button class="btn btn-danger{% if U == user %} disabled{% endif %}" onclick="$.fn.snafu_object('del','user',{{ U.pk }})">Supprimer</button>
- {% endif %}
+ <div class="span2">
+  <div class="btn-group btn-group-vertical">
+   {% if user.is_superuser %}
+    <!-- <button class="btn btn-danger" onclick="$.fn.resetPassword({{ U.pk }})">Réinitialisation du mot de passe</button> --!>
+    <button class="btn btn-danger{% if U == user %} disabled{% endif %}" onclick="$.fn.snafu_object('del','user',{{ U.pk }})">Supprimer</button>
+    <button class="btn btn-primary" data-toggle="button" onclick="$.fn.snafu_object('update','user',{{ U.pk }})">Modifier</button>
+    <button class="btn" style="display:none;" onclick="$.fn.snafu_object('get','user',{{ U.pk }})">Annuler</button>
+   {% endif %}
+  </div>
+ </div>
+
 </div>

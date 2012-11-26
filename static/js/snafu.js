@@ -92,7 +92,9 @@ $(document).ready(function() {
   // AGGREGATION MODAL
   $.fn.AgrForm = function(){
     ids = [];
-    $('input:checked').each( function() { ids.push( $(this).val() )})
+    $('input:checked').each( function() {
+      ids.push( $(this).val() );
+    })
     $.fn.UseModal('/snafu/event/agr', { events: ids } )
     $('input:not(#infoModal input)').attr('checked',false);
   }
@@ -115,6 +117,32 @@ $(document).ready(function() {
   $.fn.FollowUpForm = function(){
     $.fn.UseModal('/snafu/event/followup', { eventPk: $('input:checked').val() } )
     $('input').attr('checked',false);
+  }
+
+  // MAKE FORM 
+  $.fn.update = function(model){
+    if ( $('#'+model+'Content button[data-toggle=button].active').size() != 0 ) {
+      POST = {};
+      $('#'+model+'Content form :input').each( function() { POST[$(this).attr('name')] = $(this).val(); })
+      $.ajax({ 
+        type: "POST", 
+        url: '/snafu/configuration/update', 
+        data: POST,
+        async: false,
+        cache: false,
+        error: function() {
+          $('#infoModal').html( 'Erreur de communication avec le serveur' );
+          $('#infoModal').modal('show');
+        },
+        success: function(data) {
+          $('#'+model+'Content form p').show(150)
+          $('#'+model+'Content form :input').hide(150)
+        },
+      });
+    } else {
+      $('#'+model+'Content form p').hide(150)
+      $('#'+model+'Content form :input').show(150)
+    }
   }
 
 /////////////////////////////////////////
@@ -326,6 +354,7 @@ $(document).ready(function() {
       });
 
     } else if ( action == "del" ) {
+      $('#'+object+'Content').children().hide(250);
       $('#'+object+'Content').html('');
       $.post('/snafu/configuration/del/'+object+'/'+pk,{ csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val() }, function(data) {
         $('#'+object+'Tab').html(data);
@@ -370,7 +399,7 @@ $(document).ready(function() {
              $('#add-'+object+'Tab').tab('show');
            } else if (ct.indexOf('json') > -1) {
              var errors = JSON.parse(xhr.responseText);
-             $('#'+object+'Form').prepend('<div id="msg-info" class="alert alert-error" style="display: block;"><h4>Erreur(s) de formulaire :</h4><p class="pull-right"><button class="close" onclick="$(\'#msg-info\').hide(250); return false;">×</button></p><ul id="msg-content"></ul></div>');
+             $('#'+object+'Form').prepend('<div id="msg-info" class="alert alert-error" style="display: block;"><h4>Erreur(s) de formulaire :</h4><p class="pull-right"><button class="close" onclick="$(this).parent().parent().hide(250); return false;">×</button></p><ul id="msg-content"></ul></div>');
              for ( var k in errors) {
                $('#msg-content').append('<li><b>'+k+'</b> : '+errors[k]+'</li>');
              }
@@ -379,6 +408,50 @@ $(document).ready(function() {
         },
         error: function() { alert('err'); }
       });
+    } else if ( action == "update" ) {
+      if ( $('#'+object+'Content button[data-toggle=button].active').size() != 0 ) {
+        POST = {};
+        $('#'+object+'Content form :input').each( function() { POST[$(this).attr('name')] = $(this).val(); })
+        $.ajax({ 
+          type: "POST", 
+          url: '/snafu/configuration/update/'+object+'/'+pk, 
+          data: $('#'+object+'Content form :input').serialize(),
+          async: true,
+          cache: false,
+          error: function() {
+            $('#infoModal').html( 'Erreur de communication avec le serveur' );
+            $('#infoModal').modal('show');
+          },
+          success: function(data, status, xhr) {
+            var ct = xhr.getResponseHeader("content-type") || "";
+            if (ct.indexOf('html') > -1) {
+              $.fn.snafu_object('get',object,pk);
+            } else if (ct.indexOf('json') > -1) {
+              var errors = JSON.parse(xhr.responseText);
+              $('#'+object+'Form').prepend('<div id="msg-info" class="alert alert-error" style="display: block;"><h4>Erreur(s) de formulaire :</h4><p class="pull-right"><button class="close" onclick="$(this).parent().parent().hide(250); return false;">×</button></p><ul id="msg-content"></ul></div>');
+              for ( var k in errors) {
+                $('#msg-content').append('<li><b>'+k+'</b> : '+errors[k]+'</li>');
+              }
+              $('#'+object+'Content button[data-toggle=button]').addClass('active');
+            }
+          }
+        });
+      } else {
+        $.ajax({ 
+          type: "GET",
+          url: '/snafu/configuration/form/'+object+'/'+pk,
+          async: true,
+          error: function() {
+            $('#infoModal').html('Erreur de communication avec le serveur');
+            $('#infoModal').modal('show');
+          },
+          success: function(data) {
+            $('#'+object+'Content dl').html(data);
+            $('#'+object+'Content button[class="btn"]').show(200); 
+            $('#'+object+'Content form button').hide();
+          }
+        });
+      }
     }
   }
 

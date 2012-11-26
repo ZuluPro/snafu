@@ -1,15 +1,26 @@
-<h4 align="center">{{ MT }}</h4>
+<div class="row">
+ <h4 align="center">{{ MT }}</h4>
 
-<dl>
- <dt>Sujet :</dt>
- <dd>{{ MT.subject }}</dd>
+ <div class="span7">
+  <dl>
+   <dt>Sujet :</dt>
+   <dd>{{ MT.subject }}</dd>
 
- <dt>Corps :</dt>
- <dd>{{ MT.body|linebreaks }}</dd>
-</dl>
+   <dt>Corps :</dt>
+   <dd>{{ MT.body|linebreaks }}</dd>
+  </dl>
+ </div>
 
-{% if MT.pk != 1 %}
- <button class="btn btn-danger" onclick="$.fn.snafu_object('del','template',{{ MT.pk }})">Supprimer</button>
-{% else %}
- <p class="btn btn-danger disabled">Supprimer</p>
-{% endif %}
+ <div class="span2">
+  <div class="btn-group">
+   {% if MT.pk != 1 %}
+    <button class="btn btn-danger" onclick="$.fn.snafu_object('del','template',{{ MT.pk }})">Supprimer</button>
+   {% else %}
+    <p class="btn btn-danger disabled">Supprimer</p>
+   {% endif %}
+   <button class="btn btn-primary" data-toggle="button" onclick="$.fn.snafu_object('update','template',{{ MT.pk }})">Modifier</button>
+   <button class="btn" style="display:none;" onclick="$.fn.snafu_object('get','template',{{ MT.pk }})">Annuler</button>
+  </div>
+ </div>
+
+</div>

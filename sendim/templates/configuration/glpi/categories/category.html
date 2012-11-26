@@ -1,16 +1,18 @@
 <div class="row">
  <h4 align="center">{{ C }}</h4>
 
-<dl>
- <div class="span2">
-  <dt>ID GLPI:</dt>
-  <dd>{{ H.glpi_id|default:"(Aucun)" }}</dd>
+ <div class="span5">
+  <dl>
+   <dt>ID GLPI:</dt>
+   <dd>{{ C.glpi_id|default:"(Aucun)" }}</dd>
+  </dl>
  </div>
 
-</dl>
- <div class="span1">
-  <div class="btn-group">
+ <div class="span2">
+  <div class="btn-group btn-group-vertical">
    <button class="btn btn-danger" onclick="$.fn.snafu_object('del','category',{{ C.pk }})">Supprimer</button>
+   <button class="btn btn-primary" data-toggle="button" onclick="$.fn.snafu_object('update','category',{{ C.pk }})">Modifier</button>
+   <button class="btn" style="display:none;" onclick="$.fn.snafu_object('get','category',{{ C.pk }})">Annuler</button>
   </div>
  </div>
 

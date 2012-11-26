@@ -215,7 +215,7 @@ def confManager(request, action, model, object_id=0) :
     elif model == "translation" :
         temp_dir = 'configuration/translation/translation/'
         Model = Translation
-        form = TranslationBigForm
+        form = TranslationForm
         element_key = 'T'
         filter_key = 'Ts'
         page_key = 'TsPage'
@@ -329,6 +329,7 @@ def confManager(request, action, model, object_id=0) :
 
     elif action == 'form' :
         if match(r"^a_(reference|translation)$", model) :
+            instance = None
             A = Alert.objects.get(pk=object_id)
 
             data = {
@@ -347,9 +348,12 @@ def confManager(request, action, model, object_id=0) :
                 data['form_type'] = 'simple'
                 if model == "a_translation" : form = TranslationForm
                 elif model == "a_reference" : form = ReferenceForm
-        else : data = {}
+        else :
+            data = None
+            instance = None
+            if object_id != '0' : instance = Model.objects.get(pk=object_id)
         return render(request, temp_dir+'form.html', {
-          form_key : form(data)
+          form_key : form(data, instance=instance)
         })
 
     elif action == 'del' :
@@ -359,7 +363,7 @@ def confManager(request, action, model, object_id=0) :
           filter_key : Model.objects.all(),
         })
 
-    elif match(r"^(get|add)$", action) :
+    elif match(r"^(get|add|update)$", action) :
         if model  == "glpiUser" : temp_file = 'user.html'
         elif model  == "glpiGroup" : temp_file = 'group.html'
         elif model  == "user" : temp_file = 'user.html'
@@ -374,23 +378,27 @@ def confManager(request, action, model, object_id=0) :
         elif model  == "supervisor" : temp_file = 'supervisor.html'
         elif match(r"^a_(translation|reference)$", model) : temp_file = 'alert.html'
     
-        if action == "add" :
+        if match(r"^(add|update)$", action) :
             if ( "translation" in model and request.POST['service'] == '1' ) or 'translation' in request.POST :
                 form = TranslationForm
 
-            form = form(request.POST)
+            if object_id != '0' : instance = Model.objects.get(pk=object_id)
+            else : instance = None
+
+            form = form(request.POST, instance=instance)
             if form.is_valid() :
                 Obj = form.save()
                 if model  == "user" :
                     Obj.set_password(request.POST['password'])
                     Obj.save()
+                
                 return render(request, temp_dir+'tabs.html', {
                   filter_key : Model.objects.all()
                 })
             else :
                 errors = json.dumps(form.errors)
                 return HttpResponse(errors, mimetype='application/json')
-    
+
         elif action == 'get' :
             return render(request, temp_dir+temp_file, {
                element_key : get_object_or_404(Model, pk=object_id)
@@ -399,3 +407,5 @@ def confManager(request, action, model, object_id=0) :
     else : raise Http404
 
 
+def update(request) :
+    return HttpResponse({'OK':'OK'}, mimetype='application/json')

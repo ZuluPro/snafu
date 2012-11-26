@@ -32,6 +32,7 @@ urlpatterns = patterns('',
 
 #    (r'^configuration/host/diff$', 'sendim.views.hostDiff'),
 
+    (r'^configuration/update/?$', 'sendim.views.update'),
     (r'^configuration/(?P<action>\w+)/(?P<model>\w+)/?$', 'sendim.views.confManager'),
     (r'^configuration/(?P<action>\w+)/(?P<model>\w+)/(?P<object_id>\d+)/?$', 'sendim.views.confManager'),
 )

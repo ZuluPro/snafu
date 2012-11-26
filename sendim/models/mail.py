@@ -9,17 +9,22 @@ class MailTemplate(models.Model) :
     class Meta:
         app_label = 'sendim'
 
-    def setOn(self):
-        """Set template as used, set all others not."""
-        previousMT = MailTemplate.objects.get(chosen=True)
-        previousMT.chosen = False
-        previousMT.save()
+    def set_active(self):
+        """Set template as used, set all others as not."""
+        for MT in MailTemplate.objects.all():
+            MT.chosen = False
+            MT.save()
         self.chosen = True
         self.save()
 
-    def getOn():
+    def get_active():
         """Return the chosen template."""
         return MailTemplate.objects.get(chosen=True)
 
     def __unicode__(self):
         return str(self.pk)
+
+    def delete(self, *args, **kwargs):
+        if self.chosen == True :
+            MailTemplate.objects.get(pk=1).set_active()
+        super(MailTemplate, self).delete(*args, **kwargs)
