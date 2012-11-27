@@ -64,6 +64,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'tracking.middleware.VisitorTrackingMiddleware',
     'tracking.middleware.VisitorCleanUpMiddleware',
+    'sendim.middleware.CeleryMessageMiddleware',
+    'sendim.middleware.SnafuRequirementMiddleware',
     ...
 )
 
