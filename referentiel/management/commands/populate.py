@@ -5,7 +5,7 @@ from django.db.utils import IntegrityError
 from referentiel.models import *
 from sendim.models import *
 from sendim.exceptions import UnableToConnectGLPI
-from sendim.defs import get_objects_from_glpi
+from sendim.defs import list_from_glpi
 
 from common import logprint
 
@@ -31,7 +31,7 @@ class Command(BaseCommand) :
                         logprint('Add computer : "'+H.name +'"', 'green')
                 except IntegrityError : logprint('Computer ' +host['name']+ ' already exists', 'yellow')
 
-            for host in get_objects_from_glpi('networkequipment') :
+            for host in list_from_glpi('networkequipment') :
                 try :
                     if 'name' in host :
                         H = Host.objects.create(

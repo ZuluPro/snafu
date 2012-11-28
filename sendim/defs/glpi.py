@@ -107,7 +107,7 @@ def getTicket(ticketId) :
     """
     return glpiServer.glpi.getTicket({'session':idSession, 'ticket':ticketId})
 
-def get_objects_from_glpi(itemtype) :
+def list_from_glpi(itemtype) :
     loginInfo = doLogin()
 
     if 'error' in loginInfo :
@@ -125,3 +125,14 @@ def get_objects_from_glpi(itemtype) :
     doLogout()
     return result
 
+def get_from_glpi(itemtype, glpi_id) :
+    loginInfo = doLogin()
+    if 'error' in loginInfo :
+        raise UnableToConnectGLPI(loginInfo['error'])
+
+    else :
+        data = {'session':loginInfo['session'], 'itemtype':itemtype, 'id':glpi_id} 
+        result = glpiServer.glpi.getObject(data)
+
+    doLogout()
+    return result
