@@ -1,7 +1,5 @@
 from django.db import models
 
-from referentiel.forms import *
-from referentiel.models import Host, Service, Status
 from sendim.exceptions import UnableToConnectNagios
 
 from urllib2 import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler, build_opener, install_opener, URLError
@@ -17,7 +15,7 @@ class SupervisorType(models.Model) :
     name = models.CharField(max_length=30)
     
     class Meta:
-        app_label = 'sendim'
+        app_label = 'referentiel'
 
     def __unicode__(self):
         return self.name
@@ -33,7 +31,7 @@ class Supervisor(models.Model) :
     supervisor_type = models.ForeignKey(SupervisorType, default=1)
 
     class Meta:
-        app_label = 'sendim'
+        app_label = 'referentiel'
     
     def getOpener(self):
         """
@@ -70,9 +68,9 @@ class Supervisor(models.Model) :
         
         If alert is an host alert, service will be 'Host status'.
         """
-    
+        from referentiel.models import Host,Service,Status
         from sendim.models import Alert
-        from common import *
+
         check = self.checkNagios()
         if check :
            raise UnableToConnectNagios(check)
@@ -109,8 +107,11 @@ class Supervisor(models.Model) :
                     date = datetime.now()
     
             if not Alert.objects.filter(host__name__exact=host, service__name__exact=service, date=date ).exists() :
-                if not Host.objects.filter(name=host) : Host(name=host).save();
-                if not Service.objects.filter(name=service) : Service(name=service).save()
+                if not Host.objects.filter(name=host):
+                    Host.objects.create(name=host,supervisor=self)
+                if not Service.objects.filter(name=service):
+                    Service.objects.create(name=service)
+
                 A = Alert.objects.create(
                     host = Host.objects.get(name=host),
                     service = Service.objects.get(name=service),

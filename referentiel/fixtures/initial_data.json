@@ -181,7 +181,7 @@
     }
   },
   {
-    "model": "sendim.supervisortype",
+    "model": "referentiel.supervisortype",
     "pk": 1,
     "fields": { "name":"Nagios" }
   }

@@ -36,13 +36,27 @@ class Alert(models.Model) :
         self.save()
         #logprint("Set primary alert for Event#"+str(self.event.pk)+" to Alert #"+str(self.pk), 'pink') 
 
+    def find_reference(self, byHost=True, byService=True, byStatus=True):
+        Rs = Reference.objects.all()
+        if byHost : Rs = Rs.filter(host=self.host)
+        if byService : Rs = Rs.filter(service=self.service)
+        if byStatus : Rs = Rs.filter(status=self.status)
+
+        if Rs : return Rs[0]
+
+    def find_translation(self, byStatus=True):
+        Ts = Translation.objects.all()
+        if byStatus : Ts = Ts.filter(service=self.service, status=self.status)
+
+        if Ts : return Ts[0]
+
     def linkToReference(self, force=False, byHost=True, byService=True, byStatus=True):
         """
         Search if a reference matches with the alert.
         In case, link alert to it.
         """
         if ( self.reference and force ) or not self.reference : 
-            self.reference = getReference(self, byHost, byService, byStatus)
+            self.reference = self.find_reference(byHost, byService, byStatus)
             if self.reference : self.save()
         return self.reference
 
@@ -52,7 +66,7 @@ class Alert(models.Model) :
         In case, link alert to it.
         """
         if ( self.translation and force ) or not self.translation : 
-            self.translation = getTranslation(self, byStatus)
+            self.translation = self.find_translation(byStatus)
             self.save()
         return self.reference
 
@@ -77,14 +91,14 @@ class Alert(models.Model) :
                     #logprint("Incoherence for link Alert #"+str(self.pk)+ ", Alert has no father", 'red')
                     return None
             else :
-                if not self.reference : R = getReference(self)
+                if not self.reference : R = self.find_reference()
 
 	        if not R : mail_criticity='?'
 	        else :
                     mail_criticity = R.mail_criticity
                     self.reference = R
 
-                if not self.translation : T = getTranslation(self)
+                if not self.translation : T = self.find_translation()
                 if T == None : translation=self.info
                 else : translation = T.translation
 

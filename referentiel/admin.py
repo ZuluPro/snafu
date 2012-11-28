@@ -22,8 +22,13 @@ class GlpiSupplierAdmin(admin.ModelAdmin) :
     list_editable = ('glpi_id', )
 
 class MailGroupAdmin(admin.ModelAdmin) :
-    list_display = ( 'name', 'to', 'cc', 'ccm' )
+    list_display = ( 'name', 'to', 'cc', 'ccm')
     list_editable = ('to', 'cc', 'ccm' )
+
+class SupervisorAdmin(admin.ModelAdmin) :
+    list_display = ('pk', 'name','login','index')
+    search_fields = ('supervisor_type', )
+    search_fields = ('name', 'index', 'supervisor_type',)
 
 admin.site.register(Host,HostAdmin)
 admin.site.register(Service)
@@ -33,13 +38,12 @@ admin.site.register(MailType)
 admin.site.register(MailGroup, MailGroupAdmin)
 admin.site.register(MailCriticity)
 
-admin.site.register(GlpiUrgency)
-admin.site.register(GlpiPriority)
 admin.site.register(GlpiCategory)
 admin.site.register(GlpiUser)
 admin.site.register(GlpiGroup)
 admin.site.register(GlpiSupplier, GlpiSupplierAdmin)
-admin.site.register(GlpiImpact)
 
 admin.site.register(Reference , ReferenceAdmin)
 admin.site.register(Translation,TranslationAdmin)
+
+admin.site.register(Supervisor, SupervisorAdmin)

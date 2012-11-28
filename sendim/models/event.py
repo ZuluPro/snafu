@@ -1,9 +1,6 @@
 from django.db.models import Q
 from django.db import models
-
 from referentiel.models import Host, Status
-
-from common import *
 
 class Event(models.Model) :
     element = models.ForeignKey(Host)
@@ -13,6 +10,9 @@ class Event(models.Model) :
     glpi = models.IntegerField(blank=True, null=True)
     mail = models.BooleanField(default=False)
     closed = models.BooleanField(default=False)
+
+    def __init__(self, *args, **kwargs):
+        super(Event, self).__init__(*args, **kwargs)
 
     class Meta:
         app_label = 'sendim'

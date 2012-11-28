@@ -1,13 +1,15 @@
 from django.db import models
 
 class Host(models.Model):
+    from referentiel.models import Supervisor
     HOST_TYPE_CHOICES = (
         (u'computer',u'computer'),
         (u'networkequipment',u'networkequipment'),
     )
     name = models.CharField(max_length=45, unique=True)
-    glpi_id = models.IntegerField( blank=True, null=True,  default=None)
+    glpi_id = models.IntegerField(blank=True, null=True,  default=None)
     host_type = models.CharField(max_length=16, blank=True, choices=HOST_TYPE_CHOICES)
+    supervisor = models.ForeignKey(Supervisor, blank=True, null=True)
 
     class Meta:
         app_label = 'referentiel'

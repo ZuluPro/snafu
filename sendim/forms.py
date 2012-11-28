@@ -53,14 +53,3 @@ class UserForm(forms.ModelForm):
         if not 'superuser_status' in self.data.keys() : U.superuser_status = False
         U.save()
         return U
-
-class SupervisorForm(forms.ModelForm):
-    class Meta:
-        model = Supervisor
-
-    def save(self, *args, **kwargs) :
-        S = super(SupervisorForm, self).save(*args, **kwargs)
-        if not 'active' in self.data.keys() :
-            S.active = False
-            S.save()
-        return S

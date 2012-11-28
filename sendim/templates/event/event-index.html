@@ -1,6 +1,7 @@
 {% extends 'base/base.html' %}
 
 {% block body %}
+ {% csrf_token %}
  <div class="span2">
   <div class="sidebar-nav well" style="position: fixed;">
    <ul class="nav nav-list">

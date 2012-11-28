@@ -2,8 +2,7 @@ from django.contrib import messages
 
 from djcelery.models import TaskMeta
 
-from sendim.models import Supervisor
-from referentiel.models import MailType,MailGroup
+from referentiel.models import MailType,MailGroup,Supervisor
 
 class CeleryMessageMiddleware(object):
 
@@ -23,7 +22,7 @@ class SnafuRequirementMiddleware(object):
 
     def process_request(self,request):
 
-        if request.user.is_authenticated() and not request.is_ajax():
+        if request.user.is_authenticated() and not request.is_ajax() and not request.path.startswith('/admin/'):
             messages_list = list()
             if not Supervisor.objects.exists() :
                 messages_list.append('<li>Au moins 1 superviseur</li>')

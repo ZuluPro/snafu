@@ -175,3 +175,13 @@ class GlpiSupplierForm(forms.ModelForm) :
     class Meta:
         model = GlpiSupplier
 
+class SupervisorForm(forms.ModelForm):
+    class Meta:
+        model = Supervisor
+
+    def save(self, *args, **kwargs) :
+        S = super(SupervisorForm, self).save(*args, **kwargs)
+        if not 'active' in self.data.keys() :
+            S.active = False
+            S.save()
+        return S

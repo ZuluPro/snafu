@@ -74,13 +74,11 @@
      
      <li><a onclick="$.fn.UseModal('/snafu/event/reference',{ eventPk:{{ E.pk }} })">Reference</a></li>
      
-    <!--
-     {% if nagios.connection %}
-     <li><a class="disabled" data-content="{{ nagios.connection }}" rel="popover" data-original-title="Nagios hors service">Vision Nagios</a></li>
+     {% if E.element.supervisor %}
+      <li><a target="_blank" href="{{ E.element.supervisor.status }}?host={{ E.element }}">Vision Nagios</a></li>
      {% else %}
-     <li><a target="_blank" href="{{ nagios.host_status_url }}{{ E.element }}">Vision Nagios</a></li>
+      <li><a class="disabled" data-content="Veuillez renseigner le superviseur" rel="popover" data-original-title="Superviseur non renseigné !" data-placement="left">Vision Nagios</a></li>
      {% endif %}
-    --!>
     </ul>
    </div>
   </td>

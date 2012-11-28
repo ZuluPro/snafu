@@ -11,10 +11,12 @@ def getEventColor(E, arg=None) :
 
     A = E.getPrimaryAlert()
     if not A : return ''
+
     As = E.getAlerts().filter(host=A.host,service=A.service).order_by('-date')
     if not As : return ''
 
     if not As : return A.status.name.lower()+'-status'
     else :
         if As[0].status.name == 'OK' : return ''
+        elif As[0].status.name == 'DOWN': return 'critical-status'
         else : return As[0].status.name.lower()+'-status'

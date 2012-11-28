@@ -7,11 +7,11 @@ from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 import django.utils.simplejson as json
 
-from sendim.models import Alert, MailTemplate, Supervisor
+from sendim.models import Alert, MailTemplate
 from sendim.forms import *
 from referentiel.forms import *
 from referentiel.defs import *
-from referentiel.models import Host, Reference, Translation
+from referentiel.models import Host, Reference, Translation, Supervisor 
 
 from re import match
 
