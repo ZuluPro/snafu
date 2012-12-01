@@ -1,10 +1,5 @@
 from django import template
 
-from sendim.models import *
-from referentiel.models import Reference
-
-from referentiel.defs import getReference
-
 register = template.Library()
 
 @register.filter(name='getEscalation')

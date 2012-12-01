@@ -6,14 +6,11 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 
 from sendim.defs import *
-from sendim.models import *
+from sendim.models import Alert,Event
 from sendim.forms import *
-from sendim.exceptions import UnableToConnectGLPI,UnableToConnectNagios
+from sendim.exceptions import UnableToConnectGLPI
 from referentiel.models import *
 from referentiel.forms import *
-from referentiel.defs import *
-
-from common import logprint
 
 @login_required
 def events(request) :
@@ -50,7 +47,7 @@ def events(request) :
 
             if not E.glpi :
                try :
-                   E.glpi = createTicket(E)
+                   E.create_ticket()
                    messages.add_message(request,messages.SUCCESS,"Ticket #"+str(E.glpi)+u" associ\xe9 \xe0 Event #"+str(E.pk))
                except UnableToConnectGLPI :
                    messages.add_message(request,messages.ERROR,u"Impossible de se connecter \xe0 GLPI.")
@@ -69,9 +66,9 @@ def events(request) :
                     'graphList':graphList,
                     'title':'Snafu - Envoi de mail'
             })
-        Es = Event.objects.filter(closed=False).order_by('-pk')
+        Es = Event.objects.filter(closed=False).order_by('-date')
     else :
-        Es = Event.objects.filter(closed=False).order_by('-pk')
+        Es = Event.objects.filter(closed=False).order_by('-date')
 
         paginator = Paginator(Es, 100)
         page = request.GET.get('page')

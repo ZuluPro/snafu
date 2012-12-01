@@ -28,23 +28,23 @@ class Event(models.Model) :
          - isUp : If False excludes UP/OK alerts.
          - withoutRef = If True excludes alerts without reference.
         """
-        As = Alert.objects.filter(event=self).order_by('-pk')
+        As = Alert.objects.filter(event=self).order_by('-date')
 	if not isUp : As = As.exclude( Q(status__name__exact='OK') | Q(status__name__exact='UP') )
 	if withoutRef : As = As.filter(reference=None)
         return As
 
     def get_last_alert(self, isUp=False):
         from sendim.models import Alert
-        As = Alert.objects.filter(event=self).order_by('-pk')
+        As = Alert.objects.filter(event=self).order_by('-date')
 	if not isUp : As = As.exclude( Q(status__name__exact='OK') | Q(status__name__exact='UP') )
         return As[0]
 
     def getPrimaryAlert(self):
-        from sendim.models import Alert
         """
         Return primary alert of event.
         if there's no primary alert, set the first as primary.
         """
+        from sendim.models import Alert
         try : return Alert.objects.filter(event=self).get(isPrimary=True)
         except Alert.DoesNotExist :
             if self.getAlerts() :
@@ -61,13 +61,50 @@ class Event(models.Model) :
             return A
             
 
-    def openTicket(self) :
-    	pass
+    def create_ticket(self) :
+         """
+         Create a GLPI ticket and add ticket number to self.glpi.
+         """
+         from sendim.connection import doLogin, doLogout, glpiServer
+
+         loginInfo = doLogin()
+         if 'error' in loginInfo :
+             raise UnableToConnectGLPI
+     
+         R = self.get_reference()
+     
+         # Creation du 1er contenu du ticket
+         content = "Descriptif : "+ self.message +"\nImpact :\nDate et heure : " +str(self.date)+ u"\nV\xe9rification : "
+     
+         ticket= {
+             'session':loginInfo['session'],
+             'type':1,
+             'category': R.glpi_category.glpi_id,
+             'title': self.element.name+' '+self.message,
+             'content':content,
+             'recipient': R.glpi_dst_group.glpi_id,
+             'group':9,
+             'source': R.glpi_source,
+             'itemtype' : self.element.host_type,
+             'item' : self.element.glpi_id,
+             'urgency': R.glpi_urgency.glpi_id,
+             'impact': R.glpi_impact.glpi_id
+         }
+         ticketInfo = glpiServer.glpi.createTicket(ticket)
+         #logprint( "Ticket #"+str(ticketInfo['id'])+" created", 'green' )
+     
+         # Sauvegarde dans BDD
+         self.glpi = ticketInfo['id']
+         self.save()
+         #logprint( "Ticket #"+str(ticketInfo['id'])+" associate to Event #"+str(self.pk), 'green')
+     
+         doLogout()
+         return ticketInfo['id']
 
     def sendMail(self) :
     	pass
 
-    def getReference(self) :
+    def get_reference(self) :
         """Return reference of primary alert."""
     	return self.getPrimaryAlert().reference
 

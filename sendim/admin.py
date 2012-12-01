@@ -16,6 +16,17 @@ class MailTemplateAdmin(admin.ModelAdmin) :
     search_fields = ('subject','body' )
     list_filter = ( 'chosen', )
 
+class CommandAdmin(admin.ModelAdmin) :
+    list_display = ('name','string') 
+    search_fields = ('name','string') 
+
+class CommandLogAdmin(admin.ModelAdmin) :
+    list_display = ('date','command','status') 
+    search_fields = ('command__name','stdin','stdout','stderr') 
+    list_filter = ('status',)
+
 admin.site.register(Event, EventAdmin)
 admin.site.register(Alert, AlertAdmin)
 admin.site.register(MailTemplate, MailTemplateAdmin)
+admin.site.register(Command, CommandAdmin)
+admin.site.register(CommandLog, CommandLogAdmin)

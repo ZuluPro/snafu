@@ -53,3 +53,7 @@ class UserForm(forms.ModelForm):
         if not 'superuser_status' in self.data.keys() : U.superuser_status = False
         U.save()
         return U
+
+class CommandForm(forms.ModelForm):
+    class Meta:
+        model = Command

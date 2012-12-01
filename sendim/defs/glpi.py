@@ -4,51 +4,8 @@ Function related to GLPI webservice.
 
 from django.conf import settings
 
-from sendim.models import *
-from sendim.connection import *
+from sendim.connection import doLogin, glpiServer
 from sendim.exceptions import UnableToConnectGLPI
-from referentiel.models import *
-from referentiel.defs import getReference
-
-
-def createTicket(E) :
-    """
-    Create a GLPI ticket for the given Event object.
-    Add ticket number to Event.glpi.
-    """
-    loginInfo = doLogin()
-    if 'error' in loginInfo :
-        raise UnableToConnectGLPI
-
-    R = E.getReference()
-
-    # Creation du 1er contenu du ticket
-    content = "Descriptif : "+ E.message +"\nImpact :\nDate et heure : " +str(E.date)+ u"\nV\xe9rification : "
-
-    ticket= {
-    	'session':loginInfo['session'],
-    	'type':1,
-    	'category': R.glpi_category.glpi_id,
-    	'title': E.element.name+' '+E.message,
-    	'content':content,
-    	'recipient': R.glpi_dst_group.glpi_id,
-    	'group':9,
-    	'source': R.glpi_source,
-    	'itemtype' : E.element.host_type,
-    	'item' : E.element.glpi_id,
-    	'urgency': R.glpi_urgency.glpi_id,
-    	'impact': R.glpi_impact.glpi_id
-    }
-    ticketInfo = glpiServer.glpi.createTicket(ticket)
-    logprint( "Ticket #"+str(ticketInfo['id'])+" created", 'green' )
-
-    # Sauvegarde dans BDD
-    E.glpi = ticketInfo['id']
-    E.save()
-    logprint( "Ticket #"+str(ticketInfo['id'])+" associate to Event #"+str(E.pk), 'green')
-
-    doLogout()
-    return ticketInfo['id']
 
 def addFollowUp(ticketId,content) :
     """

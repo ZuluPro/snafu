@@ -5,7 +5,6 @@ Function for create alerts and events.
 from django.db.models import Q
 
 from referentiel.models import Host, Service, Status, Reference
-from referentiel.defs import getReference
 from sendim.models import Alert, Event
 
 from random import choice

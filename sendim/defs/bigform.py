@@ -1,7 +1,8 @@
 from django.forms.formsets import formset_factory
 
+from sendim.models import Alert
 from referentiel.models import Host,Service,Reference
-from sendim.forms import *
+from referentiel.forms import *
 
 def getFormSet(E=None):
     """
