@@ -23,12 +23,13 @@ def get_help():
         push_alert -H 'http://snafu/snafu/webservice' -h myHost -s myService -S WARNING -d '10-13-2000 00:30:28)' -i 'MYINFO'
 
     Option :
-    -H | --hypervisor : Snafu webservice's URL
+    -w | --webservice : Snafu webservice's URL
     -h | --host : Nagios host's name ($HOSTNAME$)
     -s | --service : Nagios service's name ($SERVICEDISPLAYNAME$)
     -S | --status : Nagios service's status ($SERVICESTATE$)
     -d | --date : Alert's date ($SHORTDATETIME$)
     -i | --info : Alert's information ($SERVICEOUTPUT$)
+    --help : This help message
     """
 
 if __name__ == '__main__':
@@ -36,7 +37,7 @@ if __name__ == '__main__':
         del argv[0]
         while argv :
             arg = argv.pop(0)
-            if match(r'^(-H|--hypervisor)$', arg) :
+            if match(r'^(-w|--webservice)$', arg) :
                 snafu_url = argv.pop(0)
             elif match('^(-h|--host)$', arg) :
                 host = argv.pop(0)
