@@ -100,8 +100,16 @@ class ReferenceBigForm(BaseReferenceForm):
                     A.reference = R
                     A.save()
 
+    def __init__(self, *args, **kwargs) :
+            super(ReferenceBigForm, self).__init__(*args, **kwargs)
+            del self.fields['status']
+            del self.fields['mail_criticity']
+            del self.fields['glpi_urgency']
+            del self.fields['glpi_priority']
+            del self.fields['glpi_impact']
+
     class Meta(BaseReferenceForm.Meta):
-        exclude = ('status','mail_criticity','glpi_urgency','glpi_priority','glpi_impact')
+        pass
 
 class BaseTranslationForm(forms.ModelForm):
     class Meta:

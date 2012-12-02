@@ -36,7 +36,7 @@ admin.site.register(Status)
 
 admin.site.register(MailType)
 admin.site.register(MailGroup, MailGroupAdmin)
-admin.site.register(MailCriticity)
+#admin.site.register(MailCriticity)
 
 admin.site.register(GlpiCategory)
 admin.site.register(GlpiUser)

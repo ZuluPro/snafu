@@ -11,7 +11,7 @@
   <ul id="alertTab" class="nav nav-tabs nav-stacked">
   {% for F in Forms %}
    <li {% if forloop.counter == 1 %} class="active"{% endif %}>
-    <a id="R{{ forloop.counter }}Tab" href="#R{{ forloop.counter }}TabContent" data-toggle="tab">Ref {{ forloop.counter }}: {{ F.host_as_text }} - {{ F.service_as_text }}</a>
+    <a id="R{{ forloop.counter }}Tab" href="#R{{ forloop.counter }}TabContent" data-toggle="tab">Ref {{ forloop.counter }}: {{ F.data.host }} - {{ F.data.service|default:"Host status" }}</a>
    </li>
   {% endfor %}
   </ul>
@@ -37,7 +37,7 @@
   {% endfor %}
 
  </fieldset>
-     <button class="btn btn-primary" onclick="$.fn.validRef({{ forloop.counter }})">Ajouter référence</button>
+     <button class="btn btn-primary" onclick="$.fn.validRef({{ forloop.counter }}); return false;">Ajouter référence</button>
 </form>
     </div>
   {% endfor %}

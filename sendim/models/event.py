@@ -1,6 +1,8 @@
 from django.db.models import Q
 from django.db import models
+
 from referentiel.models import Host, Status
+from sendim.exceptions import UnableToConnectGLPI
 
 class Event(models.Model) :
     element = models.ForeignKey(Host)

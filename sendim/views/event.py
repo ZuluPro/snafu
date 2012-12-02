@@ -1,9 +1,9 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
-from django.forms.formsets import formset_factory
-from django.http import HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.contrib import messages
+import django.utils.simplejson as json
 
 from sendim.defs import *
 from sendim.models import Alert,Event
@@ -58,7 +58,7 @@ def events(request) :
 
             # Recuperation des graphs correspondant
             graphList = readGraphs(E.element.name, A.service.name)
-    
+   
             # Envoi du formulaire d'envoi de mail
             return render(request,'event/preview-mail.html', {
                     'msg':msg,
@@ -95,10 +95,21 @@ def EaddRef(request):
 
     E = Event.objects.get(pk=request.POST['eventPk'])
 
-    host,service = postFormSet(request.POST)
+    if request.POST['form_type'] == 'big' :
+        form = ReferenceBigForm
 
-    for status in ('WARNING','CRITICAL','UNKNOWN') :
-        As = E.getAlerts().filter(status__name=status) 
+    elif request.POST['form_type'] == 'host' :
+        form = HostReferenceForm
+
+    form = form(request.POST)
+    if form.is_valid() :
+        R = form.save()
+    else :
+        errors = json.dumps(form.errors)
+        return HttpResponse(errors, mimetype='application/json')
+
+    for status in ('WARNING','CRITICAL','UNKNOWN','DOWN') :
+        As = E.getAlerts().filter(host=form.data['host'], service=form.data['service'],status__name=status) 
         for _A in As: 
             _A.linkToReference()
 
