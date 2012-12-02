@@ -107,7 +107,7 @@ class Supervisor(models.Model) :
                     date = datetime.now()
     
             if not Alert.objects.filter(host__name__exact=host, service__name__exact=service, date=date ).exists() :
-                if not Host.objects.filter(name=host):
+                if not Host.objects.filter(name=host,supervisor=self):
                     Host.objects.create(name=host,supervisor=self)
                 if not Service.objects.filter(name=service):
                     Service.objects.create(name=service)

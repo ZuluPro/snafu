@@ -8,9 +8,11 @@ For SNAFU webserver :
     - django >= 1.4.x
     - python >= 2.7.x
     - django-tracking
-    - celery
-    - django-celery
+    - celery >= 3.0.x
+    - django-celery >= 3.0.x
+    - rabbitmq-server
     - pytz
+    - MySQL, postgresql_psycopg2 or Oracle database (not SQLite)
 
 For GLPI webserver :
     - glpi webservices >= 1.3.1
@@ -19,18 +21,23 @@ For GLPI webserver :
 For Nagios webserver :
     - A valid user
 
+------------------------------------------------------------------------------
+1. Start a new Django project and copy content of repository in this :
+------------------------------------------------------------------------------
 
-------------------------------------------------------------------------------
-1.
-------------------------------------------------------------------------------
-Start a new Django project and copy content of repository in this :
   $ django-admin.py startproject snafu
   
+------------------------------------------------------------------------------
+2. Configure your RabbitMQ server
+------------------------------------------------------------------------------
+
+  $ rabbitmqctl add_user youruser yourpassword
+  $ rabbitmqctl add_vhost snafu
+  $ rabbitmqctl set_permissions -p snafu youruser ".*" ".*" ".*"
 
 ------------------------------------------------------------------------------
-2.
+3. Include followings in settings.py :
 ------------------------------------------------------------------------------
-What must include in settings.py :
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
@@ -74,10 +81,18 @@ BASEDIR = os.path.dirname(os.path.abspath(__file__))
 
 from sendim.local_settings import *
 
+import djcelery
+djcelery.setup_loader()
+
+BROKER_HOST = "localhost"
+BROKER_PORT = 5672
+BROKER_USER = "youruser"
+BROKER_PASSWORD = "youpassword"
+BROKER_VHOST = "snafu"
+
 ------------------------------------------------------------------------------
-3.
+4. Include followings in sendim/local_settings.py :
 ------------------------------------------------------------------------------
-What must include in sendim/local_settings.py :
 
 from django.conf import settings
 import os
@@ -100,9 +115,8 @@ LOGIN_URL = '/snafu/login'
 TEMPLATE_DIRS = ( os.path.join(settings.BASEDIR, 'sendim/templates'), )
 
 ------------------------------------------------------------------------------
-4.
+5. Include followings in snafu/urls.py
 ------------------------------------------------------------------------------
-What must include in urls.py :
 
 urlpatterns = patterns('',
    ...
@@ -111,17 +125,16 @@ urlpatterns = patterns('',
 )
 
 ------------------------------------------------------------------------------
-5.
-------------------------------------------------------------------------------
-After configuration launch the next command for initialize database :
+6. After configuration launch the next command for initialize database :
 Be sure to have a valid user account on GLPI webservice before run 'populate'.
+------------------------------------------------------------------------------
 
   $ ./manage.py syncdb
   $ ./manage.py populate
 
 
 ------------------------------------------------------------------------------
-6.
+7. Launch SNAFU
 ------------------------------------------------------------------------------
 Before work with SNAFU you must add some stuff:
  - A supervisor

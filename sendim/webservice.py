@@ -1,8 +1,9 @@
 from django.views.decorators.csrf import csrf_exempt 
 from django.http import HttpResponse
+from django.utils import timezone
 
 from sendim.models import Alert
-from sendim.models import Host,Service,Status
+from referentiel.models import Host,Service,Status,Supervisor
 
 from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 from datetime import datetime
@@ -33,21 +34,33 @@ def test():
     """A simple test for webservice."""
     return 0
 
-def pushAlert(host,service,status,info,date=None):
+def pushAlert(host,service,status,info,supervisor,date=None):
     """Create a new alert."""
-    if not date : date = datetime.now()
-    elif type(date) == type('') : date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S' )
+    try : supervisor = Supervisor.objects.get(name=supervisor)
+    except Supervisor.DoesNotExist : supervisor = None
+
+    if not date : date = timezone.now()
+    elif type(date) == type('') :
+        try: date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S' )
+        except ValueError:
+            try : date = datetime.strptime(date, '%m-%d-%Y %H:%M:%S' )
+            except ValueError: date = timezone.now()
+ 
     
-    A = Alert(
-        host = Host.objects.get(name=host),
-        service = Service.objects.get(name=service),
-        status = Status.objects.get(name=status),
-        info = info,
-        date = date
-    )
-    A.save()
-    A.link()
-    return A
+    if not Alert.objects.filter(host__name__exact=host, service__name__exact=service, date=date ).exists() :
+        if not Host.objects.filter(name=host):
+            Host.objects.create(name=host,supervisor=supervisor)
+        if not Service.objects.filter(name=service):
+            Service.objects.create(name=service)
+
+        A = Alert.objects.create(
+            host = Host.objects.get(name=host),
+            service = Service.objects.get(name=service),
+            status = Status.objects.get(name=status),
+            info = info,
+            date = date
+        )
+        A.link()
 
 dispatcher.register_function(test, 'test')
 dispatcher.register_function(pushAlert, 'pushAlert')
