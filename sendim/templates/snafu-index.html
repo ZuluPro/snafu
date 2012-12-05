@@ -1,36 +1,102 @@
 {% extends 'base/base.html' %}
 
 {% block body %}
+<script src="/static/js/jquery.flot.selection.js" type="text/javascript" language="javascript"></script>
 
-<div id="placeholder" style="width:600px;height:300px"></div>
+<div id="placeholder" style="width:100%;height:300px"></div>
 
-<script>
-  $(document).ready(function() {
+<div class="btn-group">
+ <div class="input-prepend">
+  <span class="add-on">De</span>
+  <input id="from_date" type="text" size="8"></input>
+  <span class="add-on">à</span>
+  <input id="end_date" type="text" size="8"></input>
+  <button id="zoom" class="btn" data-toggle="button">Zoom</button>
+  <button id="Load" class="btn">Charger</button>
+ </div>
+</div>
+
+<script type="text/javascript">
+  $(function() {
 
     var data = [ 
-      {
-        data : [ 
-            {% for Edate,number in monthAs %}
-              [ {{ Edate }} * 1000, {{ number }} ]{% if forloop.counter != monthAs|length %},{% endif %}
-            {% endfor %}
-         ],
-        points : { show: true },
-        lines : { show: true }
-      }
     ];
 
     var options = {
       xaxis: {
         mode : "time",
-        timeformat : "%m/%d"
+        timeformat : "%d/%m/%y",
+        minTickSize: [1, "month"],
+        tickSize: [1, "month"],
+        tickLength: 0,
+        autoscaleMargin: .10
       },
       yaxis: {
         min : 0,
         tickDecimals : 0
-      }
+      },
+      selection : { mode: "x" },
+      series: {
+        bars: {
+          show: true,
+          barWidth: 1000*60*60*24*31,
+          align: 'center'
+        }
+      },
     };
 
-    $.plot($("#placeholder"), data, options );
+    //$.plot($("#placeholder"), data, options );
+    var placeholder = $("#placeholder");
+    
+    placeholder.bind("plotselected", function (event, ranges) {
+      from_date = new Date(ranges.xaxis.from.toFixed(1)*1);
+      end_date = new Date(ranges.xaxis.to.toFixed(1)*1);
+      $("#from_date").val(format_date(from_date));
+      $("#end_date").val(format_date(end_date));
+
+      if ( $('#zoom').hasClass('active') )
+      plot = $.plot(placeholder, data, $.extend(true, {}, options, {
+          xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
+      }));
+    });
+
+    format_date = function(date) {
+      return date.getDate() +'/'+ (date.getMonth()+1) +'/'+ date.getFullYear()
+    }
+
+    function onDataReceived(series) {
+      // extract the first coordinate pair so you can see that
+      // data is now an ordinary Javascript object
+      var firstcoordinate = '(' + series.data[0][0] + ', ' + series.data[0][1] + ')';
+      delete data;
+      var data = [series];
+      console.log(data);
+      // and plot all we got
+      $.plot(placeholder, data, options);
+      $("#from_date").val( format_date( new Date( parseInt(data[0]['data'][0]) ) ) );
+      $("#end_date").val( format_date( new Date( parseInt(data[0]['data'].slice(-1)[0]) ) ) );
+    }
+
+   function updatePlot() {
+     $.ajax({
+       url: "./stat",
+       method: 'GET',
+       data: {
+         start_date:$("#from_date").val(),
+         end_date:$("#end_date").val()
+       },
+       dataType: 'json',
+       success: onDataReceived
+     });
+
+   }
+
+   var alreadyFetched = {};
+   $("#Load").click(function () {
+     updatePlot();
+   }); 
+
+   updatePlot();
   });
 </script>  
 

@@ -16,6 +16,9 @@
 
    <div class="row">
     <form class="well span4 offset4" action="/snafu/login" method="POST">{% csrf_token %}
+     <div id="messages">
+      {% include "messages.html" %}
+     </div>
      <input type="text" name="username" placeholder="login" style="width:95%">
      <input type="password" name="password" placeholder="password" style="width:95%">
      <input class="btn" type="submit" value="Connexion">

@@ -9,7 +9,8 @@ register = template.Library()
 def getProcedure(E, arg=None) :
     """Return the procedure of the given event."""
     A = E.getPrimaryAlert()
-    R = A.reference
+    if A is None : return None
 
+    R = A.reference
     if R : return R.procedure
     else : return ''

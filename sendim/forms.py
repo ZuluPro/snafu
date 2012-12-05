@@ -54,6 +54,12 @@ class UserForm(forms.ModelForm):
         U.save()
         return U
 
+class AuthForm(forms.Form):
+    username = forms.CharField(required=True)
+    password = forms.PasswordInput()
+    
+    
+
 class CommandForm(forms.ModelForm):
     class Meta:
         model = Command

@@ -55,7 +55,9 @@ class Event(models.Model) :
                 A.setPrimary()
                 return A
             else :
-                self.delete()
+                try : self.delete()
+                except AssertionError : pass
+                return None
                 #logprint("Event #"+str(self.pk)+" had no alert, it has been deleted", 'red')
         except Alert.MultipleObjectsReturned :
             A = self.getAlerts().filter(isPrimary=True)[0]

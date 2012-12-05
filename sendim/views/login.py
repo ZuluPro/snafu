@@ -1,11 +1,11 @@
 """
 Login and logout views.
 """
-
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
+from django.contrib import messages
 
-from common import logprint
+from sendim.forms import AuthForm
 
 def snafu_login(request) :
     """Website login view."""
@@ -15,6 +15,8 @@ def snafu_login(request) :
             if user.is_active :
                 login(request, user)
                 return redirect('/snafu/events')
+        else :
+            messages.add_message(request,messages.ERROR,u"Login ou mot de passe incorrecte !")
 
     return render(request, 'login.html', {
     })

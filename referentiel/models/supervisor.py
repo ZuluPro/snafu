@@ -119,7 +119,6 @@ class Supervisor(models.Model) :
                     info=info,
                     date=date
                 )
-                A.save()
                 A.link()
                 if not A.event in Es_dict : Es_dict[A.event.pk] = []
                 Es_dict[A.event.pk].append(A.pk)

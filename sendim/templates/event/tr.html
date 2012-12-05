@@ -57,14 +57,17 @@
 
   <td>
    <div class="btn-group">
+    {% with procedure as E|getProcedure %}
     <button class="btn 
      {% if E|getEscalation %}btn-danger{% else %}btn-info{% endif %}
-     {% if not E|getProcedure %} disabled{% endif %}
+     {% if not procedure %} disabled{% endif %}
     ">
-    {% if E|getProcedure %}
-     <a href="{{ E|getProcedure }}"><i class="icon-globe icon-white"></i></a>
-    {% else %}Info
-    {% endif %}
+     {% if procedure %}
+      <a href="{{ procedure }}"><i class="icon-globe icon-white"></i></a>
+     {% else %}
+      Info
+     {% endif %}
+    {% endwith %}
     </button>
     <button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
     <ul class="dropdown-menu">

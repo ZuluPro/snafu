@@ -20,7 +20,7 @@ from re import match
 def get_help():
     return """
     Example :
-        push_alert -H 'http://snafu/snafu/webservice' -h myHost -s myService -S WARNING -d '10-13-2000 00:30:28)' -i 'MYINFO'
+        push_alert.py -w 'http://snafu.com/snafu/webservice' -h myHost -s myService -S WARNING -d '10-13-2000 00:30:28)' -i 'MYINFO'
 
     Option :
     -w | --webservice : Snafu webservice's URL

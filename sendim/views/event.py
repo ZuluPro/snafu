@@ -68,6 +68,7 @@ def events(request) :
             })
         Es = Event.objects.filter(closed=False).order_by('-date')
     else :
+        [ E.delete() for E in Event.objects.all() if not E.getAlerts().exists() ]
         Es = Event.objects.filter(closed=False).order_by('-date')
 
         paginator = Paginator(Es, 100)
@@ -78,7 +79,7 @@ def events(request) :
             Es = paginator.page(1)
         except EmptyPage:
             Es = paginator.page(paginator.num_pages)
-
+    
     return render(request, 'event/event-index.html', {
         'Es':Es,
         'title':'Snafu - Events'

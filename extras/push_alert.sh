@@ -15,7 +15,7 @@
 function get_help {
   echo "
     Example :
-        push_alert -H 'http://snafu/snafu/webservice' -h myHost -s myService -S WARNING -d '10-13-2000 00:30:28)' -i 'MYINFO'
+        push_alert.sh -w 'snafu.com' -h myHost -s myService -S WARNING -d '02-06-2012 16:30:28)' -i 'MYINFO'
 
     Option :
     -w | --webservice : Snafu webservice's URL
