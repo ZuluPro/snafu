@@ -80,6 +80,9 @@ class Event(models.Model) :
          # Creation du 1er contenu du ticket
          content = "Descriptif : "+ self.message +"\nImpact :\nDate et heure : " +str(self.date)+ u"\nV\xe9rification : "
      
+         item = self.element.glpi_id
+         if item is None : item = 0
+
          ticket= {
              'session':loginInfo['session'],
              'type':1,
@@ -89,8 +92,8 @@ class Event(models.Model) :
              'recipient': R.glpi_dst_group.glpi_id,
              'group':9,
              'source': R.glpi_source,
-             'itemtype' : self.element.host_type,
-             'item' : self.element.glpi_id,
+             #'itemtype' : self.element.host_type,
+             #'item' : item,
              'urgency': R.glpi_urgency.glpi_id,
              'impact': R.glpi_impact.glpi_id
          }

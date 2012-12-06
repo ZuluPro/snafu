@@ -1,15 +1,14 @@
-from django.contrib import messages
 from django.conf import settings
 
-from sendim.models import *
-from sendim.defs import addMail,opengraph
-from referentiel.models import *
+from sendim.models import Event, MailTemplate
+from sendim.defs import addMail, opengraph
 
-import smtplib
+from smtplib import SMTP
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+# MOVE INTO EVENT
 def makeMail(E):
     """
     Using the given Event and the chosen MailTemplate for create
@@ -74,13 +73,12 @@ def sendMail(POST) :
     if 'graphList' in POST :
         graphList = POST.getlist('graphList')
         for i in range(len(graphList)) :
-            pagehandle = opengraph(A, graphList[i][0])
-            pagehandle2 = opengraph(A, graphList[i][0])
+            pagehandle = opengraph(A, graphList[i])
+            #pagehandle2 = opengraph(A, graphList[i][0])
             msg.attach( MIMEImage( pagehandle ) )
-            msg.attach( MIMEImage( pagehandle2 ) )
-            logprint("Add " +graphList[i]+ "to mail" )
+            #msg.attach( MIMEImage( pagehandle2 ) )
 
-    smtpObj = smtplib.SMTP(settings.SNAFU['smtp-server'] , settings.SNAFU['smtp-port'] )
+    smtpObj = SMTP(settings.SNAFU['smtp-server'] , settings.SNAFU['smtp-port'] )
     if 'smtp-password' in settings.SNAFU.keys() :
         smtpObj.ehlo()
         smtpObj.starttls()

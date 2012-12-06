@@ -57,8 +57,6 @@ class UserForm(forms.ModelForm):
 class AuthForm(forms.Form):
     username = forms.CharField(required=True)
     password = forms.PasswordInput()
-    
-    
 
 class CommandForm(forms.ModelForm):
     class Meta:

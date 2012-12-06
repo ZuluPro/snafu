@@ -4,7 +4,7 @@ Function related to GLPI webservice.
 
 from django.conf import settings
 
-from sendim.connection import doLogin, glpiServer
+from sendim.connection import doLogin, doLogout, glpiServer
 from sendim.exceptions import UnableToConnectGLPI
 
 def addFollowUp(ticketId,content) :

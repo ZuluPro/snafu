@@ -18,37 +18,37 @@
      {% if E.criticity = '?' %}
       <button class="btn btn-primary" data-content="Cliquez ici pour remplir la renseigner." rel="popover" data-original-title="Pas de référence" name="treatment_q"><i class="icon-comment icon-white"></i></button>
      {% else %}
-       {% if not E.glpi %}
+      {% if not E.glpi %}
 
-        {% if glpi.connection %}
-         <p class="btn btn-primary disabled" data-content="{{ glpi.connection }}" rel="popover" data-original-title="GLPI Hors service"><i class="icon-pencil icon-white"></i></p>
-        {% else %}
-         <button class="btn btn-primary" name="treatment_q"><i class="icon-pencil icon-white"></i></button>
-        {% endif %}
-
+       {% if glpi.connection %}
+        <p class="btn btn-primary disabled" data-content="{{ glpi.connection }}" rel="popover" data-original-title="GLPI Hors service"><i class="icon-pencil icon-white"></i></p>
        {% else %}
-
-        {% if glpi.connection %}
-         <p class="btn btn-primary disabled" data-content="{{ glpi.connection }}" rel="popover" data-original-title="GLPI Hors service">{{ E.glpi }}</p>
-        {% else %}
-         <a class="btn btn-primary" target="_blank" href="{{ glpi.ticket_url }}{{ E.glpi }}">{{ E.glpi }}</a>
-        {% endif %}
-
+        <button class="btn btn-primary" name="treatment_q"><i class="icon-pencil icon-white"></i></button>
        {% endif %}
 
-       {% if not E.mail %}
-        {% if not E.glpi %}
-         <p class="btn btn-primary disabled" data-content="Créer le ticket GLPI avant." rel="popover" data-original-title="Impossible d'envoyer"><i class="icon-envelope icon-white"></i></p>
-        {% else %}
+      {% else %}
+
+       {% if glpi.connection %}
+        <p class="btn btn-primary disabled" data-content="{{ glpi.connection }}" rel="popover" data-original-title="GLPI Hors service">{{ E.glpi }}</p>
+       {% else %}
+        <a class="btn btn-primary" target="_blank" href="{{ glpi.ticket_url }}{{ E.glpi }}">{{ E.glpi }}</a>
+       {% endif %}
+
+      {% endif %}
+
+      {% if not E.mail %}
+       {% if not E.glpi %}
+        <p class="btn btn-primary disabled" data-content="Créer le ticket GLPI avant." rel="popover" data-original-title="Impossible d'envoyer"><i class="icon-envelope icon-white"></i></p>
+       {% else %}
         {% if smtp.connection %}
          <p class="btn btn-primary disabled" data-content="Serveur SMTP injoignable." rel="popover" data-original-title="Impossible d'envoyer"><i class="icon-envelope icon-white"></i></p>
         {% else %}
          <button class="btn btn-primary" name="treatment_q"><i class="icon-envelope icon-white"></i></button>
         {% endif %}
-        {% endif %}
-       {% else %}
-        <button class="btn btn-primary disabled"><i class="icon-envelope icon-white"></i></button>
        {% endif %}
+      {% else %}
+       <p class="btn btn-primary disabled"><i class="icon-envelope icon-white"></i></p>
+      {% endif %}
 
      {% endif %}
     </div>

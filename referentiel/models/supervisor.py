@@ -6,8 +6,8 @@ from urllib2 import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler, build
 from socket import SocketType,error,gaierror
 import re, time
 from datetime import datetime
-import HTMLParser
-_htmlparser = HTMLParser.HTMLParser()
+from HTMLParser import HTMLParser
+_htmlparser = HTMLParser()
 
 from common import *
 
@@ -21,14 +21,22 @@ class SupervisorType(models.Model) :
         return self.name
 
 class Supervisor(models.Model) :
+    GRAPH_TYPE = (
+      ('RRDTool','RRDTool'),
+      ('N2RRD','N2RRD'),
+    )
+
     name = models.CharField(max_length=200)
     login = models.CharField(max_length=50)
     password = models.CharField(max_length=100)
     index = models.CharField(max_length=300)
     status = models.CharField(max_length=300)
     history = models.CharField(max_length=300)
+    graph = models.CharField(max_length=300, null=True, blank=True)
     active = models.BooleanField(default=True)
+
     supervisor_type = models.ForeignKey(SupervisorType, default=1)
+    graph_type = models.CharField(max_length=20, choices=GRAPH_TYPE, default=None, null=True, blank=True)
 
     class Meta:
         app_label = 'referentiel'
@@ -103,7 +111,6 @@ class Supervisor(models.Model) :
             except ValueError:
                 try : date = datetime.fromtimestamp( time.mktime( time.strptime(date, "%m-%d-%Y %H:%M:%S")) )
                 except ValueError:
-                    ##logprint("Nagios parsing failed on date "+date, 'yellow' )
                     date = datetime.now()
     
             if not Alert.objects.filter(host__name__exact=host, service__name__exact=service, date=date ).exists() :

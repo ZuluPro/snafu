@@ -56,7 +56,7 @@
    <div class="controls">
     <select multiple="multiple" name="graphList" id="graphList" style=width:100%;">
      {% for graph in graphList %}
-       <option>{{ graph.0 }}: {{ graph.1 }}</option>
+       <option value="{{ graph.1 }}">{{ graph.0 }}</option>
      {% endfor %}
     </select>
    </div>

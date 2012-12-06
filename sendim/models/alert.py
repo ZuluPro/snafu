@@ -37,6 +37,10 @@ class Alert(models.Model) :
         #logprint("Set primary alert for Event#"+str(self.event.pk)+" to Alert #"+str(self.pk), 'pink') 
 
     def find_reference(self, byHost=True, byService=True, byStatus=True):
+        """
+        Return a Reference which matching with the Alert.
+        Searching parameters may be given with arguments.
+        """ 
         Rs = Reference.objects.all()
         if byHost : Rs = Rs.filter(host=self.host)
         if byService : Rs = Rs.filter(service=self.service)
@@ -45,6 +49,9 @@ class Alert(models.Model) :
         if Rs : return Rs[0]
 
     def find_translation(self, byStatus=True):
+        """
+        Return a Translation which matching with the Alert.
+        """ 
         Ts = Translation.objects.all()
         if byStatus : Ts = Ts.filter(service=self.service, status=self.status)
 

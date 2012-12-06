@@ -31,12 +31,11 @@ def events(request) :
             E = Event.objects.get(pk=eventPk)
             A = E.getPrimaryAlert()
 
-        elif "sendmail_q" in request.POST :
+        if "sendmail_q" in request.POST :
             if sendMail( request.POST ) :
                 messages.add_message(request,messages.SUCCESS,u"Envoi d'un mail pour l'\xe9v\xe9nement #"+str(E.pk)+"." )
-                logprint("Mail sent for Event #"+str(eventPk) )
 
-        if "treatment_q" in request.POST :
+        elif "treatment_q" in request.POST :
 	    if E.criticity == '?' or not E.getPrimaryAlert().reference : 
 		
 		Forms = getFormSet(E)
@@ -53,13 +52,12 @@ def events(request) :
                    messages.add_message(request,messages.ERROR,u"Impossible de se connecter \xe0 GLPI.")
                    return redirect('/snafu/events')
 
-            # Constitution du mail
+            # Create a mail preview 
             msg = makeMail(E)
 
-            # Recuperation des graphs correspondant
+            # Retrieve graphs for the current Event
             graphList = readGraphs(E.element.name, A.service.name)
    
-            # Envoi du formulaire d'envoi de mail
             return render(request,'event/preview-mail.html', {
                     'msg':msg,
                     'E':E,

@@ -1,7 +1,11 @@
-from django.utils import timezone
+from django.utils.timezone import now
 from datetime import timedelta
 
 def daterange(QuerySet,step='day'):
+    """
+    Yield elements by step given in argument.
+    Work for models with 'date' field as Alert or Event.
+    """
     if step == 'day' : timestep = timedelta(days=1)
     elif step == 'week' : timestep = timedelta(weeks=1)
     elif step == 'month' : timestep = timedelta(days=31)
@@ -15,5 +19,5 @@ def daterange(QuerySet,step='day'):
             yield date,QuerySet.filter(date__gte=date,date__lte=date+timestep)
             date = date + timestep
 
-    else : yield timezone.now(), QuerySet.none()
+    else : yield now(), QuerySet.none()
 
