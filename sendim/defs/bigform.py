@@ -1,11 +1,10 @@
-from django.forms.formsets import formset_factory
-
-from sendim.models import Alert
 from referentiel.models import Host,Service,Reference
-from referentiel.forms import *
+from referentiel.forms import HostReferenceForm, ReferenceBigForm
 
 def getFormSet(E):
     """
+    Return a forms list from a given Event.
+    Used for ask References of Event's Alerts.
     """
     service_alerts = dict()
     host_alerts = list()

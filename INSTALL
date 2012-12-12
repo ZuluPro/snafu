@@ -8,8 +8,8 @@ For SNAFU webserver :
     - django >= 1.4.x
     - python >= 2.7.x
     - django-tracking
-    - celery >= 3.0.x
-    - django-celery >= 3.0.x
+    - celery >= 3.0.x (work without)
+    - django-celery >= 3.0.x (work without)
     - rabbitmq-server
     - pytz
     - MySQL, postgresql_psycopg2 or Oracle database (not SQLite)
@@ -58,7 +58,7 @@ INSTALLED_APPS = (
     'sendim',
     'referentiel',
     'tracking',
-    'djcelery',
+    'djcelery', # if you want asynchronous tasks
     ...
 )
 

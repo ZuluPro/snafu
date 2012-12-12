@@ -7,6 +7,7 @@ or an error message which isn't an exception for show that in modal.
 In POST method, it will return a redirect to '/snafu/events'.
 """
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -19,10 +20,14 @@ from referentiel.models import *
 
 @login_required
 def reload_alerts(request) :
+    """Parse all active supervisors and put new alerts in database."""
     for S in Supervisor.objects.filter(active=True) :
         S_status = S.checkNagios()
         if not S_status :
-            tasks.reload_alerts.delay(S)
+            if 'djcelery' in settings.INSTALLED_APPS :
+                tasks.reload_alerts.delay(S)
+            else :
+                S.parse()
             messages.add_message(request,messages.INFO,u'<b>Lecture de '+S.name+u" commenc\xe9e !</b>")
         else:
             messages.add_message(request, messages.ERROR,'<b>Erreur de lecture de '+S.name+' : '+str(S_status)+'</b>')

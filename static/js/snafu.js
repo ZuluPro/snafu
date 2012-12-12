@@ -27,7 +27,7 @@ $(document).ready(function() {
       type: "POST", 
       url: '/snafu/event/reloadAlerts', 
       data: $('[name=csrfmiddlewaretoken]:first').serialize(),
-      async: false,
+      async: true,
       cache: false,
       error: function() {
         $('#infoModal').html( 'Erreur de communication avec le serveur' );
@@ -245,12 +245,6 @@ $(document).ready(function() {
     })
   }
 
- // TRANSFORM <p> INTO INPUT
- // $.fn.createInput = function(pk,attr,val){
- //   $('#refContent').html('');
- // }
-
-
 ///////////////////////////////////////////////////////////
   // GET TRAD
   $.fn.getTrad = function(pk){
@@ -325,26 +319,6 @@ $(document).ready(function() {
   }
 ///////////////////////////////////////////////////////////
 
-  $('#userForm').submit(function() {
-    $.fn.addUser();
-    return false;
-  });
-
-//////////////////////////////////////////////////
-
-  $('#hostForm').submit(function() {
-    $.fn.addHost();
-    return false;
-  });
-
-//////////////////////////////////////////////////
-
-  $('#categoryForm').submit(function() {
-    $.fn.addCategory();
-    return false;
-  });
-
-///////////////////////////////////////////////////////////
   $.fn.snafu_object = function(action, object, pk) {
     if ( ! pk ) { pk = 0; }
     if ( action == "get" ) {
@@ -457,25 +431,10 @@ $(document).ready(function() {
 
 //////////////////////////////////////////////////
 
-  $('#templateForm').submit(function() {
-    $.fn.addTemplate();
-    return false;
-  });
-
-//////////////////////////////////////////////////
  // ASK QUESTION BEFORE LAUNCH FUNCTION
   $.fn.Question = function(question, func){
     $('#infoModal').modal('hide');
     $('#infoModal').html(question, func);
   }
 
-//////////////////////////////////////////////////
-  $.fn.getHostDiff = function(){
-    $('#hostDiff').html('<img id="loader" src="/static/img/ajax-loader.gif" height="100%" width="100%">' );
-    $.get('/snafu/configuration/host/diff',{}, function(data) {
-      $('#hostDiff').html(data);
-    });
-  }
-/////////////////////////////////////////////////
 });
-

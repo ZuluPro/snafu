@@ -1,6 +1,4 @@
 {% extends 'base/base.html' %}	
-
-
 {% block body %}
 
  <h2>Il manque les références pour {{ Forms|length }} alerte(s)</h2>
@@ -19,39 +17,33 @@
   <div class="tab-content">
   {% for ReferenceForm in Forms %}
     <div class="tab-pane fade{% if forloop.counter == 1 %} in active{% endif %}" id="R{{ forloop.counter }}TabContent">
-<form class="form-horizontal" id="referenceForm">
- <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
- <fieldset>
+     <form class="form-horizontal" id="referenceForm">
+      <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"/>
+      <fieldset>
 
-  {% for field in ReferenceForm.visible_fields %}
-   <div class="control-group">
-    <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
-    <div class="controls">
-     {{ field }}
-    </div>
+      {% for field in ReferenceForm.visible_fields %}
+       <div class="control-group">
+        <label class="control-label" for="{{ field.label }}">{{ field.label }}</label>
+        <div class="controls">
+         {{ field }}
+        </div>
+       </div>
+      {% endfor %}
+
+      {% for field in ReferenceForm.hidden_fields %}
+       {{ field }}
+      {% endfor %}
+     </fieldset>
+     <button class="btn btn-primary" onclick="$.fn.validRef({{ forloop.counter }}); return false;">Ajouter référence</button>
+    </form>
    </div>
   {% endfor %}
-
-  {% for field in ReferenceForm.hidden_fields %}
-   {{ field }}
-  {% endfor %}
-
- </fieldset>
-     <button class="btn btn-primary" onclick="$.fn.validRef({{ forloop.counter }}); return false;">Ajouter référence</button>
-</form>
-    </div>
-  {% endfor %}
-  </div>
-
  </div>
 
-<form id="submit" method="POST" action="/snafu/events" style="display:none">{% csrf_token %}
- <input name="eventPk" value="{{ E.pk }}">
- <input name="treatment_q">
-</form>
-
-<script>
- $('button[type="submit"]').hide()
-</script>
+ <form id="submit" method="POST" action="/snafu/events" style="display:none">
+  {% csrf_token %}
+  <input name="eventPk" value="{{ E.pk }}">
+  <input name="treatment_q">
+ </form>
 
 {% endblock %}
