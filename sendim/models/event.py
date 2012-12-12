@@ -132,8 +132,12 @@ class Event(models.Model) :
             notOK = list()
             for host in hosts.keys() : 
                 for service in hosts[host] :
-                    if not self.getAlerts().filter(host__name=host,service__name=service,status=Status.objects.get(name='OK') ) :
-                        notOK.append( (host,service) )
+                    if service == 'Host status' :
+                        if not self.getAlerts().filter(host__name=host,service__name=service,status=Status.objects.get(name='UP') ) :
+                            notOK.append( (host,service) )
+                    else :
+                        if not self.getAlerts().filter(host__name=host,service__name=service,status=Status.objects.get(name='OK') ) :
+                            notOK.append( (host,service) )
             if not notOK :
                 self.closed = True
                 self.save()
