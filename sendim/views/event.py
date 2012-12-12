@@ -22,8 +22,6 @@ def events(request) :
      - sendmail_q : Send a mail for a given event.
      - treatment_q : Make exploitation processes.
     """
-    from sendim.tasks import reload_alerts
-
     if request.method == 'POST' :
 
         if 'eventPk' in request.POST :

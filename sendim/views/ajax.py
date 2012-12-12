@@ -13,7 +13,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseBadRequest
 
-from sendim import tasks
+if 'djcelery' in settings.INSTALLED_APPS :
+    from sendim import tasks
 from sendim.models import *
 from sendim.defs import *
 from referentiel.models import *
