@@ -2,73 +2,93 @@
 
 {% block body %}
  {% csrf_token %}
- <div class="span2">
-  <div class="sidebar-nav well" style="position: fixed;">
-   <ul class="nav nav-list">
-    <li class="nav-header">Filtres:</li>
-    <li class="divider"></li>
-    <li> <input type="text" class="input-small" id="pk" filter="pk" placeholder="#Event"> </li>
-    <li> <input type="text" class="input-small" id="element" filter="element" placeholder="Element..."> </li>
-    <li> <input type="text" class="input-small" id="glpi" filter="glpi" placeholder="#GLPI..."> </li>
-    <li> <input type="text" class="input-small" id="message" filter="message" placeholder="Message..."> </li>
-    <!--<li><input type="text" class="input-small" id="datepicker" filter="datepicker" placeholder="date..." onclick="$(this).datepicker({dateFormat: 'yy-mm-dd'});"></li>--!>
-   </ul>
-  </div>
- </div>
+ <script type="text/javascript">
+  var lastChecked = null;
 
- <div class="span10">
-  <div id="messages">
-   {% include "messages.html" %}
-  </div>
+  $(document).ready(function() {
+    var $chkboxes = $('[type=checkbox]');
+    $chkboxes.click(function(e) {
+      if(!lastChecked) {
+        lastChecked = this;
+        return;
+      }
+      if(e.shiftKey) {
+        var start = $chkboxes.index(this);
+        var end = $chkboxes.index(lastChecked);
 
-  <table class="table">
-   <thead>
-    <tr>
-     <th></th>
-     <th>#</th>
-     <th>Date</th>
-     <th>Element</th>
-     <th>Criticité</th>
-     <th>Message</th>
-     <th><i class="icon-cog"></i></th>
-     <th>
-      {# if not nagios.connection #}
-        <button class="btn btn-primary" onclick="$.fn.reloadAlerts()"><i class="icon-refresh icon-white"></i></button>
-      {# else #}
-       <!-- <p class="btn btn-primary disabled" data-content="{{ nagios.connection }}" rel="popover" data-original-title="Nagios Hors service">
-             <i class="icon-refresh icon-white"></i>
-            </p> --!>
-      {# endif #}
-     </th>
-    </tr>
-    <tr>
-     <th colspan="8">
-      <div class="btn-group">
-       <button class="btn btn-mini disabled">Actions : </button>
-       <button class="btn btn-mini" onclick="$.fn.AgrForm()">Aggréger</button>
-       <button class="btn btn-mini" onclick="$.fn.CPAForm()">Alerte primaire</button>
-       <button class="btn btn-mini" onclick="$.fn.CloseForm()">Clôturer</button>
-       <button class="btn btn-mini" onclick="$.fn.FollowUpForm()">Suivi GLPI</button>
-      </div>
-     </th>
-    </tr>
-   </thead>
-   <tbody id="E_tbody">
-   {% include 'event/tr.html' %}
-   </tbody>
-  </table>
-
-  <div>
-   <ul class="pager">
-    {% if Es.has_previous %}
-     <li class="previous"><a href="/snafu/events?page={{ Es.previous_page_number }}">&larr; Récents</a></li>
-    {% endif %}
-    {% if Es.has_next %}
-     <li class="next"><a href="/snafu/events?page={{ Es.next_page_number }}">Ancien &rarr;</a></li>
-    {% endif %}
-   </ul>
+        $chkboxes.slice(Math.min(start,end), Math.max(start,end)+ 1).attr('checked', lastChecked.checked);
+      }
+      lastChecked = this;
+    });
+  });
+  </script>
+  <div class="span2">
+   <div class="sidebar-nav well" style="position: fixed;">
+    <ul class="nav nav-list">
+     <li class="nav-header">Filtres:</li>
+     <li class="divider"></li>
+     <li> <input type="text" class="input-small" id="pk" filter="pk" placeholder="#Event"> </li>
+     <li> <input type="text" class="input-small" id="element" filter="element" placeholder="Element..."> </li>
+     <li> <input type="text" class="input-small" id="glpi" filter="glpi" placeholder="#GLPI..."> </li>
+     <li> <input type="text" class="input-small" id="message" filter="message" placeholder="Message..."> </li>
+     <!--<li><input type="text" class="input-small" id="datepicker" filter="datepicker" placeholder="date..." onclick="$(this).datepicker({dateFormat: 'yy-mm-dd'});"></li>--!>
+    </ul>
+   </div>
   </div>
 
- </div>
+  <div class="span10">
+
+   <div id="messages">
+    {% include "messages.html" %}
+   </div>
+ 
+   <table class="table">
+    <thead>
+     <tr>
+      <th></th>
+      <th>#</th>
+      <th>Date</th>
+      <th>Element</th>
+      <th>Criticité</th>
+      <th>Message</th>
+      <th><i class="icon-cog"></i></th>
+      <th>
+       {# if not nagios.connection #}
+         <button class="btn btn-primary" onclick="$.fn.reloadAlerts()"><i class="icon-refresh icon-white"></i></button>
+       {# else #}
+        <!-- <p class="btn btn-primary disabled" data-content="{{ nagios.connection }}" rel="popover" data-original-title="Nagios Hors service">
+              <i class="icon-refresh icon-white"></i>
+             </p> --!>
+       {# endif #}
+      </th>
+     </tr>
+     <tr>
+      <th colspan="8">
+       <div class="btn-group">
+        <button class="btn btn-mini disabled">Actions : </button>
+        <button class="btn btn-mini" onclick="$.fn.AgrForm()">Aggréger</button>
+        <button class="btn btn-mini" onclick="$.fn.CPAForm()">Alerte primaire</button>
+        <button class="btn btn-mini" onclick="$.fn.CloseForm()">Clôturer</button>
+        <button class="btn btn-mini" onclick="$.fn.FollowUpForm()">Suivi GLPI</button>
+       </div>
+      </th>
+     </tr>
+    </thead>
+    <tbody id="E_tbody">
+    {% include 'event/tr.html' %}
+    </tbody>
+   </table>
+ 
+   <div>
+    <ul class="pager">
+     {% if Es.has_previous %}
+      <li class="previous"><a href="/snafu/events?page={{ Es.previous_page_number }}">&larr; Récents</a></li>
+     {% endif %}
+     {% if Es.has_next %}
+      <li class="next"><a href="/snafu/events?page={{ Es.next_page_number }}">Ancien &rarr;</a></li>
+     {% endif %}
+    </ul>
+   </div> 
+  </div>
 
 {% endblock %}
