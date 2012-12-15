@@ -1,44 +1,13 @@
-"""
-Function for create alerts and events.
-"""
-
+from django.utils.timezone import now
+from django.utils import unittest
 from django.db.models import Q
 
 from referentiel.models import Host, Service, Status, Reference
 from sendim.models import Alert, Event
 
 from random import choice
-from datetime import datetime
+from datetime import datetime, timedelta
 from time import sleep
-
-def createAlert(host=None,service=None,status=None, isDown=True) :
-    """
-    Create a random alert from data in referentiel.
-    Attributes may be choose with arguments.
-    """
-    if not host : host = choice(Host.objects.all())
-    else : host = Host.objects.get(name=host)
-
-    if not service : service = choice(Service.objects.all())
-    else : service = Service.objects.get(name=service)
-
-    if not status :
-       if service.name == "Host status" :
-           if isDown : status = Status.objects.get(name='DOWN')
-           else : status = Status.objects.get(name='UP')
-       else :
-           if isDown : status = choice(Status.objects.exclude(Q(name='OK') | Q(name='UP') | Q(name='DOWN')))
-           else : status = choice(Status.objects.exclude(Q(name='UP') | Q(name='DOWN')))
-    else : status = Status.objects.get(name=status)
-
-    A = Alert(
-       host = host,
-       service = service,
-       status = status,
-       date = datetime.now(),
-       info = "TEST - Alerte #"+str(Alert.objects.count()),
-    )
-    return A
 
 def createAlertFrom(alert, status=None, isDown=True):
     """

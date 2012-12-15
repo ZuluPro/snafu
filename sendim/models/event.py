@@ -83,19 +83,30 @@ class Event(models.Model) :
          item = self.element.glpi_id
          if item is None : item = 0
 
+         if not R :
+             category = 1
+             recipient = source = 0
+             urgency = impact = 3
+         else :
+             category = R.glpi_category.glpi_id
+             recipient = R.glpi_dst_group.glpi_id
+             source = R.glpi_source
+             urgency = R.glpi_urgency.glpi_id
+             impact = R.glpi_impact.glpi_id
+
          ticket= {
              'session':loginInfo['session'],
              'type':1,
-             'category': R.glpi_category.glpi_id,
+             'category': category,
              'title': self.element.name+' '+self.message,
              'content':content,
-             'recipient': R.glpi_dst_group.glpi_id,
+             'recipient': recipient,
              'group':9,
-             'source': R.glpi_source,
+             'source': source,
              #'itemtype' : self.element.host_type,
              #'item' : item,
-             'urgency': R.glpi_urgency.glpi_id,
-             'impact': R.glpi_impact.glpi_id
+             'urgency':urgency,
+             'impact':impact,
          }
          ticketInfo = glpiServer.glpi.createTicket(ticket)
          #logprint( "Ticket #"+str(ticketInfo['id'])+" created", 'green' )

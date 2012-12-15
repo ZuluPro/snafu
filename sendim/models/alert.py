@@ -90,16 +90,15 @@ class Alert(models.Model) :
 
         else : 
             if match(r"^(UP|OK)$", self.status.name ) :
-                if Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None) :
-	            E = Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None).order_by('-pk')[0].event
+                if Alert.objects.filter(host=self.host,service=self.service).exclude(event=None).exists() :
+	            E = Alert.objects.filter(host=self.host,service=self.service).exclude(event=None).order_by('-date')[0].event
 		    self.event = E
 	            self.save()
                 else :
-                    #logprint("Incoherence for link Alert #"+str(self.pk)+ ", Alert has no father", 'red')
                     return None
             else :
-                if not self.reference : R = self.find_reference()
 
+                if not self.reference : R = self.find_reference()
 	        if not R : mail_criticity='?'
 	        else :
                     mail_criticity = R.mail_criticity
@@ -109,8 +108,9 @@ class Alert(models.Model) :
                 if T == None : translation=self.info
                 else : translation = T.translation
 
-                if not Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk) :
-                    E = Event (
+                # If there's no similar alert, create Event
+                if not Alert.objects.filter(host=self.host,service=self.service).exclude(event=None).exists() :
+                    E = Event(
                         element = self.host,
                         date = self.date,
                         criticity = mail_criticity,
@@ -122,7 +122,7 @@ class Alert(models.Model) :
                     self.save()
 
                 else :
-                    lastA = Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk, event=None).order_by('-pk')[0]
+                    lastA = Alert.objects.filter(host=self.host,service=self.service).exclude(event=None).order_by('-date')[0]
                     if (lastA.status in ( Status.objects.get(name='OK'), Status.objects.get(name='UP') )) or (lastA.event == None) :
                         E = Event (
                             element = self.host,

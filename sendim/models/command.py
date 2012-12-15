@@ -31,9 +31,9 @@ class Command(models.Model) :
 class CommandLog(models.Model) :
     date = models.DateTimeField()
     command = models.ForeignKey(Command, null=True)
-    stdin = models.CharField(max_length=1000000)
-    stdout = models.CharField(max_length=1000000, blank=True, null=True)
-    stderr = models.CharField(max_length=1000000, blank=True, null=True)
+    stdin = models.TextField(max_length=1000000)
+    stdout = models.TextField(max_length=1000000, blank=True, null=True)
+    stderr = models.TextField(max_length=1000000, blank=True, null=True)
     status = models.IntegerField()
 
     class Meta:
