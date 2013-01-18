@@ -18,44 +18,47 @@ class Alert(models.Model) :
 
     class Meta:
         app_label = 'sendim'
+        ordering = ('date',)
 
     def __unicode__(self) :
         return self.host.name+' : '+self.service.name+' - '+ self.status.name
 
     def setPrimary(self):
         """Set alert as primary, set all event's alerts as not."""
-        As = self.event.getAlerts().filter(isPrimary=True)
-        if As :
-            for A in As :
-                if A is self : continue
-                A.isPrimary = False
-                A.save()
-                #logprint("Set alert #" +str(A.pk)+ " as not primary", 'pink')
-           
+        self.event.getAlerts().update(isPrimary=False)
         self.isPrimary = True
         self.save()
-        #logprint("Set primary alert for Event#"+str(self.event.pk)+" to Alert #"+str(self.pk), 'pink') 
 
-    def find_reference(self, byHost=True, byService=True, byStatus=True):
+    def find_reference(self, update=True, byHost=True, byService=True, byStatus=True):
         """
         Return a Reference which matching with the Alert.
         Searching parameters may be given with arguments.
         """ 
-        Rs = Reference.objects.all()
-        if byHost : Rs = Rs.filter(host=self.host)
-        if byService : Rs = Rs.filter(service=self.service)
-        if byStatus : Rs = Rs.filter(status=self.status)
+        if not self.reference :
+            Rs = Reference.objects.all()
+            if byHost : Rs = Rs.filter(host=self.host)
+            if byService : Rs = Rs.filter(service=self.service)
+            if byStatus : Rs = Rs.filter(status=self.status)
+            if Rs and update : 
+                R = Rs[0]
+                self.reference = R
+                self.save()
+                return R
+        else : return self.reference
 
-        if Rs : return Rs[0]
-
-    def find_translation(self, byStatus=True):
+    def find_translation(self, update=True, byStatus=True):
         """
         Return a Translation which matching with the Alert.
         """ 
-        Ts = Translation.objects.all()
-        if byStatus : Ts = Ts.filter(service=self.service, status=self.status)
-
-        if Ts : return Ts[0]
+        if not self.translation :
+            Ts = Translation.objects.all()
+            if byStatus : Ts = Ts.filter(service=self.service, status=self.status)
+            if Ts and update :
+                T = Ts[0]
+                self.translation = T
+                self.save()
+                return T
+        else : return self.translation
 
     def linkToReference(self, force=False, byHost=True, byService=True, byStatus=True):
         """
@@ -76,6 +79,31 @@ class Alert(models.Model) :
             self.translation = self.find_translation(byStatus)
             self.save()
         return self.reference
+
+    def link_to_event(self,event):
+        """
+        Link alert to the given event.
+        If service is 'Host status', it will become primary.
+        """
+        self.event = event
+        if self.status.name == 'DOWN' :
+            self.setPrimary()
+        self.save()
+
+    def create_event(self,message,mail_criticity='?'):
+        """
+        Create an Event corresponding to Alert.
+        """
+        E = Event.objects.create(
+          element = self.host,
+          date = self.date,
+          criticity = mail_criticity,
+          message = message
+        )
+        self.event = E
+        self.setPrimary()
+        self.save()
+        return E
 
     def link(self) :
         """
@@ -98,42 +126,22 @@ class Alert(models.Model) :
                     return None
             else :
 
-                if not self.reference : R = self.find_reference()
-	        if not R : mail_criticity='?'
-	        else :
-                    mail_criticity = R.mail_criticity
-                    self.reference = R
+                if self.find_reference():
+                    mail_criticity = self.reference.mail_criticity
+                else : mail_criticity = '?'
 
-                if not self.translation : T = self.find_translation()
-                if T == None : translation=self.info
-                else : translation = T.translation
+                if self.find_translation():
+                    translation = self.translation.translation
+                else : translation = self.info
 
                 # If there's no similar alert, create Event
                 if not Alert.objects.filter(host=self.host,service=self.service).exclude(event=None).exists() :
-                    E = Event(
-                        element = self.host,
-                        date = self.date,
-                        criticity = mail_criticity,
-                        message = translation
-                    )
-	            E.save()
-                    self.event = E
-                    self.isPrimary = True
-                    self.save()
+                    E = self.create_event(translation,mail_criticity)
 
                 else :
                     lastA = Alert.objects.filter(host=self.host,service=self.service).exclude(event=None).order_by('-date')[0]
                     if (lastA.status in ( Status.objects.get(name='OK'), Status.objects.get(name='UP') )) or (lastA.event == None) :
-                        E = Event (
-                            element = self.host,
-                            date = self.date,
-                            criticity = mail_criticity,
-                            message = translation
-                        )
-                        E.save()
-                        self.event = E
-                        self.isPrimary = True
-                        self.save()
+                        E = self.create_event(translation,mail_criticity)
                     else : 
                         E = lastA.event
                         self.event = E

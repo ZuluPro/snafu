@@ -78,3 +78,5 @@ class SingleHost_MultipleAlert_TestCase(unittest.TestCase):
             if not E in self.events : self.events.append(E)
         self.events[0].close()
         self.assertTrue(self.events[0].closed)
+
+
