@@ -52,7 +52,7 @@ class Event(models.Model) :
             if self.getAlerts() :
                 A = self.getAlerts()[0]
                 #logprint("Event #"+str(self.pk)+" had no primary alert, set to the first Alert #"+str(A.pk), 'red')
-                A.setPrimary()
+                A.set_primary()
                 return A
             else :
                 try : self.delete()
@@ -61,7 +61,7 @@ class Event(models.Model) :
                 #logprint("Event #"+str(self.pk)+" had no alert, it has been deleted", 'red')
         except Alert.MultipleObjectsReturned :
             A = self.getAlerts().filter(isPrimary=True)[0]
-            A.setPrimary()
+            A.set_primary()
             return A
             
 

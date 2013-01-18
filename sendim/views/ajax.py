@@ -108,7 +108,7 @@ def choosePrimaryAlert(request) :
     if request.method == 'POST' :
         E = Event.objects.get(pk=request.POST['eventPk'])
         A = Alert.objects.get(pk=request.POST['chosenAlert'])
-        A.setPrimary()
+        A.set_primary()
 
     return render(request, 'modal/choosePrimaryAlert.html', {
         'E':E,

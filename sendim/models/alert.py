@@ -1,19 +1,19 @@
 from django.db import models
 
-from referentiel.models import Host, Status, Service, Reference, Translation
+from referentiel.models import Status, Reference, Translation
 from sendim.models import Event
 
 from re import match
 
 class Alert(models.Model) :
-    host = models.ForeignKey(Host)
-    service = models.ForeignKey(Service)
-    status = models.ForeignKey(Status)
+    host = models.ForeignKey('referentiel.Host')
+    service = models.ForeignKey('referentiel.Service')
+    status = models.ForeignKey('referentiel.Status')
     date = models.DateTimeField()
     info = models.CharField(max_length=300)
-    event = models.ForeignKey(Event, blank=True, null=True)
-    reference = models.ForeignKey(Reference, blank=True, null=True, on_delete=models.SET_NULL)
-    translation = models.ForeignKey(Translation, blank=True, null=True, on_delete=models.SET_NULL)
+    event = models.ForeignKey('Event', blank=True, null=True)
+    reference = models.ForeignKey('referentiel.Reference', blank=True, null=True, on_delete=models.SET_NULL)
+    translation = models.ForeignKey('referentiel.Translation', blank=True, null=True, on_delete=models.SET_NULL)
     isPrimary = models.BooleanField(default=False)
 
     class Meta:
@@ -23,7 +23,7 @@ class Alert(models.Model) :
     def __unicode__(self) :
         return self.host.name+' : '+self.service.name+' - '+ self.status.name
 
-    def setPrimary(self):
+    def set_primary(self):
         """Set alert as primary, set all event's alerts as not."""
         self.event.getAlerts().update(isPrimary=False)
         self.isPrimary = True
@@ -87,7 +87,7 @@ class Alert(models.Model) :
         """
         self.event = event
         if self.status.name == 'DOWN' :
-            self.setPrimary()
+            self.set_primary()
         self.save()
 
     def create_event(self,message,mail_criticity='?'):
@@ -101,7 +101,7 @@ class Alert(models.Model) :
           message = message
         )
         self.event = E
-        self.setPrimary()
+        self.set_primary()
         self.save()
         return E
 
@@ -114,9 +114,8 @@ class Alert(models.Model) :
          - If no previous similar alert : Create Event and link
         etc...
         """
-        if self.event : E = self.event
-
-        else : 
+        if not self.event :
+            # Return None if alert is OK and no corresponding alert is found
             if match(r"^(UP|OK)$", self.status.name ) :
                 if Alert.objects.filter(host=self.host,service=self.service).exclude(event=None).exists() :
 	            E = Alert.objects.filter(host=self.host,service=self.service).exclude(event=None).order_by('-date')[0].event
@@ -125,11 +124,12 @@ class Alert(models.Model) :
                 else :
                     return None
             else :
-
+                # Put reference or '?'
                 if self.find_reference():
                     mail_criticity = self.reference.mail_criticity
                 else : mail_criticity = '?'
 
+                # Put translation or Alert.info
                 if self.find_translation():
                     translation = self.translation.translation
                 else : translation = self.info
@@ -138,6 +138,8 @@ class Alert(models.Model) :
                 if not Alert.objects.filter(host=self.host,service=self.service).exclude(event=None).exists() :
                     E = self.create_event(translation,mail_criticity)
 
+                # Else find the last alert
+                # If last alert is OK/UP, then create an Event
                 else :
                     lastA = Alert.objects.filter(host=self.host,service=self.service).exclude(event=None).order_by('-date')[0]
                     if (lastA.status in ( Status.objects.get(name='OK'), Status.objects.get(name='UP') )) or (lastA.event == None) :
@@ -146,5 +148,6 @@ class Alert(models.Model) :
                         E = lastA.event
                         self.event = E
                         self.save()
-        return E
+            return E
+        else : return self.event
 
