@@ -1,0 +1,73 @@
+[
+  {
+   "pk": 1,
+   "model": "referentiel.supervisor",
+   "fields": 
+    {
+     "status": "http://classic.demo.icinga.org/icinga/cgi-bin/status.cgi",
+     "index": "http://classic.demo.icinga.org/icinga/",
+     "supervisor_type": 1,
+     "name": "Icinga Demo",
+     "graph": "http://sysnetmon.diglinks.com/cgi-bin/rrd2graph.cgi",
+     "active": true,
+     "graph_type": null,
+     "login": "guest",
+     "password": "guest",
+     "history": "http://classic.demo.icinga.org/icinga/cgi-bin/history.cgi"
+    }
+  },
+ 
+  {
+   "pk": 2,
+   "model": "referentiel.supervisor",
+   "fields": 
+    {
+     "status": "http://nagioscore.demos.nagios.com/nagios/cgi-bin/status.cgi",
+     "index": "http://nagioscore.demos.nagios.com/nagios/",
+     "supervisor_type": 1,
+     "name": "Nagios Core Demo",
+     "graph": "http://sysnetmon.diglinks.com/cgi-bin/rrd2graph.cgi",
+     "active": true,
+     "graph_type": null,
+     "login": "nagiosadmin",
+     "password": "nagiosadmin",
+     "history": "http://nagioscore.demos.nagios.com/nagios/cgi-bin/history.cgi"
+    }
+  },
+ 
+  {
+   "pk": 3,
+   "model": "referentiel.supervisor",
+   "fields": 
+    {
+     "status": "http://sysnetmon.diglinks.com/nagios/cgi-bin/status.cgi",
+     "index": "http://sysnetmon.diglinks.com",
+     "supervisor_type": 1,
+     "name": "RRDTools Demo",
+     "graph": "http://sysnetmon.diglinks.com/cgi-bin/rrd2graph.cgi",
+     "active": true,
+     "graph_type": "N2RRD",
+     "login": "guest",
+     "password": "guest",
+     "history": "http://sysnetmon.diglinks.com/nagios/cgi-bin/history.cgi"
+    }
+  },
+ 
+  {
+   "pk": 4,
+   "model": "referentiel.supervisor",
+   "fields": 
+    {
+     "status": "http://demo.fullyautomatednagios.org/nagios/cgi-bin/status.cgi",
+     "index": "http://demo.fullyautomatednagios.org",
+     "supervisor_type": 1,
+     "name": "FAN Demo",
+     "graph": "",
+     "active": true,
+     "graph_type": null,
+     "login": "nagiosadmin",
+     "password": "nagiosadmin",
+     "history": "http://demo.fullyautomatednagios.org/nagios/cgi-bin/history.cgi"
+    }
+  }
+]

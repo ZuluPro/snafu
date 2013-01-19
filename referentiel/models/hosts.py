@@ -9,7 +9,7 @@ class Host(models.Model):
     name = models.CharField(max_length=45, unique=True)
     glpi_id = models.IntegerField(blank=True, null=True,  default=None)
     host_type = models.CharField(max_length=16, blank=True, choices=HOST_TYPE_CHOICES)
-    supervisor = models.ForeignKey(Supervisor, blank=True, null=True)
+    supervisor = models.ForeignKey(Supervisor, blank=True, null=True, on_delete=models.SET_NULL)
 
     class Meta:
         app_label = 'referentiel'

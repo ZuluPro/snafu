@@ -1,3 +1,7 @@
+"""
+Test to create alerts for service status (WARNING/CRITICAL/OK).
+"""
+
 from django.utils import unittest
 from django.utils.timezone import now
 
@@ -7,6 +11,9 @@ from sendim.models import Alert, Event
 from datetime import datetime, timedelta
 
 class SingleService_SingleAlert_TestCase(unittest.TestCase):
+    """
+    Tests for a single WARNING alert.
+    """
     def setUp(self):
 	self.host = Host.objects.create(name='host1')
 	self.service = Service.objects.create(name='host1')
@@ -18,19 +25,28 @@ class SingleService_SingleAlert_TestCase(unittest.TestCase):
         self.alert.delete()
 
     def test_alert_link_to_event(self):
+        """Try to link alert to an Event."""
         self.assertIsInstance(self.alert.link(), Event)
 
     def test_create_glpi_ticket(self):
+        """Try to create glpi ticket."""
         self.event = self.alert.link()
         ticket_id = self.event.create_ticket()
         self.assertIsInstance(int(ticket_id), int)
 
     def test_close_event(self):
+        """
+        Try to close the event.
+        Normally it can't do.
+        """
         self.event = self.alert.link()
         self.event.close()
         self.assertFalse(self.event.closed)
 
 class SingleService_MultipleAlert_TestCase(unittest.TestCase):
+    """
+    Tests for 3 Alerts (WARNING/CRITICAL/OK)..
+    """
     def setUp(self):
 	self.host = Host.objects.create(name='host1')
 	self.service = Service.objects.create(name='service1')
@@ -48,6 +64,7 @@ class SingleService_MultipleAlert_TestCase(unittest.TestCase):
         [ E.delete() for E in self.events ]
 
     def test_alert_link_to_event(self):
+        """Try to link alerts to a single Event."""
         for A in Alert.objects.filter(event=None) :
             E = A.link()
             if not E in self.events : self.events.append(E)
@@ -56,6 +73,7 @@ class SingleService_MultipleAlert_TestCase(unittest.TestCase):
         self.assertEqual(Event.objects.count(),1)
 
     def test_create_glpi_ticket(self):
+        """Try to create glpi ticket."""
         for A in Alert.objects.filter(event=None) :
             E = A.link()
             if not E in self.events : self.events.append(E)
@@ -65,6 +83,10 @@ class SingleService_MultipleAlert_TestCase(unittest.TestCase):
             self.assertIsInstance(int(ticket_id), int)
 
     def test_close_event(self):
+        """
+        Try to close the event.
+        Normally it can.
+        """
         for A in Alert.objects.filter(event=None) :
             E = A.link()
             if not E in self.events : self.events.append(E)
@@ -72,6 +94,9 @@ class SingleService_MultipleAlert_TestCase(unittest.TestCase):
         self.assertTrue(self.events[0].closed)
 
 class MultipleService_MultipleAlert_TestCase(unittest.TestCase):
+    """
+    Tests for 2 Events of 3 Alerts (WARNING/CRITICAL/OK).
+    """
     def setUp(self):
 	self.host = Host.objects.create(name='host1')
 	self.service1 = Service.objects.create(name='service1')
@@ -99,6 +124,7 @@ class MultipleService_MultipleAlert_TestCase(unittest.TestCase):
         [ E.delete() for E in self.events ]
 
     def test_alert_link_to_event(self):
+        """Try to link alert to 2 Events."""
         for A in Alert.objects.filter(event=None) :
             E = A.link()
             if not E in self.events : self.events.append(E)
@@ -107,6 +133,7 @@ class MultipleService_MultipleAlert_TestCase(unittest.TestCase):
         self.assertEqual(Event.objects.count(),2)
 
     def test_create_glpi_ticket(self):
+        """Try to create 2 glpi ticket."""
         for A in Alert.objects.filter(event=None) :
             E = A.link()
             if not E in self.events : self.events.append(E)
