@@ -1,0 +1,22 @@
+[
+  {
+   "pk": 1,
+   "model": "referentiel.host",
+   "fields": {
+    "name": "test host",
+    "host_type": "",
+    "supervisor": null,
+    "glpi_id": null
+   }
+  },
+  {
+   "pk": 1,
+   "model": "referentiel.service",
+   "fields": {"name": "Host status"}
+  },
+  {
+   "pk": 2,
+   "model": "referentiel.service",
+   "fields": {"name": "test service"}
+  }
+]

@@ -127,6 +127,7 @@ class Supervisor(models.Model) :
                     date=date
                 )
                 A.link()
-                if not A.event in Es_dict : Es_dict[A.event.pk] = []
-                Es_dict[A.event.pk].append(A.pk)
+                if A.event :
+                    if not A.event in Es_dict : Es_dict[A.event.pk] = []
+                    Es_dict[A.event.pk].append(A.pk)
         return Es_dict

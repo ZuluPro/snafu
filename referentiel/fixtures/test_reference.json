@@ -1,0 +1,94 @@
+[
+ {
+  "pk": 1,
+  "model": "referentiel.glpiuser",
+  "fields": {"name": "Test GLPI user","glpi_id": 2}
+ },
+ {
+  "pk": 1,
+  "model": "referentiel.glpigroup",
+  "fields": {"name": "Test GLPI group","glpi_id": 1}
+ },
+ {
+  "pk": 1,
+  "model": "referentiel.glpicategory",
+  "fields":
+   {
+    "name": "Test category",
+    "glpi_id": 1
+   }
+ },
+ {
+  "pk": 1,
+  "model": "referentiel.glpisupplier",
+  "fields": {"name": "Test supplier","glpi_id": 1}
+ },
+ {
+  "pk": 1,
+  "model": "referentiel.mailtype",
+  "fields": {"name": "Test mail type"}
+ },
+ {
+  "pk": 1,
+  "model": "referentiel.mailgroup",
+  "fields":
+   {
+    "cc": "montheanthony@hotmail.com",
+    "to": "montheanthony@hotmail.com",
+    "ccm": "montheanthony@hotmail.com",
+    "name": "Test mail group"
+   }
+ },
+ {
+  "pk": 1, 
+  "model": "referentiel.reference",
+  "fields":
+   {
+    "host": 1,
+    "service": 2,
+    "status": 1,
+    "escalation_contact": "",
+    "procedure": "",
+    "explanation": "",
+    "origin": "",
+    "tendancy": "",
+    "outage": "",
+    "mail_group": 1,
+    "mail_type": 1,
+    "glpi_category": 1,
+    "mail_criticity": 1,
+    "glpi_dst_group": 1,
+    "glpi_urgency": 1,
+    "glpi_source": "",
+    "glpi_impact": 1,
+    "glpi_priority": 1,
+    "glpi_supplier": 1
+   }
+ },
+ {
+  "pk": 2, 
+  "model": "referentiel.reference",
+  "fields":
+   {
+    "host": 1,
+    "service": 1,
+    "status": 4,
+    "escalation_contact": "",
+    "origin": "",
+    "tendancy": "",
+    "outage": "",
+    "explanation": "",
+    "procedure": "",
+    "mail_group": 1,
+    "mail_criticity": 1,
+    "mail_type": 1,
+    "glpi_category": 1,
+    "glpi_dst_group": 1,
+    "glpi_urgency": 1,
+    "glpi_source": "",
+    "glpi_impact": 1,
+    "glpi_priority": 1,
+    "glpi_supplier": 1
+   }
+ }
+]

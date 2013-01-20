@@ -24,10 +24,12 @@ class SingleHost_SingleAlert_TestCase(unittest.TestCase):
     def tearDown(self):
 	self.host.delete()
         self.alert.delete()
+        self.event.delete()
 
     def test_alert_link_to_event(self):
         """Try to link alert to an Event."""
-        self.assertIsInstance(self.alert.link(), Event)
+        self.event = self.alert.link()
+        self.assertIsInstance(self.event, Event)
 
     def test_create_glpi_ticket(self):
         """Try to create glpi ticket."""

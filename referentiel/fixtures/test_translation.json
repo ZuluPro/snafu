@@ -1,0 +1,11 @@
+[
+ {
+  "pk": 1,
+  "model": "referentiel.translation",
+  "fields": {
+   "status": 1,
+   "translation": "Test translation",
+   "service": 2
+  }
+ }
+]
