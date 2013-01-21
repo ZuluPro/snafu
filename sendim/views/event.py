@@ -42,6 +42,7 @@ def events(request) :
         		'title':'Snafu - Ajout de Reference'
 		} )
 
+            # If havn't create a GLPI ticket
             if not E.glpi :
                try :
                    E.create_ticket()

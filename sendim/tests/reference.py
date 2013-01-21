@@ -19,6 +19,7 @@ class Reference_TestCase(unittest.TestCase):
         self.alert = Alert.objects.create(host=self.host,service=self.service,status=Status.objects.get(pk=1),date=now(),info='Test alert')
 
     def tearDown(self):
+        self.alert.delete()
         [ E.delete() for E in Event.objects.all() ]
 
     def test_find_reference(self):

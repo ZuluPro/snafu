@@ -18,22 +18,23 @@ class SingleService_SingleAlert_TestCase(unittest.TestCase):
 	self.host = Host.objects.create(name='host1')
 	self.service = Service.objects.create(name='host1')
         self.alert = Alert.objects.create(host=self.host,service=self.service,status=Status.objects.get(pk=1),date=now(),info='Test alert')
+        self.events = list()
 
     def tearDown(self):
 	self.host.delete()
 	self.service.delete()
-        self.alert.delete()
-        self.event.delete()
+        [ A.delete() for A in Alert.objects.all() ]
+        [ E.delete() for E in Event.objects.all() ]
 
     def test_alert_link_to_event(self):
         """Try to link alert to an Event."""
-        self.event = self.alert.link()
-        self.assertIsInstance(self.event, Event)
+        self.events.append(self.alert.link())
+        self.assertIsInstance(self.events[0], Event)
 
     def test_create_glpi_ticket(self):
         """Try to create glpi ticket."""
-        self.event = self.alert.link()
-        ticket_id = self.event.create_ticket()
+        self.events.append(self.alert.link())
+        ticket_id = self.events[0].create_ticket()
         self.assertIsInstance(int(ticket_id), int)
 
     def test_close_event(self):
@@ -41,9 +42,9 @@ class SingleService_SingleAlert_TestCase(unittest.TestCase):
         Try to close the event.
         Normally it can't do.
         """
-        self.event = self.alert.link()
-        self.event.close()
-        self.assertFalse(self.event.closed)
+        self.events.append(self.alert.link())
+        self.events[0].close()
+        self.assertFalse(self.events[0].closed)
 
 class SingleService_MultipleAlert_TestCase(unittest.TestCase):
     """
@@ -60,10 +61,8 @@ class SingleService_MultipleAlert_TestCase(unittest.TestCase):
     def tearDown(self):
 	self.host.delete()
 	self.service.delete()
-        self.alert1.delete()
-        self.alert2.delete()
-        self.alert3.delete()
-        [ E.delete() for E in self.events ]
+        [ A.delete() for A in Alert.objects.all() ]
+        [ E.delete() for E in Event.objects.all() ]
 
     def test_alert_link_to_event(self):
         """Try to link alerts to a single Event."""
@@ -117,13 +116,8 @@ class MultipleService_MultipleAlert_TestCase(unittest.TestCase):
 	self.host.delete()
 	self.service1.delete()
 	self.service2.delete()
-        self.alert1.delete()
-        self.alert2.delete()
-        self.alert3.delete()
-        self.alert4.delete()
-        self.alert5.delete()
-        self.alert6.delete()
-        [ E.delete() for E in self.events ]
+        [ A.delete() for A in Alert.objects.all() ]
+        [ E.delete() for E in Event.objects.all() ]
 
     def test_alert_link_to_event(self):
         """Try to link alert to 2 Events."""

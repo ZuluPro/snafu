@@ -26,9 +26,8 @@ class Host_and_service(unittest.TestCase):
     def tearDown(self):
 	self.host.delete()
 	self.service.delete()
-        self.h_alert.delete()
-        self.s_alert.delete()
-        [ E.delete() for E in self.events ]
+        [ A.delete() for A in Alert.objects.all() ]
+        [ E.delete() for E in Event.objects.all() ]
 
     def test_auto_aggregation(self):
         """
@@ -58,9 +57,8 @@ class Service_and_host(unittest.TestCase):
     def tearDown(self):
 	self.host.delete()
 	self.service.delete()
-        self.h_alert.delete()
-        self.s_alert.delete()
-        [ E.delete() for E in self.events ]
+        [ A.delete() for A in Alert.objects.all() ]
+        [ E.delete() for E in Event.objects.all() ]
 
     def test_auto_aggregation(self):
         """
