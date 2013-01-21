@@ -6,3 +6,4 @@ from reference import *
 from translation import *
 from webservices import *
 from client import *
+from views import *
