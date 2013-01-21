@@ -27,6 +27,7 @@ class Reference(models.Model):
 
     class Meta:
         app_label = 'referentiel'
+        ordering = ['host','service','status']
 
     def __unicode__(self):
         return self.host.name+' - '+self.service.name+' en '+self.status.name
@@ -38,6 +39,7 @@ class Translation(models.Model):
 
     class Meta:
         app_label = 'referentiel'
+        ordering = ['service','status']
 
     def __unicode__(self):
         return self.service.name+' en '+self.status.name

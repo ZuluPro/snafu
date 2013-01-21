@@ -40,6 +40,7 @@ class Supervisor(models.Model) :
 
     class Meta:
         app_label = 'referentiel'
+        ordering = ['name']
     
     def getOpener(self):
         """

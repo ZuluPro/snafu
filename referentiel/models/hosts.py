@@ -13,6 +13,7 @@ class Host(models.Model):
 
     class Meta:
         app_label = 'referentiel'
+        ordering = ['name']
 
     def __unicode__(self):
         return self.name
@@ -25,6 +26,7 @@ class Service(models.Model):
 
     class Meta:
         app_label = 'referentiel'
+        ordering = ['name']
 
     def __unicode__(self):
         return self.name

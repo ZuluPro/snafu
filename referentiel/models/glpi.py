@@ -36,6 +36,7 @@ class GlpiUser(models.Model):
 
     class Meta:
         app_label = 'referentiel'
+        ordering = ['glpi_id']
 
     def __unicode__(self):
         return self.name
@@ -46,6 +47,7 @@ class GlpiGroup(models.Model):
 
     class Meta:
         app_label = 'referentiel'
+        ordering = ['glpi_id']
 
     def __unicode__(self):
         return self.name
@@ -56,6 +58,7 @@ class GlpiSupplier(models.Model):
 
     class Meta:
         app_label = 'referentiel'
+        ordering = ['glpi_id']
 
     def __unicode__(self):
         return self.name
@@ -66,6 +69,7 @@ class GlpiImpact(models.Model):
 
     class Meta:
         app_label = 'referentiel'
+        ordering = ['glpi_id']
 
     def __unicode__(self):
         return self.name
