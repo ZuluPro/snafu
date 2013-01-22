@@ -12,6 +12,11 @@ def createAlert(host=None,service=None,status=None, isDown=True) :
     """
     Create a random alert from data in referentiel.
     Attributes may be choose with arguments.
+    >>> from django.core import management
+    >>> management.call_command('loaddata', 'test_host.json', database='default', verbosity=0)
+    >>> A = createAlert()
+    >>> A.host.name
+    u'test host'
     """
     if not host : host = choice(Host.objects.all())
     else : host = Host.objects.get(name=host)
@@ -41,6 +46,15 @@ def createAlertFrom(alert, delta=1, status=None, isDown=True):
     """
     Create a random alert from previous one given in argument.i
     Only status may be chosen.
+    >>> from django.core import management
+    >>> from sendim.tests.defs import createAlert
+    >>> from sendim.models import Alert
+    >>> management.call_command('loaddata', 'test_host.json', database='default', verbosity=0)
+    >>> A = createAlertFrom(createAlert())
+    >>> A.host.name
+    u'test host'
+    >>> [ A.delete for A in Alert.objects.all() ]
+    []
     """
     if alert.service.name == 'Host status' :
         if alert.status == Status.objects.get(name='DOWN') : status = Status.objects.get(name='UP')
@@ -52,7 +66,7 @@ def createAlertFrom(alert, delta=1, status=None, isDown=True):
             if isDown : status = choice(status.exclude(name='OK'))
             else : status = choice(status)
 
-    A = Alert.objects.create(
+    A = Alert(
        host = alert.host,
        service = alert.service,
        status = status,
@@ -65,6 +79,13 @@ def createEvent(A, number=5, endUp=True):
     """
     Create a event from an alert. Event will have number of alert given in argument (by default 5).
     It may be chosen if the last alert will be OK or not.
+    >>> from sendim.tests.defs import createAlert
+    >>> from django.core import management
+    >>> management.call_command('loaddata', 'test_host.json', database='default', verbosity=0)
+    >>> E = createEvent(createAlert(),3)
+    >>> E.getAlerts().count()
+    3
+    >>> useless = [ E.delete() for E in Event.objects.all() ]
     """ 
     A.save()
     A.link()
@@ -85,6 +106,16 @@ def endEvent(E,number=3):
     """
     Add alerts to an event for close it.
     Number of alert to add before close can be given in arguments.
+    >>> from sendim.tests.defs import createAlert, createEvent
+    >>> from django.core import management
+    >>> management.call_command('loaddata', 'test_host.json', database='default', verbosity=0)
+    >>> E = createEvent(createAlert(),2,False)
+    >>> E.getAlerts().count()
+    2
+    >>> E = endEvent(E,2)
+    >>> E.getAlerts().count()
+    4
+    >>> useless = [ E.delete() for E in Event.objects.all() ]
     """
     A = E.getPrimaryAlert()
     for i in xrange(number):
@@ -98,4 +129,3 @@ def endEvent(E,number=3):
           _A.save()
           _A.link()
     return E
-
