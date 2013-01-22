@@ -47,7 +47,7 @@ def eventHistory(request) :
     )
 
     return render(request, 'modal/eventHistory.html', {
-        'As':As[::-1],
+        'As':As,
         'E':E
     } )
 
@@ -56,10 +56,8 @@ def eventReference(request) :
     """Get reference of primary alert of a given event."""
     E = Event.objects.get(pk=request.GET['eventPk'])
     A = E.getPrimaryAlert()
-    R = A.reference
 
     return render(request, 'modal/eventReference.html', {
-        'R':R,
         'E':E,
         'A':A
     })

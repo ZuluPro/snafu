@@ -1,56 +1,66 @@
 <div class="modal-header">
  <button type="button" class="close" data-dismiss="modal">×</button>
- <h4>Référence pour {{ E.message }} sur {{ E.element }} : </h4>
+ <h4>Référence pour {{ E.message }} sur {{ E.element }} :</h4>
 </div>
 
 <div class="modal-body" id="referenceModalBody">
- {% if not R %}
- <p>Pas de référence pour cet évenement !</p>
+ {% if not A.reference %}
+  <p>Pas de référence pour cet évenement !</p>
  {% else %}
  <dl class="dl-horizontal">
-  <dt>Host</dt>
-  <dd>{{ alert.host.name }}</dt>
+  <div class="row">
+   <div class="span4">
+    <dt>Host:</dt>
+    <dd>{{ A.host.name }}</dd>
   
-  <dt>Service</dt>
-  <dd>{{ alert.service }}</dt>
+    <dt>Service:</dt>
+    <dd>{{ A.service }}</dd>
   
-  <dt>Status</dt>
-  <dd>{{ alert.status }}</dt>
+    <dt>Status:</dt>
+    <dd>{{ A.status }}</dd>
+   </div>
   
-  <dt>Contact d'escalade</dt>
-  <dd>{{ R.escalation_contact }}</dt>
+   <div class="span4">
+    <dt>Criticité:</dt>
+    <dd>{{ A.reference.criticity|default:"/" }}</dd>
+
+    <dt>Contact d'escalade:</dt>
+    <dd>{{ A.reference.escalation_contact|default:"/" }}</dd>
   
-  <dt>Tendance</dt>
-  <dd>{{ R.tendancy }}</dt>
+    <dt>Tendance:</dt>
+    <dd>{{ A.reference.tendancy|default:"/" }}</dd>
   
-  <dt>Outage</dt>
-  <dd>{{ R.outage }}</dt>
+    <dt>Outage:</dt>
+    <dd>{{ A.reference.outage|default:"/" }}</dd>
   
-  <dt>Explanation</dt>
-  <dd>{{ R.explanation }}</dt>
+    <dt>Explanation:</dt>
+    <dd>{{ A.reference.explanation|default:"/" }}</dd>
   
-  <dt>Origin</dt>
-  <dd>{{ R.origin }}</dt>
+    <dt>Origin:</dt>
+    <dd>{{ A.reference.origin|default:"/" }}</dd>
   
-  <dt>Procédure</dt>
-  <dd>{{ R.procedure }}</dt>
+    <dt>Procédure:</dt>
+    <dd>{{ A.reference.procedure|default:"/" }}</dd>
+   </div>
+  </div>
   
-  <dt>Criticité</dt>
-  <dd>{{ R.criticity }}</dt>
-  
-  <dt>Mail Group</dt>
+  <dt>Mail Group:</dt>
   <dd>
-  <li>To  : {{ R.mail_group.to }}</li>
-  <li>Cc  : {{ R.mail_group.cc }}</li>
-  <li>Ccm : {{ R.mail_group.ccm }}</li>
-  </dt>
+   <ul class="unstyled">
+    <li>To : {{ A.reference.mail_group.to }}</li>
+    <li>Cc : {{ A.reference.mail_group.cc }}</li>
+    <li>Ccm : {{ A.reference.mail_group.ccm }}</li>
+   </ul>
+  </dd>
   
-  <dt>GLPI</dt>
+  <dt>GLPI:</dt>
   <dd>
-  <li>Categorie : {{ R.glpi_category }}</li>
-  <li>Groupe destination : {{ R.glpi_dst_group }}</li>
-  <li>Fournisseur : {{ R.glpi_supplier }}</li>
-  </dt>
+   <ul class="unstyled">
+    <li>Categorie : {{ A.reference.glpi_category }}</li>
+    <li>Groupe destination : {{ A.reference.glpi_dst_group }}</li>
+    <li>Fournisseur : {{ A.reference.glpi_supplier }}</li>
+   </ul>
+  </dd>
  </dl>
 {% endif %}
 </div>

@@ -1,5 +1,4 @@
 from django.utils.timezone import now
-from django.utils import unittest
 from django.db.models import Q
 
 from referentiel.models import Host, Service, Status, Reference
@@ -9,7 +8,36 @@ from random import choice
 from datetime import datetime, timedelta
 from time import sleep
 
-def createAlertFrom(alert, status=None, isDown=True):
+def createAlert(host=None,service=None,status=None, isDown=True) :
+    """
+    Create a random alert from data in referentiel.
+    Attributes may be choose with arguments.
+    """
+    if not host : host = choice(Host.objects.all())
+    else : host = Host.objects.get(name=host)
+
+    if not service : service = choice(Service.objects.all())
+    else : service = Service.objects.get(name=service)
+
+    if not status :
+       if service.name == "Host status" :
+           if isDown : status = Status.objects.get(name='DOWN')
+           else : status = Status.objects.get(name='UP')
+       else :
+           if isDown : status = choice(Status.objects.exclude(Q(name='OK') | Q(name='UP') | Q(name='DOWN')))
+           else : status = choice(Status.objects.exclude(Q(name='UP') | Q(name='DOWN')))
+    else : status = Status.objects.get(name=status)
+
+    A = Alert(
+       host = host,
+       service = service,
+       status = status,
+       date = datetime.now(),
+       info = "TEST - Alerte #"+str(Alert.objects.count()),
+    )
+    return A
+
+def createAlertFrom(alert, delta=1, status=None, isDown=True):
     """
     Create a random alert from previous one given in argument.i
     Only status may be chosen.
@@ -24,14 +52,13 @@ def createAlertFrom(alert, status=None, isDown=True):
             if isDown : status = choice(status.exclude(name='OK'))
             else : status = choice(status)
 
-    A = Alert(
+    A = Alert.objects.create(
        host = alert.host,
        service = alert.service,
        status = status,
-       date = datetime.now(),
+       date = datetime.now(),#+timedelta(0,3),
        info = "TEST - Alerte #"+str(Alert.objects.count()),
     )
-    A.save()
     return A
         
 def createEvent(A, number=5, endUp=True):
@@ -71,3 +98,4 @@ def endEvent(E,number=3):
           _A.save()
           _A.link()
     return E
+
