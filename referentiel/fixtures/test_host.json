@@ -18,5 +18,10 @@
    "pk": 2,
    "model": "referentiel.service",
    "fields": {"name": "test service"}
+  },
+  {
+   "pk": 3,
+   "model": "referentiel.service",
+   "fields": {"name": "test service 2"}
   }
 ]

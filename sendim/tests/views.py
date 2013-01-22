@@ -13,14 +13,15 @@ from referentiel.models import Host, Service, Status
 class Views_TestCase(unittest.TestCase):
     def setUp(self):
         management.call_command('loaddata', 'test_host.json', database='default', verbosity=0)
-        self.alert = Alert.objects.create(
-          host=Host.objects.get(pk=1),
-          service=Service.objects.get(pk=1),
-          status=Status.objects.get(pk=1),
-          date=now(),
-          info='Test alert'
-        )
-        self.event = self.alert.link()
+        # Create a first alert with event
+        self.alert1 = create_alert(service='test service')
+        self.alert1.save()
+        self.event1 = self.alert1.link()
+        # Create a first alert with event
+        self.alert2 = create_alert(service='test service')
+        self.alert2.save()
+        self.event2 = self.alert2.link()
+        # Create user and log it
 	self.user = User.objects.create_user(username='user',password='password')
         self.client = Client()
         self.client.login(username='user',password='password')
@@ -43,17 +44,17 @@ class Views_TestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue('license' in response.context)
 
-        response = self.client.get('/snafu/event/history', {'eventPk':self.event.pk})
+        response = self.client.get('/snafu/event/history', {'eventPk':self.event1.pk})
         self.assertEqual(response.status_code, 200)
         self.assertTrue('As' in response.context)
         self.assertTrue('E' in response.context)
 
-        response = self.client.get('/snafu/event/reference', {'eventPk':self.event.pk})
+        response = self.client.get('/snafu/event/reference', {'eventPk':self.event1.pk})
         self.assertEqual(response.status_code, 200)
         self.assertTrue('E' in response.context)
         self.assertTrue('A' in response.context)
 
-        response = self.client.get('/snafu/event/history', {'eventPk':self.event.pk})
+        response = self.client.get('/snafu/event/history', {'eventPk':self.event1.pk})
         self.assertEqual(response.status_code, 200)
         self.assertTrue('E' in response.context)
         self.assertTrue('As' in response.context)
@@ -61,6 +62,23 @@ class Views_TestCase(unittest.TestCase):
         response = self.client.get('/snafu/event/filter',{'message':'test'})
         self.assertEqual(response.status_code, 200)
 
-    def test_GET_and_POST(self):
-        # Test Event aggregation
-        response = self.client.get('/snafu/event/agr')
+    def test_event_aggregation(self):
+        """
+        """
+        # Test GET request to get aggregation modal
+        agr_get = {'events[]':[self.event1.pk,self.event2.pk]}
+        response = self.client.get('/snafu/event/agr', agr_get)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('events' in response.context)
+        self.assertTrue('alerts' in response.context)
+
+        # Test POST requestion to aggregate events
+        agr_post = {
+          'toAgr':[self.event1.pk,self.event2.pk],
+          'choicedEvent':self.event1.pk,
+          'message':'test aggregated event'
+        }
+        response = self.client.post('/snafu/event/agr', agr_post)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Event.objects.count(), 1)
+        self.assertEqual(Event.objects.get(pk=self.event1.pk).message, 'test aggregated event')

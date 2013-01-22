@@ -21,10 +21,10 @@ def aggregate(eventsPk, choicedEvent, message, glpi=None, mail=False, criticity=
         E.delete()
         logprint("Delete Event #" +eventPk, 'pink')
 
-        E = Event.objects.get(pk=choicedEvent)
-        E.message = message
-        E.glpi = glpi
-        E.mail = mail
-        E.criticity = criticity
-        E.save()
+    E = Event.objects.get(pk=choicedEvent)
+    E.message = message
+    E.glpi = glpi
+    E.mail = mail
+    E.criticity = criticity
+    E.save()
     return E

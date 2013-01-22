@@ -8,13 +8,13 @@ from random import choice
 from datetime import datetime, timedelta
 from time import sleep
 
-def createAlert(host=None,service=None,status=None, isDown=True) :
+def create_alert(host=None,service=None,status=None, isDown=True) :
     """
     Create a random alert from data in referentiel.
     Attributes may be choose with arguments.
     >>> from django.core import management
     >>> management.call_command('loaddata', 'test_host.json', database='default', verbosity=0)
-    >>> A = createAlert()
+    >>> A = create_alert()
     >>> A.host.name
     u'test host'
     """
@@ -42,15 +42,15 @@ def createAlert(host=None,service=None,status=None, isDown=True) :
     )
     return A
 
-def createAlertFrom(alert, delta=1, status=None, isDown=True):
+def create_alert_from(alert, delta=1, status=None, isDown=True):
     """
     Create a random alert from previous one given in argument.i
     Only status may be chosen.
     >>> from django.core import management
-    >>> from sendim.tests.defs import createAlert
+    >>> from sendim.tests.defs import create_alert
     >>> from sendim.models import Alert
     >>> management.call_command('loaddata', 'test_host.json', database='default', verbosity=0)
-    >>> A = createAlertFrom(createAlert())
+    >>> A = create_alert_from(create_alert())
     >>> A.host.name
     u'test host'
     >>> [ A.delete for A in Alert.objects.all() ]
@@ -75,14 +75,14 @@ def createAlertFrom(alert, delta=1, status=None, isDown=True):
     )
     return A
         
-def createEvent(A, number=5, endUp=True):
+def create_event(A, number=5, endUp=True):
     """
     Create a event from an alert. Event will have number of alert given in argument (by default 5).
     It may be chosen if the last alert will be OK or not.
-    >>> from sendim.tests.defs import createAlert
+    >>> from sendim.tests.defs import create_alert
     >>> from django.core import management
     >>> management.call_command('loaddata', 'test_host.json', database='default', verbosity=0)
-    >>> E = createEvent(createAlert(),3)
+    >>> E = create_event(create_alert(),3)
     >>> E.getAlerts().count()
     3
     >>> useless = [ E.delete() for E in Event.objects.all() ]
@@ -92,27 +92,27 @@ def createEvent(A, number=5, endUp=True):
     for i in xrange(number):
         sleep(1)
         if i == xrange(number)[-2] and endUp :
-            _A = createAlertFrom(A, status=Status.objects.get(name='OK'))
+            _A = create_alert_from(A, status=Status.objects.get(name='OK'))
             _A.save()
             _A.link()
             break
         elif i <= xrange(number)[-2] :
-            _A = createAlertFrom(A)
+            _A = create_alert_from(A)
             _A.save()
             _A.link()
     return A.event
 
-def endEvent(E,number=3):
+def end_event(E,number=3):
     """
     Add alerts to an event for close it.
     Number of alert to add before close can be given in arguments.
-    >>> from sendim.tests.defs import createAlert, createEvent
+    >>> from sendim.tests.defs import create_alert, create_event
     >>> from django.core import management
     >>> management.call_command('loaddata', 'test_host.json', database='default', verbosity=0)
-    >>> E = createEvent(createAlert(),2,False)
+    >>> E = create_event(create_alert(),2,False)
     >>> E.getAlerts().count()
     2
-    >>> E = endEvent(E,2)
+    >>> E = end_event(E,2)
     >>> E.getAlerts().count()
     4
     >>> useless = [ E.delete() for E in Event.objects.all() ]
@@ -121,11 +121,11 @@ def endEvent(E,number=3):
     for i in xrange(number):
         sleep(1)
         if i >= xrange(number)[-1] :
-          _A = createAlertFrom(A, status=Status.objects.get(name='OK'))
+          _A = create_alert_from(A, status=Status.objects.get(name='OK'))
           _A.save()
           _A.link()
         else :  
-          _A = createAlertFrom(A)
+          _A = create_alert_from(A)
           _A.save()
           _A.link()
     return E
