@@ -6,6 +6,7 @@ from reference import *
 from translation import *
 from client import *
 from views import *
+from views_configuration import *
 from webservices import *
 
 def suite():
@@ -22,6 +23,7 @@ def suite():
      'sendim.tests.webservices',
      'sendim.tests.client',
      'sendim.tests.views'
+     'sendim.tests.views_configuration'
     )
     suite = unittest.TestSuite()
 

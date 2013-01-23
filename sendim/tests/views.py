@@ -18,7 +18,7 @@ class Views_TestCase(unittest.TestCase):
         self.alert1.save()
         self.event1 = self.alert1.link()
         # Create a first alert with event
-        self.alert2 = create_alert(service='test service')
+        self.alert2 = create_alert(service='test service 2')
         self.alert2.save()
         self.event2 = self.alert2.link()
         # Create user and log it
@@ -29,8 +29,10 @@ class Views_TestCase(unittest.TestCase):
     def tearDown(self):
         self.client.logout()
         self.user.delete()
-        [ A.delete for A in Alert.objects.all() ] 
-        [ E.delete for E in Event.objects.all() ] 
+        del self.event1
+        del self.event2
+        [ A.delete() for A in Alert.objects.all() ] 
+        [ E.delete() for E in Event.objects.all() ] 
 
     def test_simple_GET(self):
         """
@@ -72,7 +74,7 @@ class Views_TestCase(unittest.TestCase):
         self.assertTrue('events' in response.context)
         self.assertTrue('alerts' in response.context)
 
-        # Test POST requestion to aggregate events
+        # Test POST request to aggregate events
         agr_post = {
           'toAgr':[self.event1.pk,self.event2.pk],
           'choicedEvent':self.event1.pk,
@@ -82,3 +84,41 @@ class Views_TestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Event.objects.count(), 1)
         self.assertEqual(Event.objects.get(pk=self.event1.pk).message, 'test aggregated event')
+
+    def test_close_event(self):
+        """
+        """
+        end_event(self.event1,1)
+        # Test GET request to get event closing modal
+        close_get = {'events[]':[self.event1.pk,self.event2.pk]}
+        response = self.client.get('/snafu/event/close', close_get)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('Es' in response.context)
+        
+        # Test POST requestion to close events
+        close_post = {'eventsPk':[self.event1.pk,self.event2.pk]}
+        response = self.client.post('/snafu/event/close', close_post)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Event.objects.get(pk=self.event1.pk).closed)
+        self.assertFalse(Event.objects.get(pk=self.event2.pk).closed)
+
+    def test_add_followup(self):
+        """
+        """
+        # Test GET request to get modal with event withous GLPI ticket
+        followup_get = {'eventPk':self.event1.pk}
+        response = self.client.get('/snafu/event/followup', followup_get)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, "<center><h4>L'\xc3\xa9v\xc3\xa9nement n'a pas de num\xc3\xa9ro de ticket GLPI !<h4></center>")
+
+        # Test GET request to get modal for GLPI follow-up 
+        self.event1.create_ticket()
+        followup_get = {'eventPk':self.event1.pk}
+        response = self.client.get('/snafu/event/followup', followup_get)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.content, "<center><h4>L'\xc3\xa9v\xc3\xa9nement n'a pas de num\xc3\xa9ro de ticket GLPI !<h4></center>")
+        
+        # Test POST request to add a GLPI ticket followup
+        followup_post = {'eventPk':self.event1.pk,'content':'test content'}
+        response = self.client.post('/snafu/event/close', followup_post)
+        self.assertEqual(response.status_code, 302)
