@@ -16,6 +16,10 @@ class ReferenceAdmin(admin.ModelAdmin):
     list_display = ('service','host','mail_type','mail_group','status','mail_criticity','procedure','glpi_category', 'glpi_dst_group', 'glpi_supplier' )
     search_fields = ('host__name', 'service__name')
     list_editable = ('host','mail_type','status','mail_criticity', 'procedure', 'glpi_category', 'glpi_dst_group', 'glpi_supplier')
+
+class Black_referenceAdmin(admin.ModelAdmin):
+    list_display = ('host','service')
+    search_fields = ('host__name', 'service__name')
  
 class GlpiSupplierAdmin(admin.ModelAdmin) :
     list_display = ( 'name', 'glpi_id' )
@@ -44,6 +48,7 @@ admin.site.register(GlpiGroup)
 admin.site.register(GlpiSupplier, GlpiSupplierAdmin)
 
 admin.site.register(Reference , ReferenceAdmin)
+admin.site.register(Black_reference , Black_referenceAdmin)
 admin.site.register(Translation,TranslationAdmin)
 
 admin.site.register(Supervisor, SupervisorAdmin)
