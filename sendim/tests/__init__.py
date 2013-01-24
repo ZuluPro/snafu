@@ -1,7 +1,9 @@
+from basic_alert import *
 from host_alert import *
 from service_alert import *
 from both_alert import *
 from supervisor import *
+from black_reference import *
 from reference import *
 from translation import *
 from client import *
@@ -14,16 +16,18 @@ def suite():
     import unittest
     import defs
     TEST_CASES = (
+     'sendim.tests.basic_alert',
      'sendim.tests.service_alert',
      'sendim.tests.host_alert',
      'sendim.tests.both_alert',
      'sendim.tests.supervisor',
+     'sendim.tests.black_reference',
      'sendim.tests.reference',
      'sendim.tests.translation',
-     'sendim.tests.webservices',
      'sendim.tests.client',
-     'sendim.tests.views'
-     'sendim.tests.views_configuration'
+     'sendim.tests.views',
+     'sendim.tests.views_configuration',
+     'sendim.tests.webservices',
     )
     suite = unittest.TestSuite()
 

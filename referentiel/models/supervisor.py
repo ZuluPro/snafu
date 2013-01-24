@@ -1,10 +1,11 @@
 from django.db import models
+from django.utils.timezone import now
 
 from sendim.exceptions import UnableToConnectNagios
 
 from urllib2 import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler, build_opener, install_opener, URLError
 from socket import SocketType,error,gaierror
-import re, time
+import re
 from datetime import datetime
 from HTMLParser import HTMLParser
 _htmlparser = HTMLParser()
@@ -87,7 +88,7 @@ class Supervisor(models.Model) :
         opener = self.getOpener()
 
         pagehandle = opener.open(self.history+'?host=all&archive=0&statetype=2&type=0&noflapping=on')
-        problemlist = []
+        problemlist = list()
         for line in pagehandle.readlines()[::-1] :
             if re.search( r"<img align='left'" , line ) :
                 line = _htmlparser.unescape( line[:-1] )
@@ -108,27 +109,32 @@ class Supervisor(models.Model) :
 
         Es_dict = dict()
         for host,service,status,info,date in problemlist :
-            try : date = datetime.fromtimestamp( time.mktime( time.strptime(date, "%Y-%m-%d %H:%M:%S")) )
+            
+            # Try to convert date into datetime objects
+            try : date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
             except ValueError:
-                try : date = datetime.fromtimestamp( time.mktime( time.strptime(date, "%m-%d-%Y %H:%M:%S")) )
+                try : date = datetime.strptime(date, "%m-%d-%Y %H:%M:%S")
                 except ValueError:
-                    date = datetime.now()
+                    date = now()
     
             if not Alert.objects.filter(host__name__exact=host, service__name__exact=service, date=date ).exists() :
-                if not Host.objects.filter(name=host,supervisor=self):
+                if not Host.objects.filter(name=host,supervisor=self).exists() :
                     Host.objects.create(name=host,supervisor=self)
-                if not Service.objects.filter(name=service):
+                if not Service.objects.filter(name=service).exists() :
                     Service.objects.create(name=service)
 
-                A = Alert.objects.create(
+                A = Alert(
                     host = Host.objects.get(name=host),
                     service = Service.objects.get(name=service),
                     status = Status.objects.get(name=status),
                     info=info,
                     date=date
                 )
-                A.link()
-                if A.event :
-                    if not A.event in Es_dict : Es_dict[A.event.pk] = []
-                    Es_dict[A.event.pk].append(A.pk)
+                if A.is_black_listed() : # Test if blacklisted
+                    del A
+                else :
+                    A.link()
+                    if A.event :
+                        if not A.event in Es_dict : Es_dict[A.event.pk] = []
+                        Es_dict[A.event.pk].append(A.pk)
         return Es_dict

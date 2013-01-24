@@ -1,9 +1,29 @@
 from django.db import models
 
-from referentiel.models import Status, Reference, Translation
+from referentiel.models import Host, Service, Status, Reference, Black_reference, Translation, Supervisor
 from sendim.models import Event
 
 from re import match
+
+class Alert_Manager(models.Manager):
+    def create(self, *args, **kwargs):
+        """
+        Create Alert and return it.
+        supervisor arguments allow to link host to it.
+        """
+        # Try to find supervisor arg and corresponding object by name
+        if Supervisor.objects.filter(name=kwargs.get('supervisor','')).exists() :
+            S = Supervisor.objects.get(name=kwargs['supervisor'])
+            del kwargs['supervisor']
+            if not Host.objects.get(pk=kwargs['host'].pk).supervisor :
+                Host.objects.filter(pk=kwargs['host'].pk).update(supervisor=S)
+        return super(Alert_Manager, self).create(*args, **kwargs)
+
+    def get_host_alert(self):
+        return super(Alert_Manager, self).get_query_set().filter(service__name='Host status')
+
+    def get_service_alert(self):
+        return super(Alert_Manager, self).get_query_set().exclude(service__name='Host status')
 
 class Alert(models.Model) :
     host = models.ForeignKey('referentiel.Host')
@@ -16,18 +36,43 @@ class Alert(models.Model) :
     translation = models.ForeignKey('referentiel.Translation', blank=True, null=True, on_delete=models.SET_NULL)
     isPrimary = models.BooleanField(default=False)
 
+    objects = Alert_Manager()
     class Meta:
         app_label = 'sendim'
         ordering = ('date',)
 
+    def __init__(self, *args, **kwargs):
+        # Reference temporaly Supervior in Alert object
+        if 'supervisor' in kwargs :
+            self.supervisor = kwargs['supervisor']
+            del kwargs['supervisor']
+        super(Alert,self).__init__(*args, **kwargs)
+
     def __unicode__(self) :
         return self.host.name+' : '+self.service.name+' - '+ self.status.name
+
+    def save(self, *args, **kwargs):
+        if 'supervisor' in dir(self) :
+            self.supervisor = Supervisor.objects.get(name=self.supervisor)
+            if not Host.objects.get(pk=self.host.pk).supervisor :
+                Host.objects.filter(pk=self.host.pk).update(supervisor=self.supervisor)
+        super(Alert, self).save(*args, **kwargs)
+
 
     def set_primary(self):
         """Set alert as primary, set all event's alerts as not."""
         self.event.getAlerts().update(isPrimary=False)
         self.isPrimary = True
         self.save()
+
+    def is_black_listed(self):
+        """
+        Return True if this Alert corresponding to a Black_reference.
+        """
+        if Black_reference.objects.filter(host=self.host,service=self.service).exists() :
+            return True
+        else :
+            return False
 
     def find_reference(self, update=True, byHost=True, byService=True, byStatus=True):
         """

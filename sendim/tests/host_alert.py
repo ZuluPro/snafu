@@ -18,7 +18,8 @@ class SingleHost_SingleAlert_TestCase(unittest.TestCase):
           host=self.host,
           service=Service.objects.get(pk=1),
           status=Status.objects.get(pk=4),
-          date=now(),info='Test alert'
+          date=now(),
+          info='Test alert'
         )
         self.events = list()
 

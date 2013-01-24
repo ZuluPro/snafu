@@ -37,7 +37,7 @@ def create_alert(host=None,service=None,status=None, isDown=True) :
        host = host,
        service = service,
        status = status,
-       date = datetime.now(),
+       date = now(),
        info = "TEST - Alerte #"+str(Alert.objects.count()),
     )
     return A
