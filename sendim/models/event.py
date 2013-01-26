@@ -1,7 +1,9 @@
 from django.db.models import Q
 from django.db import models
+from django.conf import settings
 
 from referentiel.models import Host, Status
+from sendim.models import MailTemplate
 from sendim.exceptions import UnableToConnectGLPI
 
 class Event(models.Model) :
@@ -119,8 +121,27 @@ class Event(models.Model) :
          doLogout()
          return ticketInfo['id']
 
-    def sendMail(self) :
-    	pass
+    def make_mail(self) :
+        """
+        Using Event and the chosen MailTemplate for create
+        a dictionnary which contains all mail attributes.
+        """
+        R = self.getPrimaryAlert().reference
+        if MailTemplate.objects.filter(chosen=True).exists() :
+            MT = MailTemplate.objects.get(chosen=True)
+        else :
+            MT = MailTemplate.objects.get(pk=1)
+    
+        msg = {}
+        msg['from'] = settings.SNAFU['smtp-from']
+        msg['to'] = R.mail_group.to
+        if self.criticity == 'Majeur' : msg['to'] += ', '+ R.mail_group.ccm
+        msg['cc'] = ' ,'.join( [  settings.SNAFU['smtp-from'], R.mail_group.cc] )
+        msg['subject'] = MT.subject
+        msg['body'] = MT.body
+    
+        return msg
+
 
     def get_reference(self) :
         """Return reference of primary alert."""

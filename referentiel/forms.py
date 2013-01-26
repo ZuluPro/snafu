@@ -159,6 +159,7 @@ class BaseTranslationForm(forms.ModelForm):
     def save(self, *args, **kwargs) :
         from sendim.models import Alert
         T = super(TranslationForm, self).save(*args, **kwargs)
+
 class HostForm(forms.ModelForm) :
     class Meta:
         model = Host

@@ -52,7 +52,7 @@ def events(request) :
                    return redirect('/snafu/events')
 
             # Create a mail preview 
-            msg = makeMail(E)
+            msg = E.make_mail()
 
             # Retrieve graphs for the current Event
             graphList = readGraphs(E.element.name, A.service.name)

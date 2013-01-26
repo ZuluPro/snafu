@@ -1,4 +1,4 @@
+from mail import MailTemplate
 from event import *
-from alert import *
-from mail import *
+from alert import Alert
 from command import *

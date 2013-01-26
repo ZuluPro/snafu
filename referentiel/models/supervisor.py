@@ -4,13 +4,11 @@ from django.utils.timezone import now
 from sendim.exceptions import UnableToConnectNagios
 
 from urllib2 import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler, build_opener, install_opener, URLError
-from socket import SocketType,error,gaierror
+from socket import error,gaierror
 import re
 from datetime import datetime
 from HTMLParser import HTMLParser
 _htmlparser = HTMLParser()
-
-from common import *
 
 class SupervisorType(models.Model) :
     name = models.CharField(max_length=30)
@@ -27,17 +25,17 @@ class Supervisor(models.Model) :
       ('N2RRD','N2RRD'),
     )
 
-    name = models.CharField(max_length=200)
-    login = models.CharField(max_length=50)
-    password = models.CharField(max_length=100)
-    index = models.CharField(max_length=300)
-    status = models.CharField(max_length=300)
-    history = models.CharField(max_length=300)
-    graph = models.CharField(max_length=300, null=True, blank=True)
-    active = models.BooleanField(default=True)
+    name = models.CharField(max_length=200, verbose_name='Nom')
+    login = models.CharField(max_length=50, help_text=u"Nom d'utilisateur utilis\xe9 pour acc\xe9der au superviseur.")
+    password = models.CharField(max_length=100, help_text=u"Nom d'utilisateur utilis\xe9 pour acc\xe9der au superviseur.")
+    index = models.CharField(max_length=300, verbose_name="URL d'index", help_text=u"Index du site. (Exemple: http://www.nagios.lan).")
+    status = models.CharField(max_length=300, verbose_name='URL de status', help_text=u"Index des status. (Exemple : http://www.nagios.lan/cgi-bin/status.cgi).")
+    history = models.CharField(max_length=300, verbose_name="URL d'historique", help_text=u"Index de l'historique. (Exemple : http://www.nagios.lan/cgi-bin/history.cgi).")
+    graph = models.CharField(max_length=300, null=True, blank=True, verbose_name=u'URL de m\xe9trologie', help_text=u"Index de la m\xe9trologie. (Exemple : http://www.nagios.lan/cgi-bin/rrd2graph.cgi).")
+    active = models.BooleanField(default=True, verbose_name='Actif')
 
-    supervisor_type = models.ForeignKey(SupervisorType, default=1)
-    graph_type = models.CharField(max_length=20, choices=GRAPH_TYPE, default=None, null=True, blank=True)
+    supervisor_type = models.ForeignKey(SupervisorType, default=1, verbose_name=u'Type de superviseur')
+    graph_type = models.CharField(max_length=20, choices=GRAPH_TYPE, default=None, null=True, blank=True, verbose_name=u'Type de m\xe9trologie')
 
     class Meta:
         app_label = 'referentiel'

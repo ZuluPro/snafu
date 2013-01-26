@@ -177,7 +177,7 @@
     "pk": 1,
     "fields": {
       "subject":"[ Incident $MAIL_TYPE$ - $CRITICITY$ ] $DATE$ - $MESSAGE$ sur $HOST$ - GLPI $GLPI$",
-      "body":"Bonjour,\nNos systèmes de supervision ont détécté une anomalie sur l'équipement $HOST$ le $JOUR$ à $HEURE$ : $TRADUCTION$\n\nUn ticket d'incident a été ouvert au lien suivant :\n$GLPI-URL$$GLPI$\n\nLog Nagios correspondant :\n$LOG$\n\nCordialement," 
+      "body":"Bonjour,\nNos systèmes de supervision ont détécté une anomalie sur l'équipement $HOST$ le $DATE$ à $TIME$ : $TRANSLATION$\n\nUn ticket d'incident a été ouvert au lien suivant :\n$GLPI-URL$$GLPI$\n\nLog Nagios correspondant :\n$LOG$\n\nCordialement," 
     }
   },
   {

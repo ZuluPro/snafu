@@ -4,7 +4,7 @@ from referentiel.models import *
 class HostAdmin(admin.ModelAdmin):
     list_display = ('name','glpi_id', 'host_type')
     search_fields = ('name','host_type')
-    list_filter = ('host_type',)
+    list_filter = ('host_type','supervisor')
     list_editable = ('glpi_id', )
 
 class TranslationAdmin(admin.ModelAdmin):
