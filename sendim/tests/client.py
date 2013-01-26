@@ -78,7 +78,6 @@ class Customer_Client_TestCase(unittest.TestCase):
         
         ref_post = {
           'eventPk':E.pk,
-          'form_type':'big',
           'host':E.element.pk,
           'service':A.service.pk,
           'mail_group':1,
