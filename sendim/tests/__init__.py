@@ -10,6 +10,7 @@ from client import *
 from views import *
 from views_configuration import *
 from webservices import *
+from glpi_webservices import *
 
 def suite():
     import doctest
@@ -28,6 +29,7 @@ def suite():
      'sendim.tests.views',
      'sendim.tests.views_configuration',
      'sendim.tests.webservices',
+     'sendim.tests.glpi_webservices',
     )
     suite = unittest.TestSuite()
 

@@ -87,6 +87,11 @@ def get_from_glpi(itemtype, glpi_id) :
     if 'error' in loginInfo :
         raise UnableToConnectGLPI(loginInfo['error'])
 
+    elif itemtype == 'host' :
+        result = list()
+        for itemtype in ('computer','networkequipment') :
+            result += glpiServer.glpi.listObjects({'session':loginInfo['session'], 'itemtype':itemtype})
+
     else :
         data = {'session':loginInfo['session'], 'itemtype':itemtype, 'id':glpi_id} 
         result = glpiServer.glpi.getObject(data)
