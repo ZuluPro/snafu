@@ -1,6 +1,6 @@
 from django.views.decorators.csrf import csrf_exempt 
 from django.http import HttpResponse
-from django.utils import timezone
+from django.utils.timezone import now
 
 from sendim.models import Alert
 from referentiel.models import Host,Service,Status,Supervisor
@@ -36,16 +36,17 @@ def test():
 
 def pushAlert(host,service,status,info,supervisor,date=None):
     """Create a new alert."""
+    # Find supervisor
     try : supervisor = Supervisor.objects.get(name=supervisor)
     except Supervisor.DoesNotExist : supervisor = None
 
-    if not date : date = timezone.now()
+    # Convert string into datetime object
+    if not date : date = now()
     elif type(date) == type('') :
         try: date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S' )
         except ValueError:
             try : date = datetime.strptime(date, '%m-%d-%Y %H:%M:%S' )
-            except ValueError: date = timezone.now()
- 
+            except ValueError: date = now()
     
     if not Alert.objects.filter(host__name__exact=host, service__name__exact=service, date=date ).exists() :
         if not Host.objects.filter(name=host):
@@ -60,7 +61,10 @@ def pushAlert(host,service,status,info,supervisor,date=None):
             info = info,
             date = date
         )
-        A.link()
+        if A.is_black_listed() :
+            del A
+        else :
+            A.link()
 
 dispatcher.register_function(test, 'test')
 dispatcher.register_function(pushAlert, 'pushAlert')
