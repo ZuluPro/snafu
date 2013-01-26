@@ -194,3 +194,8 @@ class SupervisorForm(forms.ModelForm):
             S.active = False
             S.save()
         return S
+
+class Black_referenceForm(forms.ModelForm) :
+    class Meta:
+        model = Black_reference
+

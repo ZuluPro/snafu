@@ -1,0 +1,22 @@
+<div class="row">
+ <h4 align="center">{{ B }}</h4>
+
+ <dl>
+  <div class="span2">
+   <dt>Hôte:</dt>
+   <dd>{{ B.host }}</dd>
+ 
+   <dt>Service:</dt>
+   <dd>{{ B.service }}</dd>
+  </div>
+ </dl>
+ 
+ <div class="span2">
+  <div class="btn-group">
+   <button class="btn btn-danger" onclick="$.fn.snafu_object('del','black_reference', {{ B.pk }})">Supprimer</button>
+   <button class="btn btn-primary" data-toggle="button" onclick="$.fn.snafu_object('update','black_reference',{{ B.pk }})">Modifier</button>
+   <button class="btn" style="display:none;" onclick="$.fn.snafu_object('get','black_reference',{{ B.pk }})">Annuler</button>
+  </div>
+ </div>
+
+</div>

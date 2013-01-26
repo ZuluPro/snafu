@@ -39,6 +39,9 @@ def configuration(request) :
     AsWithoutTranslation = Alert.objects.filter(translation=None).exclude(Q(status__name='OK') | Q(status__name='UP'))
     AsWithoutTranslationPage = Paginator(AsWithoutTranslation, 10).page(1)
 
+    Bs = Black_reference.objects.all()
+    BsPage = Paginator(Bs, 10).page(1)
+
     Ss = Supervisor.objects.all()
     SsPage = Paginator(Ss, 10).page(1)
 
@@ -81,6 +84,10 @@ def configuration(request) :
         'translationBigForm':TranslationBigForm,
         'AsWithoutTranslation':AsWithoutTranslation,
         'AsWithoutTranslationPage':AsWithoutTranslationPage,
+
+        'Bs':Bs,
+        'BsPage':BsPage,
+        'Black_referenceForm':Black_referenceForm,
 
         'Ss':Ss,
         'SsPage':SsPage,
@@ -130,6 +137,15 @@ def confManager(request, action, model, object_id=0) :
         filter_key = 'Rs'
         page_key = 'RsPage'
         form_key = 'ReferenceForm'
+
+    elif model == 'black_reference' :
+        temp_dir = 'configuration/black_reference/'
+        Model = Black_reference
+        form = Black_referenceForm
+        element_key = 'B'
+        filter_key = 'Bs'
+        page_key = 'BsPage'
+        form_key = 'Black_referenceForm'
 
     elif model == "glpiUser" :
         temp_dir = 'configuration/glpi/users/'
@@ -312,6 +328,12 @@ def confManager(request, action, model, object_id=0) :
               set( Objs.filter(status__name__icontains=request.GET['q']) )
             ) )
 
+        elif model == "black_reference" :
+            Objs = list( (
+              set( Objs.filter(host__name__icontains=request.GET['q']) ) |
+              set( Objs.filter(service__name__icontains=request.GET['q']) ) 
+            ) )
+
         elif model == "supervisor" :
             Objs = list( (
               set( Objs.filter(name__icontains=request.GET['q']) ) |
@@ -373,7 +395,7 @@ def confManager(request, action, model, object_id=0) :
         elif model  == "mailGroup" : temp_file = 'group.html'
         elif model  == "mailType" : temp_file = 'type.html'
         elif model  == "supplier" : temp_file = 'supplier.html'
-        elif model  == "reference" : temp_file = 'ref.html'
+        elif match(r"^(black_reference|reference)$", model) : temp_file = 'ref.html'
         elif model  == "translation" : temp_file = 'translation.html'
         elif model  == "supervisor" : temp_file = 'supervisor.html'
         elif match(r"^a_(translation|reference)$", model) : temp_file = 'alert.html'

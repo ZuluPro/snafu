@@ -11,3 +11,6 @@ class Black_reference(models.Model):
     class Meta:
         app_label = 'referentiel'
         ordering = ['host','service']
+
+    def __unicode__(self):
+        return self.host.name +' - '+ self.service.name

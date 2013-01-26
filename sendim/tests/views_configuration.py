@@ -5,7 +5,7 @@ from django.test.client import Client
 from django.core import management
 from django.contrib.auth.models import User
 
-from referentiel.models import Reference
+from referentiel.models import Reference, Black_reference
 
 class Views_Configuration_TestCase(unittest.TestCase):
     def setUp(self):
@@ -20,12 +20,13 @@ class Views_Configuration_TestCase(unittest.TestCase):
         self.client.logout()
         self.user.delete()
         Reference.objects.all().delete()
+        Black_reference.objects.all().delete()
 
     def test_index(self):
         response = self.client.get('/snafu/configuration')
         self.assertEqual(response.status_code, 200)
 
-    def test_reference_configuration(self):
+    def test_reference(self):
         response = self.client.get('/snafu/configuration/form/reference/0')
         self.assertEqual(response.status_code, 200)
         self.assertIn('configuration/reference/refs/form.html', [ t.name for t in response.templates ])
@@ -100,4 +101,26 @@ class Views_Configuration_TestCase(unittest.TestCase):
         response = self.client.get('/snafu/configuration/form/reference/1')
         self.assertEqual(response.status_code, 200)
         self.assertIn('configuration/reference/refs/form.html', [ t.name for t in response.templates ])
+
+    def test_black_reference(self):
+        response = self.client.get('/snafu/configuration/form/black_reference/0')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('configuration/black_reference/form.html', [ t.name for t in response.templates ])
+
+        ref_post = {'host':1,'service':'1'}
+        response = self.client.post('/snafu/configuration/add/black_reference/0',ref_post)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('configuration/black_reference/tabs.html', [ t.name for t in response.templates ])
+        
+	response = self.client.get('/snafu/configuration/list/black_reference/', {'q':''})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('configuration/black_reference/ul.html', [ t.name for t in response.templates ])
+
+        response = self.client.get('/snafu/configuration/get/black_reference/1')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('configuration/black_reference/ref.html', [ t.name for t in response.templates ])
+
+        response = self.client.get('/snafu/configuration/form/black_reference/1')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('configuration/black_reference/form.html', [ t.name for t in response.templates ])
 

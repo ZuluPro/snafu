@@ -1,0 +1,11 @@
+<ul  class="nav nav-tabs nav-stacked">
+ {% if BsPage.has_previous %}
+  <li><a onclick="$.fn.snafu_object('list','black_reference', {{ BsPage.previous_page_number }});">&uarr; Précédents</a></li>
+ {% endif %}
+ {% for B in BsPage %}
+  <li><a id="black_reference{{ B.pk }}Tab" data-toggle="tab" onclick="$.fn.snafu_object('get','black_reference', {{ B.pk }})">{{ B.host }} - {{ B.service }}</a></li>
+ {% endfor %}
+ {% if BsPage.has_next %}
+  <li><a onclick="$.fn.snafu_object('list','black_reference', {{ BsPage.next_page_number }});">&darr; Suivant(s)</a></li>
+ {% endif %}
+</ul>
