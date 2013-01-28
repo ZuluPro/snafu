@@ -20,5 +20,5 @@ class Downtime(models.Model):
         app_label = 'sendim'
         ordering = ('date',)
 
-     def __unicode__(self):
-         return self.host.name +' - '+ self.service.name
+    def __unicode__(self):
+        return self.host.name +' - '+ self.service.name

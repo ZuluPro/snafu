@@ -33,6 +33,7 @@ class Supervisor(models.Model) :
     history = models.CharField(max_length=300, verbose_name="URL d'historique", help_text=u"Index de l'historique. (Exemple : http://www.nagios.lan/cgi-bin/history.cgi).")
     graph = models.CharField(max_length=300, null=True, blank=True, verbose_name=u'URL de m\xe9trologie', help_text=u"Index de la m\xe9trologie. (Exemple : http://www.nagios.lan/cgi-bin/rrd2graph.cgi).")
     active = models.BooleanField(default=True, verbose_name='Actif')
+    interval = models.IntegerField(null=True, blank=True, verbose_name='Interval', help_text='Interval (en secondes) entre deux parsing')
 
     supervisor_type = models.ForeignKey(SupervisorType, default=1, verbose_name=u'Type de superviseur')
     graph_type = models.CharField(max_length=20, choices=GRAPH_TYPE, default=None, null=True, blank=True, verbose_name=u'Type de m\xe9trologie')
