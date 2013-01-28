@@ -196,3 +196,8 @@ class Alert(models.Model) :
             return E
         else : return self.event
 
+    def get_downtime_status(self):
+        """Get Downtime for current Host and Service."""
+        from sendim.models import Downtime
+        D = Downtime.objects.get(host=self.host,service=self.service)
+        return D

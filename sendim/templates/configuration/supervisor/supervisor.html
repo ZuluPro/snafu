@@ -23,8 +23,11 @@
      <dt>URL d'historique:</dt>
      <dd>{{ S.history }}</dd>
   
-     <dt>Type de superviseurr:</dt>
+     <dt>Type de superviseur:</dt>
      <dd>{{ S.supervisor_type }}</dd>
+  
+     <dt>Fréquence de vérificationr:</dt>
+     <dd>{{ S.interval|default_if_none:"(Aucune)" }}</dd>
    </dl>
   </div>
 
