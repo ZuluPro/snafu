@@ -77,7 +77,7 @@ class Supervisor(models.Model) :
         If alert is an host alert, service will be 'Host status'.
         """
         from referentiel.models import Host,Service,Status
-        from sendim.models import Alert
+        from sendim.models import Alert, Downtime
 
         check = self.checkNagios()
         if check :
@@ -85,41 +85,74 @@ class Supervisor(models.Model) :
     
         opener = self.getOpener()
 
+        # Open and parse line of history
         pagehandle = opener.open(self.history+'?host=all&archive=0&statetype=2&type=0&noflapping=on')
         problemlist = list()
         for line in pagehandle.readlines()[::-1] :
             if re.search( r"<img align='left'" , line ) :
                 line = _htmlparser.unescape( line[:-1] )
     
-                if re.search( 'SERVICE ALERT' , line ) :
-                    problemlist.append( [ re.sub( r"^.*ALERT: ([^;]*);.*" , r"\1" , line ),
-                        re.sub( r".*ALERT: [^;]*;([^;]*);.*$" , r"\1" , line ),
-                        re.sub( r".*ALERT: [^;]*;[^;]*;([^;]*);.*$" , r"\1" , line ),
-                        re.sub( r".*ALERT: [^;]*;[^;]*;[^;]*;[^;]*;[^;]*;([^;]*)<br clear='all' />$" , r"\1" , line ),
-                        re.sub( r".*>\[([^\]]*)\].*" , r"\1" , line ) ] )
-    
-                elif re.search( 'HOST ALERT' , line ) :
-                    problemlist.append( [ re.sub( r"^.*ALERT: ([^;]*);.*" , r"\1" , line ),
-                        "Host status",
-                        re.sub( r".*ALERT: [^;]*;([^;]*);.*$" , r"\1" , line ),
-                        re.sub( r".*ALERT: [^;]*;[^;]*;[^;]*;[^;]*;([^;]*).*<br clear='all' />$" , r"\1" , line ),
-                        re.sub( r".*>\[([^\]]*)\].*" , r"\1" , line ) ] )
+                # Try to convert date into datetime objects
+                date = re.sub( r".*>\[([^\]]*)\].*", r"\1", line )
+                try : date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+                except ValueError:
+                    try : date = datetime.strptime(date, "%m-%d-%Y %H:%M:%S")
+                    except ValueError:
+                        date = now()
 
+                # Create Host or Service if not exists
+                if re.search(r"^.*ALERT: ([^;]*);.*",line) :
+                    host = re.sub(r"^.*ALERT: ([^;]*);.*", r"\1", line)
+                    service = re.sub(r".*ALERT: [^;]*;([^;]*);.*$", r"\1", line)
+                    if not Host.objects.filter(name=host,supervisor=self).exists() :
+                        Host.objects.create(name=host,supervisor=self)
+                    if not Service.objects.filter(name=service).exists() :
+                        Service.objects.create(name=service)
+
+                # Try to find DOWNTIMES
+                if 'DOWNTIME ALERT: ' in line :
+                    if Downtime.objects.filter(host__name=host,service__name=service).exists() :
+                        D = Downtime.objects.get(host__name=host,service__name=service)
+                    else :
+                        D = Downtime(
+                          host=Host.objects.get(name=host),
+                          service=Service.objects.get(name=service)
+                        )
+                    D.date = date
+                    if re.search('DOWNTIME.*STARTED', line) :
+                        D.status = 'STARTED'
+                    elif re.search('DOWNTIME.*STOPPED', line) :
+                        D.status = 'STOPPED'
+                    D.save()
+                    
+                # Try to find Alerts
+                if Downtime.objects.filter(
+                  host__name=re.sub(r"^.*ALERT: ([^;]*);.*" , r"\1", line),
+                  service__name=re.sub( r".*ALERT: [^;]*;([^;]*);.*$" , r"\1", line)
+                ).exists() :
+                    if re.search('SERVICE ALERT', line) :
+                        problemlist.append([ 
+                            re.sub(r"^.*ALERT: ([^;]*);.*", r"\1", line ),
+                            re.sub( r".*ALERT: [^;]*;([^;]*);.*$", r"\1", line ),
+                            re.sub( r".*ALERT: [^;]*;[^;]*;([^;]*);.*$", r"\1", line ),
+                            re.sub( r".*ALERT: [^;]*;[^;]*;[^;]*;[^;]*;[^;]*;([^;]*)<br clear='all' />$", r"\1", line ),
+                            date
+                        ])
+        
+                    elif re.search('HOST ALERT', line) :
+                        problemlist.append([
+                            re.sub( r"^.*ALERT: ([^;]*);.*", r"\1", line ),
+                            "Host status",
+                            re.sub( r".*ALERT: [^;]*;([^;]*);.*$", r"\1" , line ),
+                            re.sub( r".*ALERT: [^;]*;[^;]*;[^;]*;[^;]*;([^;]*).*<br clear='all' />$", r"\1", line ),
+                            date
+                        ])
+
+        # Walk on problemlist for create Alerts
         Es_dict = dict()
         for host,service,status,info,date in problemlist :
             
-            # Try to convert date into datetime objects
-            try : date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
-            except ValueError:
-                try : date = datetime.strptime(date, "%m-%d-%Y %H:%M:%S")
-                except ValueError:
-                    date = now()
-    
             if not Alert.objects.filter(host__name__exact=host, service__name__exact=service, date=date ).exists() :
-                if not Host.objects.filter(name=host,supervisor=self).exists() :
-                    Host.objects.create(name=host,supervisor=self)
-                if not Service.objects.filter(name=service).exists() :
-                    Service.objects.create(name=service)
 
                 A = Alert(
                     host = Host.objects.get(name=host),

@@ -3,9 +3,9 @@
 {% load getEscalation %}
 
 {% for E in Es %}
- <tr id="Event{{ E.pk }}" class="{{ E|getEventColor }}" style="">
-  <td><input type="checkbox" value="{{ E.pk }}"></td>
-  <td>{{ E.pk }}</td>
+ <tr id="Event{{ E.id }}" class="{{ E|getEventColor }}" style="">
+  <td><input type="checkbox" value="{{ E.id }}"></td>
+  <td>{{ E.id }}</td>
   <td>{{ E.date|date:"Y/m/d - G:i:s" }}</td>
   <td>{{ E.element }}</td>
   <td>{{ E.criticity }}</td>
@@ -13,7 +13,7 @@
 
   <td>
    <form method="POST" action="/snafu/events" style="margin: 0px 0px 0px">{% csrf_token %}
-    <input type="hidden" name="eventPk" value="{{ E.pk }}">
+    <input type="hidden" name="eventPk" value="{{ E.id }}">
     <div class="btn-group">
      {% if E.criticity = '?' %}
       <button class="btn btn-primary" data-content="Cliquez ici pour remplir la renseigner." rel="popover" data-original-title="Pas de référence" name="treatment_q"><i class="icon-comment icon-white"></i></button>
@@ -71,11 +71,11 @@
     </button>
     <button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
     <ul class="dropdown-menu">
-     <li><a onclick="$.fn.UseModal('/snafu/event/alerts',{ eventPk:{{ E.pk }} })">Alerts de l'Event</a></li>
+     <li><a onclick="$.fn.UseModal('/snafu/event/alerts',{ eventPk:{{ E.id }} })">Alerts de l'Event</a></li>
      
-     <li><a onclick="$.fn.UseModal('/snafu/event/history',{ eventPk:{{ E.pk }} } )">Historique de l'alert primaire</a></li>
+     <li><a onclick="$.fn.UseModal('/snafu/event/history',{ eventPk:{{ E.id }} } )">Historique de l'alert primaire</a></li>
      
-     <li><a onclick="$.fn.UseModal('/snafu/event/reference',{ eventPk:{{ E.pk }} })">Reference</a></li>
+     <li><a onclick="$.fn.UseModal('/snafu/event/reference',{ eventPk:{{ E.id }} })">Reference</a></li>
      
      {% if E.element.supervisor %}
       <li><a target="_blank" href="{{ E.element.supervisor.status }}?host={{ E.element }}">Vision Nagios</a></li>

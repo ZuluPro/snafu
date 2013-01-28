@@ -11,6 +11,10 @@ class EventAdmin(admin.ModelAdmin) :
     list_filter = ( 'closed','mail' )
     search_fields = ('id', 'element__name', 'glpi','message' )
 
+class DowntimeAdmin(admin.ModelAdmin) :
+    list_display = ('pk','date','host','service')
+    search_fields = ('id', 'service__name', 'host__name')
+
 class MailTemplateAdmin(admin.ModelAdmin) :
     list_display = ('pk','subject','chosen' )
     search_fields = ('subject','body' )
@@ -27,6 +31,7 @@ class CommandLogAdmin(admin.ModelAdmin) :
 
 admin.site.register(Event, EventAdmin)
 admin.site.register(Alert, AlertAdmin)
+admin.site.register(Downtime, DowntimeAdmin)
 admin.site.register(MailTemplate, MailTemplateAdmin)
 admin.site.register(Command, CommandAdmin)
 admin.site.register(CommandLog, CommandLogAdmin)

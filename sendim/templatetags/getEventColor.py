@@ -1,4 +1,5 @@
 from django import template
+from sendim.models import Event
 
 register = template.Library()
 
@@ -8,6 +9,7 @@ def getEventColor(E, arg=None) :
     Return the class name of tr in function of alerts.
     If last alert if OK/UP, then tr will be blank.
     """
+    if isinstance(E, dict) : E = Event.objects.get(pk=E['id'])
 
     A = E.getPrimaryAlert()
     if not A : return ''
