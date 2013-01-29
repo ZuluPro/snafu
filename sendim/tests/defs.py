@@ -129,3 +129,6 @@ def end_event(E,number=3):
           _A.save()
           _A.link()
     return E
+
+def get_static(template):
+    pass
