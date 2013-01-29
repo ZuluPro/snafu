@@ -164,7 +164,7 @@ Be sure to have a valid user account on GLPI webservice before run 'populate'.
   $ ./manage.py populate
 
 ------------------------------------------------------------------------------
-9. Launch tests
+9. Launch SNAFU
 ------------------------------------------------------------------------------
 
 Before work with SNAFU you must add some stuff:
