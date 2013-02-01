@@ -17,7 +17,7 @@ import os
 from django.conf import settings
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "snafu.settings")
-if 'djcelery' in settings.INSTALLED_APPS : os.environ["CELERY_LOADER"]= "django"
+if 'djcelery' in settings.INSTALLED_APPS : os.environ["CELERY_LOADER"] = "django"
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION

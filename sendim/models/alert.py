@@ -25,6 +25,8 @@ class Alert_Manager(models.Manager):
     def get_service_alert(self):
         return super(Alert_Manager, self).get_query_set().exclude(service__name='Host status')
 
+    def get_today(self): pass
+
 class Alert(models.Model) :
     host = models.ForeignKey('referentiel.Host')
     service = models.ForeignKey('referentiel.Service')
@@ -105,7 +107,7 @@ class Alert(models.Model) :
                 return T
         else : return self.translation
 
-    def linkToReference(self, force=False, byHost=True, byService=True, byStatus=True):
+    def link_to_reference(self, force=False, byHost=True, byService=True, byStatus=True):
         """
         Search if a reference matches with the alert.
         In case, link alert to it.
@@ -115,7 +117,7 @@ class Alert(models.Model) :
             if self.reference : self.save()
         return self.reference
 
-    def linkToTranslation(self, force=False, byStatus=True):
+    def link_to_translation(self, force=False, byStatus=True):
         """
         Search if a translation matches with the alert.
         In case, link alert to it.

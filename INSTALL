@@ -8,7 +8,6 @@ For SNAFU webserver :
     - django >= 1.4.x
     - python >= 2.7.x
     - django-tracking
-    - celery >= 3.0.x (work without)
     - django-celery >= 3.0.x (work without)
     - rabbitmq-server
     - pytz
@@ -39,68 +38,29 @@ For Nagios webserver :
   $ rabbitmqctl set_permissions -p snafu youruser ".*" ".*" ".*"
 
 ------------------------------------------------------------------------------
-3. Include or modify followings in settings.py :
-------------------------------------------------------------------------------
-
-USE_TZ = False
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.contrib.messages.context_processors.messages',
-    'sendim.context_processors.sendim_context',
-)
-
-INSTALLED_APPS = (
-    ...
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.admin',
-    'sendim',
-    'referentiel',
-    'tracking',
-    'djcelery', # if you want asynchronous tasks
-    ...
-)
-
-MIDDLEWARE_CLASSES = (
-    ...
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'tracking.middleware.VisitorTrackingMiddleware',
-    'tracking.middleware.VisitorCleanUpMiddleware',
-    'sendim.middleware.CeleryMessageMiddleware',
-    'sendim.middleware.SnafuRequirementMiddleware',
-    ...
-)
-
-import os
-BASEDIR = os.path.dirname(os.path.abspath(__file__))
-
-from sendim.local_settings import *
-
-if 'djcelery' in INSTALLED_APPS :
-    import djcelery
-    djcelery.setup_loader()
-    BROKER_HOST = "localhost"
-    BROKER_PORT = 5672
-    BROKER_USER = "youruser"
-    BROKER_PASSWORD = "youpassword"
-    BROKER_VHOST = "snafu"
-
-------------------------------------------------------------------------------
-4. Include followings in sendim/local_settings.py :
+3. Include followings in sendim/settings_local.py :
 ------------------------------------------------------------------------------
 
 from django.conf import settings
-import os
+
+ADMINS = (
+    # ('Your Name', 'your_email@example.com'),
+)
+
+MANAGERS = ADMINS
+
+SECRET_KEY = 'ly-qpakb*@pf8kej()f=1!))^^y(9w^)nu$^(#8o4rvf*tm=(!'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.yourSGBD', # Add 'postgresql_psycopg2', 'mysql' or 'oracle'.
+        'NAME': 'snafu_db', # Database's name
+        'USER': 'snafu', # Valid user on DB
+        'PASSWORD': 'password', # Password for this user
+        'HOST': '', # Hostname or IP if it isn't local
+        'PORT': '', # if it isn't the default
+    }
+}
 
 SNAFU = {
     'glpi-url':'https://mywebiste/glpi/',
@@ -108,31 +68,21 @@ SNAFU = {
     'glpi-login':'Foo',
     'glpi-password':'B@r',
     'smtp-from':"foobar@raboof.com",
-#    If you need a password 
-#   'smtp-password':"r@b0OF"
+#   'smtp-password':"r@b0OF", # If you need a password
     'smtp-server':'12.3.19.83',
     'smtp-port':25
-
 }
 
-LOGIN_URL = '/snafu/login'
-
-TEMPLATE_DIRS = ( os.path.join(settings.BASEDIR, 'sendim/templates'), )
-STATICFILES_DIRS = ( os.path.join(settings.BASEDIR, '../static'), )
-
-------------------------------------------------------------------------------
-5. Include followings in snafu/urls.py
-------------------------------------------------------------------------------
-
-urlpatterns = patterns('',
-   ...
-   url(r'^snafu/', include('sendim.urls')),
-   ...
-)
+# RabbitMQ settings
+BROKER_HOST = "localhost"
+BROKER_PORT = 5672
+BROKER_USER = "youruser"
+BROKER_PASSWORD = "password"
+BROKER_VHOST = "snafu"
 
 ------------------------------------------------------------------------------
-6. Prepare database
-Create SNAFU's database and user.
+4. Prepare database
+Create 'snafu_db' database and 'snafu' user.
 ------------------------------------------------------------------------------
 
 For MySQL :
@@ -142,21 +92,14 @@ USE DATABASE mysql;
 CREATE DATABASE snafu;
 GRANT ALL ON snafu TO youruser@localhost IDENTIFIED BY 'yourpassword';
 
-For PostgreSQL :
-Be sure to have 'python-pgsql' package
----
-CREATE DATABASE snafu
-create user youruser with password 'yourpassword';
-grant all privileges on snafu to youruser;
-
 ------------------------------------------------------------------------------
-7. Launch tests
+5. Launch tests
 ------------------------------------------------------------------------------
 
   $ ./manage.py test sendim
 
 ------------------------------------------------------------------------------
-8. After configuration launch the next command for initialize database :
+6. After configuration launch the next command for initialize database :
 Be sure to have a valid user account on GLPI webservice before run 'populate'.
 ------------------------------------------------------------------------------
 
@@ -164,7 +107,7 @@ Be sure to have a valid user account on GLPI webservice before run 'populate'.
   $ ./manage.py populate
 
 ------------------------------------------------------------------------------
-9. Launch SNAFU
+7. Launch SNAFU
 ------------------------------------------------------------------------------
 
 Before work with SNAFU you must add some stuff:

@@ -16,6 +16,7 @@ class ReferenceAdmin(admin.ModelAdmin):
     list_display = ('service','host','mail_type','mail_group','status','mail_criticity','procedure','glpi_category', 'glpi_dst_group', 'glpi_supplier' )
     search_fields = ('host__name', 'service__name')
     list_editable = ('host','mail_type','status','mail_criticity', 'procedure', 'glpi_category', 'glpi_dst_group', 'glpi_supplier')
+    list_filter = ('status',)
 
 class Black_referenceAdmin(admin.ModelAdmin):
     list_display = ('host','service')
@@ -31,7 +32,7 @@ class MailGroupAdmin(admin.ModelAdmin) :
 
 class SupervisorAdmin(admin.ModelAdmin) :
     list_display = ('pk', 'name','login','index')
-    search_fields = ('supervisor_type', )
+    list_filter = ('supervisor_type',)
     search_fields = ('name', 'index', 'supervisor_type',)
 
 admin.site.register(Host,HostAdmin)
@@ -40,7 +41,6 @@ admin.site.register(Status)
 
 admin.site.register(MailType)
 admin.site.register(MailGroup, MailGroupAdmin)
-#admin.site.register(MailCriticity)
 
 admin.site.register(GlpiCategory)
 admin.site.register(GlpiUser)

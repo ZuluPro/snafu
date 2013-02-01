@@ -16,6 +16,7 @@ def suite():
     import doctest
     import unittest
     import defs
+    #import glpi_test_server
     TEST_CASES = (
      'sendim.tests.basic_alert',
      'sendim.tests.service_alert',
