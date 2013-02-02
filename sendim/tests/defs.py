@@ -70,7 +70,7 @@ def create_alert_from(alert, delta=1, status=None, isDown=True):
        host = alert.host,
        service = alert.service,
        status = status,
-       date = datetime.now(),#+timedelta(0,3),
+       date = now(),#+timedelta(0,3),
        info = "TEST - Alerte #"+str(Alert.objects.count()),
     )
     return A
