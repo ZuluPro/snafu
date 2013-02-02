@@ -3,11 +3,13 @@ Celery's tasks.
 Contains periodic and backgrounded tasks.
 """
 
+from django.contrib import messages
 from django.conf import settings
 if 'djcelery' in settings.INSTALLED_APPS :
     from celery.decorators import task
     from celery.task import PeriodicTask
     from celery.task import periodic_task
+    from celery.contrib import rdb
     
 from referentiel.models import Supervisor
 from sendim.exceptions import UnableToConnectNagios
@@ -24,6 +26,7 @@ def get_supervisor_task(S):
         run_every = timedelta(seconds=S.interval)
         def run(self, **kwargs):
             S.parse()
+            messages.add_message(request, messages.INFO,u"<b>Mise \xe0 jour de "+S.name+"</b>")
     return supervisor_task
 
 # Create supervisor's periodic tasks
@@ -38,6 +41,7 @@ def reload_alerts(supervisor):
     """
     try :
         Es = supervisor.parse()
+        #rdb.set_trace()
         return (supervisor.name,'SUCCESS',Es)
     except UnableToConnectNagios, e:
         return (supervisor.name,'ERROR',e)

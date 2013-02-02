@@ -33,9 +33,9 @@ For Nagios webserver :
 2. Configure your RabbitMQ server
 ------------------------------------------------------------------------------
 
-  $ rabbitmqctl add_user youruser yourpassword
-  $ rabbitmqctl add_vhost snafu
-  $ rabbitmqctl set_permissions -p snafu youruser ".*" ".*" ".*"
+  $ rabbitmqctl add_user snafu yourpassword
+  $ rabbitmqctl add_vhost snafu_v
+  $ rabbitmqctl set_permissions -p snafu_v snafu ".*" ".*" ".*"
 
 ------------------------------------------------------------------------------
 3. Include followings in sendim/settings_local.py :
@@ -44,7 +44,7 @@ For Nagios webserver :
 from django.conf import settings
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('Your Name', 'your_email@example.com'),
 )
 
 MANAGERS = ADMINS
@@ -53,10 +53,10 @@ SECRET_KEY = 'ly-qpakb*@pf8kej()f=1!))^^y(9w^)nu$^(#8o4rvf*tm=(!'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.yourSGBD', # Add 'postgresql_psycopg2', 'mysql' or 'oracle'.
-        'NAME': 'snafu_db', # Database's name
+        'ENGINE': 'django.db.backends.c', # Add 'postgresql_psycopg2', 'mysql' or 'oracle'.
+        'NAME': 'snafu_db',
         'USER': 'snafu', # Valid user on DB
-        'PASSWORD': 'password', # Password for this user
+        'PASSWORD': 'yourpassword', # Password for this user
         'HOST': '', # Hostname or IP if it isn't local
         'PORT': '', # if it isn't the default
     }
@@ -89,8 +89,8 @@ For MySQL :
 Be sure to have 'python-mysqldb' package
 ---
 USE DATABASE mysql;
-CREATE DATABASE snafu;
-GRANT ALL ON snafu TO youruser@localhost IDENTIFIED BY 'yourpassword';
+CREATE DATABASE snafu_db;
+GRANT ALL ON snafu_db TO snafu@localhost IDENTIFIED BY 'yourpassword';
 
 ------------------------------------------------------------------------------
 5. Launch tests

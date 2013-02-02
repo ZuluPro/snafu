@@ -124,7 +124,7 @@ class Supervisor(models.Model) :
                 if REG_ISALERT.search(line) :
                     host = REG_HOST.sub(r"\1", line)
                     service = REG_SERVICE.sub(r"\1", line)
-                    if not Host.objects.filter(name=host,supervisor=self).exists() :
+                    if not Host.objects.filter(name=host).exists() :
                         Host.objects.create(name=host,supervisor=self)
                     if not Service.objects.filter(name=service).exists() :
                         Service.objects.create(name=service)

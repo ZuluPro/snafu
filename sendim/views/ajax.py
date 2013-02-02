@@ -26,7 +26,7 @@ def reload_alerts(request) :
         S_status = S.checkNagios()
         if not S_status :
             if 'djcelery' in settings.INSTALLED_APPS :
-                tasks.reload_alerts.delay(S)
+                result = tasks.reload_alerts.delay(S)
             else :
                 S.parse()
             messages.add_message(request,messages.INFO,u'<b>Lecture de '+S.name+u" commenc\xe9e !</b>")
