@@ -68,8 +68,7 @@ def events(request) :
             })
         Es = Event.objects.filter(closed=False).order_by('-date')
     else :
-        [ E.delete() for E in Event.objects.all() if not E.get_alerts().exists() ]
-        Es = Event.objects.filter(closed=False).order_by('-date')
+        Es = list(Event.objects.filter(closed=False).order_by('-date'))
 
         paginator = Paginator(Es, 100)
         page = request.GET.get('page')
