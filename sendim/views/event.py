@@ -30,8 +30,11 @@ def events(request) :
             A = E.get_primary_alert()
 
         if "sendmail_q" in request.POST :
-            if E.send_mail(request.POST) :
+            msg = E.prepare_mail(request.POST)
+            if E.send_mail(msg) :
                 messages.add_message(request,messages.SUCCESS,u"Envoi d'un mail pour l'\xe9v\xe9nement #"+str(E.pk)+"." )
+            else :
+                messages.add_message(request,messages.ERROR,u"Echec de l'nvoi d'un mail pour l'\xe9v\xe9nement #"+str(E.pk)+"." )
 
         elif "treatment_q" in request.POST :
 	    if E.criticity == '?' or not E.get_primary_alert().reference : 

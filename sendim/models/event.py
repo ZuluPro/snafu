@@ -179,13 +179,7 @@ class Event(models.Model) :
     
         return msg
 
-    def send_mail(self,POST):
-        """
-        Use request.POST from 'sendim/templates/event/preview-mail.html',
-        for send an email.
-        This function make all substitutions before processing.
-        After send, add mail to GLPI ticket.
-        """
+    def prepare_mail(self,POST):
         A = self.get_primary_alert()
         # Recherche du MailGroup correspondant
         R = A.reference
@@ -193,10 +187,10 @@ class Event(models.Model) :
         msg = MIMEMultipart()
         msg['From'] = settings.SNAFU['smtp-from']
         msg['To'] = POST['to']
+        msg['Cc'] = POST['cc']
         if POST['ccm'] : msg['To'] += ', '+ R.mail_group.ccm
-     
-        mailSub = POST['subject']
-        mailText = POST['body']
+        subject = POST['subject']
+        body = POST['body']
     
         # Make substitutions
         SUBS = (
@@ -213,10 +207,10 @@ class Event(models.Model) :
             ("$LOG$" , '\n'.join( [ A.date.strftime('%d/%m/%y %H:%M:%S - ')+A.service.name+' en ' +A.status.name+' - '+A.info for A in self.get_alerts() ] ) )
         ) 
         for pattern,string in SUBS :
-            mailText = mailText.replace(pattern, string)
-            mailSub = mailSub.replace(pattern, string)
-        msg['Subject'] = mailSub
-        msg.attach( MIMEText( mailText.encode('utf8') , 'plain' ) )
+            body = body.replace(pattern, string)
+            subject = subject.replace(pattern, string)
+        msg['Subject'] = msg.preamble = subject
+        msg.attach( MIMEText( body.encode('utf8') , 'plain' ) )
         
         # Add graph to mail
         if 'graphList' in POST :
@@ -226,20 +220,27 @@ class Event(models.Model) :
                 #pagehandle2 = opengraph(A, graphList[i][0])
                 msg.attach( MIMEImage( pagehandle ) )
                 #msg.attach( MIMEImage( pagehandle2 ) )
-    
-        # Send mail
+        return msg
+
+    def send_mail(self,msg):
+        """
+        Use request.POST from 'sendim/templates/event/preview-mail.html',
+        for send an email.
+        This function make all substitutions before processing.
+        After send, add mail to GLPI ticket.
+        """
         smtpObj = SMTP(settings.SNAFU['smtp-server'] , settings.SNAFU['smtp-port'] )
         if 'smtp-password' in settings.SNAFU.keys() :
             smtpObj.ehlo()
             smtpObj.starttls()
             smtpObj.ehlo()
             smtpObj.login(settings.SNAFU['smtp-from'], settings.SNAFU['smtp-password'])
-        smtpObj.sendmail( msg['From'] , ( msg['To'], msg['Cc'] ), msg.as_string() )
+        smtpObj.sendmail( msg['From'] , msg['To'], msg.as_string() )
+        smtpObj.close()
     
         self.mail=True
         self.save()
 
-        msg['body'] = mailText
         addMail(self.glpi, msg)
     
         return True

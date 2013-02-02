@@ -11,6 +11,7 @@ from djcelery.models import TaskMeta
 
 from sendim.models import Alert, Event
 from referentiel.models import Supervisor, Reference
+from sendim.tests.defs import *
 
 class Login_TestCase(unittest.TestCase):
     def setUp(self):
@@ -70,7 +71,8 @@ class Customer_Client_TestCase(unittest.TestCase):
     def test_treatment_without_reference(self):
         self.client.post('/snafu/event/reloadAlerts')
        
-        if not Event.objects.all().exists() : return
+        if not Event.objects.all().exists() :
+            create_event(create_alert(),3)
 
         E = Event.objects.all()[0]
         A = E.get_primary_alert()
