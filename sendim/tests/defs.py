@@ -83,7 +83,7 @@ def create_event(A, number=5, endUp=True):
     >>> from django.core import management
     >>> management.call_command('loaddata', 'test_host.json', database='default', verbosity=0)
     >>> E = create_event(create_alert(),3)
-    >>> E.getAlerts().count()
+    >>> E.get_alerts().count()
     3
     >>> useless = [ E.delete() for E in Event.objects.all() ]
     """ 
@@ -110,10 +110,10 @@ def end_event(E,number=3):
     >>> from django.core import management
     >>> management.call_command('loaddata', 'test_host.json', database='default', verbosity=0)
     >>> E = create_event(create_alert(),2,False)
-    >>> E.getAlerts().count()
+    >>> E.get_alerts().count()
     2
     >>> E = end_event(E,2)
-    >>> E.getAlerts().count()
+    >>> E.get_alerts().count()
     4
     >>> useless = [ E.delete() for E in Event.objects.all() ]
     """

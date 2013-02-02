@@ -24,7 +24,7 @@ class Event(models.Model) :
     def __unicode__(self) :
         return str(self.pk)+':'+self.element.name+' - '+self.message
 
-    def getAlerts(self, isUp=True, withoutRef=False):
+    def get_alerts(self, isUp=True, withoutRef=False):
         from sendim.models import Alert
         """
         Return a QuerySet of event's alerts.
@@ -51,8 +51,8 @@ class Event(models.Model) :
         from sendim.models import Alert
         try : return Alert.objects.filter(event=self).get(isPrimary=True)
         except Alert.DoesNotExist :
-            if self.getAlerts() :
-                A = self.getAlerts()[0]
+            if self.get_alerts() :
+                A = self.get_alerts()[0]
                 #logprint("Event #"+str(self.pk)+" had no primary alert, set to the first Alert #"+str(A.pk), 'red')
                 A.set_primary()
                 return A
@@ -62,7 +62,7 @@ class Event(models.Model) :
                 return None
                 #logprint("Event #"+str(self.pk)+" had no alert, it has been deleted", 'red')
         except Alert.MultipleObjectsReturned :
-            A = self.getAlerts().filter(isPrimary=True)[0]
+            A = self.get_alerts().filter(isPrimary=True)[0]
             A.set_primary()
             return A
             
@@ -157,7 +157,7 @@ class Event(models.Model) :
         if self.closed : return False
         else :
             hosts = {}
-            for A in self.getAlerts() :
+            for A in self.get_alerts() :
                 if not A.host.name in hosts : hosts[A.host.name] = []
                 if not A.service.name in hosts[A.host.name] : hosts[A.host.name].append(A.service.name)
             ### Calcul de tout les service
@@ -165,10 +165,10 @@ class Event(models.Model) :
             for host in hosts.keys() : 
                 for service in hosts[host] :
                     if service == 'Host status' :
-                        if not self.getAlerts().filter(host__name=host,service__name=service,status=Status.objects.get(name='UP') ) :
+                        if not self.get_alerts().filter(host__name=host,service__name=service,status=Status.objects.get(name='UP') ) :
                             notOK.append( (host,service) )
                     else :
-                        if not self.getAlerts().filter(host__name=host,service__name=service,status=Status.objects.get(name='OK') ) :
+                        if not self.get_alerts().filter(host__name=host,service__name=service,status=Status.objects.get(name='OK') ) :
                             notOK.append( (host,service) )
             if not notOK :
                 self.closed = True

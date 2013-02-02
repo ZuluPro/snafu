@@ -9,7 +9,7 @@ def getFormSet(E):
     service_alerts = dict()
     host_alerts = list()
     if E :
-        for A in E.getAlerts() :
+        for A in E.get_alerts() :
             if A.service.name != 'Host status' :
                 if not A.host.name in service_alerts : service_alerts[A.host.name] = []
                 if not A.service.name in service_alerts[A.host.name] : service_alerts[A.host.name].append(A.service.name)

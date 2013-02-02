@@ -68,7 +68,7 @@ def eventAlerts(request) :
     E = Event.objects.get( pk=request.GET['eventPk'])
     return render(request, 'modal/eventAlerts.html', {
         'E':E,
-        'As':E.getAlerts()[::-1]
+        'As':E.get_alerts()[::-1]
     })
 
 @login_required
@@ -110,7 +110,7 @@ def choosePrimaryAlert(request) :
 
     return render(request, 'modal/choosePrimaryAlert.html', {
         'E':E,
-        'As':E.getAlerts()[::-1]
+        'As':E.get_alerts()[::-1]
     })
 
 @login_required

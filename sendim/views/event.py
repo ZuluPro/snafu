@@ -65,7 +65,7 @@ def events(request) :
             })
         Es = Event.objects.filter(closed=False).order_by('-date')
     else :
-        [ E.delete() for E in Event.objects.all() if not E.getAlerts().exists() ]
+        [ E.delete() for E in Event.objects.all() if not E.get_alerts().exists() ]
         Es = Event.objects.filter(closed=False).order_by('-date')
 
         paginator = Paginator(Es, 100)
@@ -107,7 +107,7 @@ def EaddRef(request):
         return HttpResponse(errors, mimetype='application/json')
 
     for status in ('WARNING','CRITICAL','UNKNOWN','DOWN') :
-        As = E.getAlerts().filter(host=form.data['host'], service=form.data['service'],status__name=status) 
+        As = E.get_alerts().filter(host=form.data['host'], service=form.data['service'],status__name=status) 
         for _A in As: 
             _A.link_to_reference()
 

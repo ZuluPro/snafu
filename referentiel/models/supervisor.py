@@ -26,7 +26,7 @@ class Supervisor(models.Model) :
 
     name = models.CharField(max_length=200, verbose_name='Nom')
     login = models.CharField(max_length=50, help_text=u"Nom d'utilisateur utilis\xe9 pour acc\xe9der au superviseur.")
-    password = models.CharField(max_length=100, help_text=u"Nom d'utilisateur utilis\xe9 pour acc\xe9der au superviseur.")
+    password = models.CharField(max_length=100, verbose_name='Mot de passe', help_text=u"Nom d'utilisateur utilis\xe9 pour acc\xe9der au superviseur.")
     index = models.CharField(max_length=300, verbose_name="URL d'index", help_text=u"Index du site. (Exemple: http://www.nagios.lan).")
     status = models.CharField(max_length=300, verbose_name='URL de status', help_text=u"Index des status. (Exemple : http://www.nagios.lan/cgi-bin/status.cgi).")
     history = models.CharField(max_length=300, verbose_name="URL d'historique", help_text=u"Index de l'historique. (Exemple : http://www.nagios.lan/cgi-bin/history.cgi).")

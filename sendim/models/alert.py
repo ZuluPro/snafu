@@ -1,9 +1,11 @@
 from django.db import models
+from django.utils.timezone import now
 
 from referentiel.models import Host, Service, Status, Reference, Black_reference, Translation, Supervisor
 from sendim.models import Event
 
 from re import match
+from datetime import datetime
 
 class Alert_Manager(models.Manager):
     def create(self, *args, **kwargs):
@@ -20,12 +22,20 @@ class Alert_Manager(models.Manager):
         return super(Alert_Manager, self).create(*args, **kwargs)
 
     def get_host_alert(self):
+        """Get only Host status alerts."""
         return super(Alert_Manager, self).get_query_set().filter(service__name='Host status')
 
     def get_service_alert(self):
+        """Get only service status alerts."""
         return super(Alert_Manager, self).get_query_set().exclude(service__name='Host status')
 
-    def get_today(self): pass
+    def get_by_date(self, date=lambda:now().date()):
+        """
+        Get day's alerts by date. By default return for today.
+        """
+        if isinstance(date, datetime) :
+            date = date.date()
+        return super(Alert_Manager, self).get_query_set().filter(date=date)
 
 class Alert(models.Model) :
     host = models.ForeignKey('referentiel.Host')
@@ -63,7 +73,7 @@ class Alert(models.Model) :
 
     def set_primary(self):
         """Set alert as primary, set all event's alerts as not."""
-        self.event.getAlerts().update(isPrimary=False)
+        self.event.get_alerts().update(isPrimary=False)
         self.isPrimary = True
         self.save()
 
