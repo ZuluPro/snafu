@@ -43,7 +43,7 @@ class Event(models.Model) :
 	if not isUp : As = As.exclude( Q(status__name__exact='OK') | Q(status__name__exact='UP') )
         return As[0]
 
-    def getPrimaryAlert(self):
+    def get_primary_alert(self):
         """
         Return primary alert of event.
         if there's no primary alert, set the first as primary.
@@ -126,7 +126,7 @@ class Event(models.Model) :
         Using Event and the chosen MailTemplate for create
         a dictionnary which contains all mail attributes.
         """
-        R = self.getPrimaryAlert().reference
+        R = self.get_primary_alert().reference
         if MailTemplate.objects.filter(chosen=True).exists() :
             MT = MailTemplate.objects.get(chosen=True)
         else :
@@ -145,7 +145,7 @@ class Event(models.Model) :
 
     def get_reference(self) :
         """Return reference of primary alert."""
-    	return self.getPrimaryAlert().reference
+    	return self.get_primary_alert().reference
 
     def close(self, force=False):
         """

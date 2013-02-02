@@ -73,7 +73,7 @@ class Customer_Client_TestCase(unittest.TestCase):
         if not Event.objects.all().exists() : return
 
         E = Event.objects.all()[0]
-        A = E.getPrimaryAlert()
+        A = E.get_primary_alert()
         self.assertNotEqual(E.message, '?')
 
         response = self.client.post('/snafu/events',{'eventPk':E.pk,'treatment_q':''})

@@ -11,7 +11,7 @@ def getEventColor(E, arg=None) :
     """
     if isinstance(E, dict) : E = Event.objects.get(pk=E['id'])
 
-    A = E.getPrimaryAlert()
+    A = E.get_primary_alert()
     if not A : return ''
 
     As = E.get_alerts().filter(host=A.host,service=A.service).order_by('-date')

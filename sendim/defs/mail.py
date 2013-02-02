@@ -16,7 +16,7 @@ def sendMail(POST) :
     After send, add mail to GLPI ticket.
     """
     E = Event.objects.get(pk=POST['eventPk'])
-    A = E.getPrimaryAlert()
+    A = E.get_primary_alert()
     # Recherche du MailGroup correspondant
     R = A.reference
 

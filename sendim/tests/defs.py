@@ -117,7 +117,7 @@ def end_event(E,number=3):
     4
     >>> useless = [ E.delete() for E in Event.objects.all() ]
     """
-    A = E.getPrimaryAlert()
+    A = E.get_primary_alert()
     for i in xrange(number):
         sleep(1)
         if i >= xrange(number)[-1] :

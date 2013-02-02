@@ -27,14 +27,14 @@ def events(request) :
         if 'eventPk' in request.POST :
             eventPk = request.POST["eventPk"]
             E = Event.objects.get(pk=eventPk)
-            A = E.getPrimaryAlert()
+            A = E.get_primary_alert()
 
         if "sendmail_q" in request.POST :
             if sendMail( request.POST ) :
                 messages.add_message(request,messages.SUCCESS,u"Envoi d'un mail pour l'\xe9v\xe9nement #"+str(E.pk)+"." )
 
         elif "treatment_q" in request.POST :
-	    if E.criticity == '?' or not E.getPrimaryAlert().reference : 
+	    if E.criticity == '?' or not E.get_primary_alert().reference : 
 		
 		Forms = getFormSet(E)
 		return render(request, 'event/add-reference.html', {
@@ -111,7 +111,7 @@ def EaddRef(request):
         for _A in As: 
             _A.link_to_reference()
 
-            A = E.getPrimaryAlert()
+            A = E.get_primary_alert()
             if _A.isPrimary : 
                 E.criticity = A.reference.mail_criticity.name
                 E.save()

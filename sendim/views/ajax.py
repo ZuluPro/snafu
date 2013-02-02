@@ -40,7 +40,7 @@ def reload_alerts(request) :
 def eventHistory(request) :
     """Return a list of alerts which match with the primary alert of an event."""
     E = Event.objects.get( pk=request.GET['eventPk'])
-    A = E.getPrimaryAlert()
+    A = E.get_primary_alert()
     As = Alert.objects.filter(
        host=E.element,
        service=A.service
@@ -55,7 +55,7 @@ def eventHistory(request) :
 def eventReference(request) :
     """Get reference of primary alert of a given event."""
     E = Event.objects.get(pk=request.GET['eventPk'])
-    A = E.getPrimaryAlert()
+    A = E.get_primary_alert()
 
     return render(request, 'modal/eventReference.html', {
         'E':E,
