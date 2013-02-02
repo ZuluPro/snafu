@@ -3,6 +3,9 @@
 {% load getEscalation %}
 
 {% for E in Es %}
+ {% ifchanged E.date.day %}
+  <tr><td colspan="8" style="text-align:center;font-weight:bold">{{ E.date.date }}</td></tr>
+ {% endifchanged %}
  <tr id="Event{{ E.id }}" class="{{ E|getEventColor }}" style="">
   <td><input type="checkbox" value="{{ E.id }}"></td>
   <td>{{ E.id }}</td>
