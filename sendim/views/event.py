@@ -30,7 +30,7 @@ def events(request) :
             A = E.get_primary_alert()
 
         if "sendmail_q" in request.POST :
-            if sendMail( request.POST ) :
+            if E.send_mail(request.POST) :
                 messages.add_message(request,messages.SUCCESS,u"Envoi d'un mail pour l'\xe9v\xe9nement #"+str(E.pk)+"." )
 
         elif "treatment_q" in request.POST :

@@ -1,9 +1,8 @@
-from sendim.models import Event
-
 def aggregate(eventsPk, choicedEvent, message, glpi=None, mail=False, criticity='?') :
     """
     Aggregate several events in one.
     """
+    from sendim.models import Event
     if len(eventsPk) < 2 : return None
     for eventPk in eventsPk :
         E = Event.objects.get(pk=eventPk)

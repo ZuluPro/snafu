@@ -5,6 +5,12 @@ from django.conf import settings
 from referentiel.models import Host, Status
 from sendim.models import MailTemplate
 from sendim.exceptions import UnableToConnectGLPI
+from sendim.defs import addMail, opengraph
+
+from smtplib import SMTP
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 class Event(models.Model) :
     element = models.ForeignKey(Host)
@@ -66,8 +72,7 @@ class Event(models.Model) :
             A.set_primary()
             return A
             
-
-    def create_ticket(self) :
+    def create_ticket(self):
          """
          Create a GLPI ticket and add ticket number to self.glpi.
          """
@@ -121,29 +126,7 @@ class Event(models.Model) :
          doLogout()
          return ticketInfo['id']
 
-    def make_mail(self) :
-        """
-        Using Event and the chosen MailTemplate for create
-        a dictionnary which contains all mail attributes.
-        """
-        R = self.get_primary_alert().reference
-        if MailTemplate.objects.filter(chosen=True).exists() :
-            MT = MailTemplate.objects.get(chosen=True)
-        else :
-            MT = MailTemplate.objects.get(pk=1)
-    
-        msg = {}
-        msg['from'] = settings.SNAFU['smtp-from']
-        msg['to'] = R.mail_group.to
-        if self.criticity == 'Majeur' : msg['to'] += ', '+ R.mail_group.ccm
-        msg['cc'] = ' ,'.join( [  settings.SNAFU['smtp-from'], R.mail_group.cc] )
-        msg['subject'] = MT.subject
-        msg['body'] = MT.body
-    
-        return msg
-
-
-    def get_reference(self) :
+    def get_reference(self):
         """Return reference of primary alert."""
     	return self.get_primary_alert().reference
 
@@ -175,3 +158,88 @@ class Event(models.Model) :
                 self.save()
         return self.closed 
 
+    def make_mail(self):
+        """
+        Using Event and the chosen MailTemplate for create
+        a dictionnary which contains all mail attributes.
+        """
+        R = self.get_primary_alert().reference
+        if MailTemplate.objects.filter(chosen=True).exists() :
+            MT = MailTemplate.objects.get(chosen=True)
+        else :
+            MT = MailTemplate.objects.get(pk=1)
+    
+        msg = {}
+        msg['from'] = settings.SNAFU['smtp-from']
+        msg['to'] = R.mail_group.to
+        if self.criticity == 'Majeur' : msg['to'] += ', '+ R.mail_group.ccm
+        msg['cc'] = ' ,'.join( [  settings.SNAFU['smtp-from'], R.mail_group.cc] )
+        msg['subject'] = MT.subject
+        msg['body'] = MT.body
+    
+        return msg
+
+    def send_mail(self,POST):
+        """
+        Use request.POST from 'sendim/templates/event/preview-mail.html',
+        for send an email.
+        This function make all substitutions before processing.
+        After send, add mail to GLPI ticket.
+        """
+        A = self.get_primary_alert()
+        # Recherche du MailGroup correspondant
+        R = A.reference
+    
+        msg = MIMEMultipart()
+        msg['From'] = settings.SNAFU['smtp-from']
+        msg['To'] = POST['to']
+        if POST['ccm'] : msg['To'] += ', '+ R.mail_group.ccm
+     
+        mailSub = POST['subject']
+        mailText = POST['body']
+    
+        # Make substitutions
+        SUBS = (
+            ("$HOST$", A.host.name),
+            ("$MESSAGE$", self.message),
+            ("$MAIL_TYPE$", R.mail_type.name),
+            ("$CRITICITY$", self.criticity),
+            ("$GLPI$" , str(self.glpi)),
+            ("$GLPI-URL$", settings.SNAFU['glpi-url']+'front/ticket.form.php?id='),
+            ("$TRANSLATION", self.message),
+            ("$DATETIME$", self.date.strftime('%d/%m/%y - %H:%M:%S')),
+            ("$DATE$", self.date.strftime('%d/%m/%y')),
+            ("$TIME$", self.date.strftime('%H:%M:%S')),
+            ("$LOG$" , '\n'.join( [ A.date.strftime('%d/%m/%y %H:%M:%S - ')+A.service.name+' en ' +A.status.name+' - '+A.info for A in self.get_alerts() ] ) )
+        ) 
+        for pattern,string in SUBS :
+            mailText = mailText.replace(pattern, string)
+            mailSub = mailSub.replace(pattern, string)
+        msg['Subject'] = mailSub
+        msg.attach( MIMEText( mailText.encode('utf8') , 'plain' ) )
+        
+        # Add graph to mail
+        if 'graphList' in POST :
+            graphList = POST.getlist('graphList')
+            for i in range(len(graphList)) :
+                pagehandle = opengraph(A, graphList[i])
+                #pagehandle2 = opengraph(A, graphList[i][0])
+                msg.attach( MIMEImage( pagehandle ) )
+                #msg.attach( MIMEImage( pagehandle2 ) )
+    
+        # Send mail
+        smtpObj = SMTP(settings.SNAFU['smtp-server'] , settings.SNAFU['smtp-port'] )
+        if 'smtp-password' in settings.SNAFU.keys() :
+            smtpObj.ehlo()
+            smtpObj.starttls()
+            smtpObj.ehlo()
+            smtpObj.login(settings.SNAFU['smtp-from'], settings.SNAFU['smtp-password'])
+        smtpObj.sendmail( msg['From'] , ( msg['To'], msg['Cc'] ), msg.as_string() )
+    
+        self.mail=True
+        self.save()
+
+        msg['body'] = mailText
+        addMail(self.glpi, msg)
+    
+        return True
