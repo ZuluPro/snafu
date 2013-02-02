@@ -25,6 +25,10 @@
     <button class="btn btn-primary" data-toggle="button" onclick="$.fn.snafu_object('update','user',{{ U.pk }})">Modifier</button>
     <button class="btn" style="display:none;" onclick="$.fn.snafu_object('get','user',{{ U.pk }})">Annuler</button>
    {% endif %}
+   {% if user == U and not U.is_superuser %}
+    <button class="btn btn-primary" data-toggle="button" onclick="$.fn.snafu_object('update','user',{{ U.pk }})">Modifier</button>
+    <button class="btn" style="display:none;" onclick="$.fn.snafu_object('get','user',{{ U.pk }})">Annuler</button>
+   {% endif %}
   </div>
  </div>
 

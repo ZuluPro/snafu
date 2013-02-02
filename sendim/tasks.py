@@ -26,7 +26,7 @@ def get_supervisor_task(S):
         run_every = timedelta(seconds=S.interval)
         def run(self, **kwargs):
             S.parse()
-            messages.add_message(request, messages.INFO,u"<b>Mise \xe0 jour de "+S.name+"</b>")
+            stdout.write('Periodic task finished for '+S.name+' !\n')
     return supervisor_task
 
 # Create supervisor's periodic tasks

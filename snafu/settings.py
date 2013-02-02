@@ -132,6 +132,8 @@ LOGGING = {
     }
 }
 
+LOGIN_URL = '/snafu/login'
+
 import os
 BASEDIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_DIRS = ( os.path.join(BASEDIR, 'sendim/templates'), )
