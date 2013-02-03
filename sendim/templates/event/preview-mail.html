@@ -51,16 +51,18 @@
    </div>
   </div>
  
-  <div class="control-group">
-   <label class="control-label" for="graphList">Selection de graph</label>
-   <div class="controls">
-    <select multiple="multiple" name="graphList" id="graphList" style=width:100%;">
-     {% for graph in graphList %}
-       <option value="{{ graph.1 }}">{{ graph.0 }}</option>
-     {% endfor %}
-    </select>
+  {% if graphList %}
+   <div class="control-group">
+    <label class="control-label" for="graphList">Selection de graph</label>
+    <div class="controls">
+     <select multiple="multiple" name="graphList" id="graphList" style=width:100%;">
+      {% for graph in graphList %}
+        <option value="{{ graph.1 }}">{{ graph.0 }}</option>
+      {% endfor %}
+     </select>
+    </div>
    </div>
-  </div>
+  {% endif %}
 
   <div>
    <button type="submit" class="btn btn-primary" name="sendmail_q">Envoyer</button>
