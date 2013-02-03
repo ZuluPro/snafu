@@ -6,6 +6,8 @@ from referentiel.models import Host, Status
 from sendim.models import MailTemplate
 from sendim.exceptions import UnableToConnectGLPI
 from sendim.defs import addMail, opengraph
+from sendim.connection import doLogin, doLogout, glpiServer
+from sendim.exceptions import UnableToConnectGLPI
 
 from smtplib import SMTP
 from email.mime.image import MIMEImage
@@ -76,8 +78,6 @@ class Event(models.Model) :
          """
          Create a GLPI ticket and add ticket number to self.glpi.
          """
-         from sendim.connection import doLogin, doLogout, glpiServer
-
          loginInfo = doLogin()
          if 'error' in loginInfo :
              raise UnableToConnectGLPI
@@ -125,6 +125,20 @@ class Event(models.Model) :
      
          doLogout()
          return ticketInfo['id']
+
+    def add_follow_up(self,content):
+         """
+         Add a content to the event's ticket.
+         """
+         if self.glpi :
+              loginInfo = doLogin()
+              content_to_add = {
+                'session':loginInfo['session'],
+                'ticket':self.glpi,
+                'content':content
+              }
+              glpiServer.glpi.addTicketFollowup(content_to_add)
+              doLogout()
 
     def get_reference(self):
         """Return reference of primary alert."""
@@ -180,6 +194,11 @@ class Event(models.Model) :
         return msg
 
     def prepare_mail(self,POST):
+        """
+        Use request.POST from 'sendim/templates/event/preview-mail.html',
+        for send an email.
+        This function make all substitutions and return a Mail object.
+        """
         A = self.get_primary_alert()
         # Recherche du MailGroup correspondant
         R = A.reference
@@ -224,12 +243,10 @@ class Event(models.Model) :
 
     def send_mail(self,msg):
         """
-        Use request.POST from 'sendim/templates/event/preview-mail.html',
-        for send an email.
-        This function make all substitutions before processing.
-        After send, add mail to GLPI ticket.
+        Send given email objects with SNAFU settings.
         """
         smtpObj = SMTP(settings.SNAFU['smtp-server'] , settings.SNAFU['smtp-port'] )
+        # Use TLS if password is settled
         if 'smtp-password' in settings.SNAFU.keys() :
             smtpObj.ehlo()
             smtpObj.starttls()
@@ -241,6 +258,12 @@ class Event(models.Model) :
         self.mail=True
         self.save()
 
-        addMail(self.glpi, msg)
+        self.add_mail_to_ticket(msg)
     
         return True
+
+    def add_mail_to_ticket(self,msg):
+         """
+         Add the given mail object ass follow up.
+         """
+         self.add_follow_up(msg.as_string())

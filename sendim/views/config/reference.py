@@ -7,7 +7,6 @@ import django.utils.simplejson as json
 from sendim.defs import *
 from sendim.models import Alert
 from sendim.forms import *
-from referentiel.defs import *
 from referentiel.models import Reference
 from referentiel.forms import *
 

@@ -8,19 +8,12 @@ from sendim.connection import doLogin, doLogout, glpiServer
 from sendim.exceptions import UnableToConnectGLPI
 
 def addFollowUp(ticketId,content) :
-    """
-    Add a content to the given ticket number.
-    """
-    loginInfo = doLogin()
-    contentToAdd = { 'session':loginInfo['session'], 'ticket':ticketId, 'content':content }
-    glpiServer.glpi.addTicketFollowup(contentToAdd)
-    doLogout()
-
+    pass
 def addMail(ticketId, msg) :
     """
     Use method addFollowUp() for add the given mail object to ticket.
     """
-    content = "from: " +settings.SNAFU['smtp-from']+ "\nto: " +msg['To']#+ "cc: " +msg['Cc'] +"subject: " +msg['Subject']+ "\n" +msg['body']
+    content = "from: " +settings.SNAFU['smtp-from']+ "\nto: " +msg['To']+ "cc: " +msg['Cc'] +"subject: " +msg['Subject']+ "\n" +msg['body']
     addFollowUp(ticketId,content)
 
 def getTicket(ticketId) :
@@ -62,7 +55,8 @@ def getTicket(ticketId) :
      - ticketcategories_id
      - ticketcategories_name
     """
-    return glpiServer.glpi.getTicket({'session':idSession, 'ticket':ticketId})
+    session = doLogin()['session']
+    return glpiServer.glpi.getTicket({'session':session, 'ticket':ticketId})
 
 def list_from_glpi(itemtype) :
     loginInfo = doLogin()

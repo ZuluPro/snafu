@@ -10,7 +10,6 @@ import django.utils.simplejson as json
 from sendim.models import Alert, MailTemplate
 from sendim.forms import *
 from referentiel.forms import *
-from referentiel.defs import *
 from referentiel.models import Host, Reference, Translation, Supervisor 
 
 from re import match
