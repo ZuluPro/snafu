@@ -6,7 +6,7 @@
 <form method="POST" action="/snafu/event/followup">{% csrf_token %}
  <input type="hidden" name="eventPk" value="{{ E.pk }}">
     <div class="modal-body" id="referenceModalBody">
-     <input type="textarea" name="content" placeholder="Suivi GLPI">
+     <textarea type="textarea" name="content" placeholder="Suivi GLPI" style="width:95%"/>
     </div>
     <div class="modal-footer">
         <input class="btn btn-primary" type="submit" value="Soumettre"></a>

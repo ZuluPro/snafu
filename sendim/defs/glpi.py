@@ -7,15 +7,6 @@ from django.conf import settings
 from sendim.connection import doLogin, doLogout, glpiServer
 from sendim.exceptions import UnableToConnectGLPI
 
-def addFollowUp(ticketId,content) :
-    pass
-def addMail(ticketId, msg) :
-    """
-    Use method addFollowUp() for add the given mail object to ticket.
-    """
-    content = "from: " +settings.SNAFU['smtp-from']+ "\nto: " +msg['To']+ "cc: " +msg['Cc'] +"subject: " +msg['Subject']+ "\n" +msg['body']
-    addFollowUp(ticketId,content)
-
 def getTicket(ticketId) :
     """
     Return a dictionnary with ticket's attributes.

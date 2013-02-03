@@ -169,7 +169,7 @@ def followUp(request) :
     """
     if request.method == 'POST' :
         E = Event.objects.get(pk=request.POST['eventPk'])
-        addFollowUp(E.glpi, request.POST['content'])
+        E.add_follow_up(request.POST['content'])
         return redirect('/snafu/events')
 
     else :

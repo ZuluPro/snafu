@@ -5,7 +5,7 @@ from django.conf import settings
 from referentiel.models import Host, Status
 from sendim.models import MailTemplate
 from sendim.exceptions import UnableToConnectGLPI
-from sendim.defs import addMail, opengraph
+from sendim.defs import opengraph
 from sendim.connection import doLogin, doLogout, glpiServer
 from sendim.exceptions import UnableToConnectGLPI
 
