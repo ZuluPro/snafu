@@ -105,16 +105,20 @@ class Alert(models.Model) :
         else :
             return False
 
-    def get_similar(self, host_status=True):
+    def get_similar(self, host_status=True, exclude_self=False):
         """Return alerts which have the same host and service."""
         if host_status :
             As = Alert.objects.filter(
               Q(host=self.host),
               Q(service=self.service) | Q(service__name='Host status')
-            ).exclude(pk=self.pk)
+            )
         else:
-            As = Alert.objects.filter(host=self.host,service=self.service).exclude(pk=self.pk)
-        return As
+            As = Alert.objects.filter(host=self.host,service=self.service)
+        # Exclude or not self
+        if exclude_self :
+            return As.exclude(pk=self.pk)
+        else:
+            return As
 
     def find_reference(self, update=True, byHost=True, byService=True, byStatus=True):
         """
@@ -205,8 +209,8 @@ class Alert(models.Model) :
         if not self.event :
             # Return None if alert is OK and no corresponding alert is found
             if self.status.name in ('OK','UP') :
-                if self.get_similar().exclude(event=None).exists() :
-	            E = self.get_similar().exclude(event=None).order_by('-date')[0].event
+                if self.get_similar(exclude_self=True).exclude(event=None).exists() :
+	            E = self.get_similar(exclude_self=True).exclude(event=None).order_by('-date')[0].event
 		    self.event = E
 	            self.save()
                 else :
@@ -225,12 +229,12 @@ class Alert(models.Model) :
                     translation = self.info
 
                 # If there's no similar alert, create Event
-                if not self.get_similar().exclude(event=None).exists() :
+                if not self.get_similar(exclude_self=True).exclude(event=None).exists() :
                     E = self.create_event(translation,mail_criticity)
 
                 # Else find the last alert
                 else :
-                    lastA = self.get_similar().exclude(event=None).order_by('-date')[0]
+                    lastA = self.get_similar(exclude_self=True).exclude(event=None).order_by('-date')[0]
                     # If last alert is OK/UP, then create an Event
                     if lastA.status.name in ('OK','UP') :
                         E = self.create_event(translation,mail_criticity)

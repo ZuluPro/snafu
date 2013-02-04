@@ -39,12 +39,9 @@ def reload_alerts(request) :
 @login_required
 def eventHistory(request) :
     """Return a list of alerts which match with the primary alert of an event."""
-    E = Event.objects.get( pk=request.GET['eventPk'])
+    E = Event.objects.get(pk=request.GET['eventPk'])
     A = E.get_primary_alert()
-    As = Alert.objects.filter(
-       host=E.element,
-       service=A.service
-    )
+    As = A.get_similar()
 
     return render(request, 'modal/eventHistory.html', {
         'As':As,
@@ -123,17 +120,18 @@ def eventsAgr(request) :
     if request.method == 'POST' :
 #        if not request.POST['toAgr'] : 
 #            return HttpResponse(u"<center><h4>Veuillez choisir plusieurs \xe9v\xe9nements !<h4></center>")
-        aggregate(request.POST.getlist('toAgr'), request.POST['choicedEvent'], request.POST['message'] )
+        E = Event.objects.get(pk=request.POST['choicedEvent'])
+        E.aggregate(request.POST.getlist('toAgr'), request.POST['message'], glpi=E.glpi, mail=E.mail, criticity=E.criticity)
         messages.add_message(request,messages.SUCCESS,u"Aggr\xe9gation d'\xe9v\xe9nement avec succ\xe8s." )
         
         return redirect('/snafu/events')
     else :
         if len(request.GET.getlist('events[]') ) < 2 :
             return HttpResponse(u"<center><h4>Veuillez choisir plusieurs \xe9v\xe9nements !<h4></center>")
-    return render(request, 'modal/events-agr.html', {
-        'events': [ Event.objects.get(pk=pk) for pk in request.GET.getlist('events[]') ][::-1],
-        'alerts': Alert.objects.order_by('-date')
-    })
+        return render(request, 'modal/events-agr.html', {
+            'events': Event.objects.filter(pk__in=request.GET.getlist('events[]')),
+            'alerts': Alert.objects.order_by('-date')
+        })
 
 @login_required
 def closeEvents(request) :

@@ -1,15 +1,19 @@
 {% load addFontColor %}
 <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">×</button>
-    <h4>Historique des alertes : {{ As.0.host }} - {{ As.0.service }}</h4>
+ <button type="button" class="close" data-dismiss="modal">×</button>
+ <h4>Historique des alertes : {{ As.0.host }} - {{ As.0.service }}</h4>
 </div>
+
 <div class="modal-body" id="referenceModalBody">
-    <ul>
-    {% for A in As %}
-    <li>{{ A.date|date:"Y/m/d - G:i:s" }} - {{ A.info|addFontColor:A.status.name|safe }}</li>
-    {% endfor %}
-    </ul>
+ <ul>
+  {% for A in As %}
+   {% if A.isPrimary %}<b>{% endif %}
+   <li>{{ A.date|date:"Y/m/d - G:i:s" }} : {{ A.info|addFontColor:A.status.name|safe }}</li>
+   {% if A.isPrimary %}</b>{% endif %}
+  {% endfor %}
+ </ul>
 </div>
+
 <div class="modal-footer">
-    <a href="#" class="btn" data-dismiss="modal">Fermer</a>
+ <a href="#" class="btn" data-dismiss="modal">Fermer</a>
 </div>

@@ -101,7 +101,7 @@ class Event(models.Model) :
              urgency = R.glpi_urgency.glpi_id
              impact = R.glpi_impact.glpi_id
 
-         ticket= {
+         ticket = {
              'session':loginInfo['session'],
              'type':1,
              'category': category,
@@ -267,3 +267,25 @@ class Event(models.Model) :
          Add the given mail object ass follow up.
          """
          self.add_follow_up(msg.as_string())
+
+    def aggregate(self, eventsPk, message, glpi=None, mail=False, criticity='?') :
+        """
+        Aggregate several events in one.
+        """
+        if len(eventsPk) < 2 : return None
+        # Walk on events and hold in memory ticket,mail and criticity
+        Es = Event.objects.filter(pk__in=eventsPk).exclude(pk=self.pk)
+        for E in Es :
+            if E.glpi : glpi = E.glpi
+            if E.mail : mail = True
+            if E.criticity == 'Majeur' : criticity = 'Majeur'
+            E.get_alerts().update(isPrimary=False,event=self)
+            E.delete()
+
+        # Apply ticket,mail and criticity
+        self.message = message
+        self.glpi = glpi
+        self.mail = mail
+        self.criticity = criticity
+        self.save()
+        return self
