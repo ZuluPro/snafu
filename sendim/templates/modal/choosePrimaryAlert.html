@@ -10,22 +10,23 @@ $(document).ready(function() {
 </script>
 
 <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">×</button>
-    <h4>Choix de l'alerte primaire de l'évenement {{ E.pk }} : {{ E.message }}</h4>
+ <button type="button" class="close" data-dismiss="modal">×</button>
+ <h4>Choix de l'alerte primaire de l'évenement {{ E.pk }} : {{ E.message }}</h4>
 </div>
 
 <form method="POST" action="/snafu/event/choosePrimaryAlert" id="formModal">{% csrf_token %}
-    <input type="hidden" name="eventPk" value="{{ E.pk }}">
-    <div class="modal-body" id="CPAModalBody">
-        Quel est l'alerte primaire :
-        <select class="span4" size="{{ As|length }}" name="chosenAlert">
-            {% for A in As %}
-            <option value="{{ A.pk }}"{% if A.isPrimary %} selected="selected"{% endif %}>{{ A.pk }}: {{ A }}</option>
-            {% endfor %}
-        </select>
+ <input type="hidden" name="eventPk" value="{{ E.pk }}"/>
+ <div class="modal-body" id="CPAModalBody">
+  Quelle est l'alerte primaire :
+  <select class="span4" size="{{ As|length }}" name="chosenAlert">
+   {% for A in As %}
+    <option value="{{ A.pk }}"{% if A.isPrimary %} selected="selected"{% endif %}>{{ A.pk }}: {{ A }}</option>
+   {% endfor %}
+  </select>
+ </div>
 
-    <div class="modal-footer">
-        <input class="btn btn-primary" type="submit" value="Choisir"></a>
-        <a href="#" class="btn" data-dismiss="modal">Fermer</a>
-    </div>
+ <div class="modal-footer">
+  <input class="btn btn-primary" type="submit" value="Choisir"/>
+  <a href="#" class="btn" data-dismiss="modal">Fermer</a>
+ </div>
 </form>
