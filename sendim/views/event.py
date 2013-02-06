@@ -58,7 +58,7 @@ def events(request) :
             msg = E.make_mail()
 
             # Retrieve graphs for the current Event
-            graphList = readGraphs(E.element.name, A.service.name)
+            graphList = A.host.get_graph_list(A.service)
    
             return render(request,'event/preview-mail.html', {
                     'msg':msg,

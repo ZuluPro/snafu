@@ -43,8 +43,8 @@
      "status": "http://sysnetmon.diglinks.com/nagios/cgi-bin/status.cgi",
      "index": "http://sysnetmon.diglinks.com",
      "supervisor_type": 1,
-     "name": "SysNetmon (with N2RDD)",
-     "graph": "http://sysnetmon.diglinks.com/n2rrd_images_cache/core.diglinks.com/",
+     "name": "RRDTools Demo",
+     "graph": "http://sysnetmon.diglinks.com/cgi-bin/rrd2graph.cgi",
      "active": false,
      "graph_type": "N2RRD",
      "login": "guest",
@@ -55,24 +55,6 @@
  
   {
    "pk": 4,
-   "model": "referentiel.supervisor",
-   "fields": 
-    {
-     "status": "http://nagios.demo.netways.de/nagios/cgi-bin/status.cgi",
-     "index": "http://nagios.demo.netways.de",
-     "supervisor_type": 1,
-     "name": "Netways (with RRDTool)",
-     "graph": "https://nagios.demo.netways.de/pnp4nagios/",
-     "graph_type": "RRDTool",
-     "active": false,
-     "login": "guest",
-     "password": "guest",
-     "history": "http://nagios.demo.netways.de/nagios/cgi-bin/history.cgi"
-    }
-  },
-
-  {
-   "pk": 5,
    "model": "referentiel.supervisor",
    "fields": 
     {

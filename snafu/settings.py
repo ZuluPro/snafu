@@ -134,6 +134,8 @@ LOGGING = {
 
 LOGIN_URL = '/snafu/login'
 
+from settings_local import *
+
 import os
 BASEDIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_DIRS = ( os.path.join(BASEDIR, 'sendim/templates'), )
@@ -147,8 +149,6 @@ if 'djcelery' in INSTALLED_APPS :
 
 if 'south' in INSTALLED_APPS :
     SOUTH_TESTS_MIGRATE = False
-
-from settings_local import *
 
 from sys import argv
 if 'test' in argv :

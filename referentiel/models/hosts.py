@@ -24,6 +24,16 @@ class Host(models.Model):
     def current_status(self) :
         return Service.objects.get(name='Host status').current_status(self.name)
 
+    def get_graph_list(self, service):
+        """
+        Shortcut which use Supervisor.get_graph_list(),
+        but return [] if there's no supervisor.
+        """
+        if self.supervisor :
+            return self.supervisor.get_graph_list(self, service)
+        else :
+            return []
+
 class Service(models.Model):
     """
     Correspond to a monitored service from a supervisor.

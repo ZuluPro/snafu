@@ -11,6 +11,7 @@ from views import *
 from views_configuration import *
 from webservices import *
 from glpi_webservices import *
+from graph import *
 
 def suite():
     import doctest

@@ -82,6 +82,9 @@
      
      {% if E.element.supervisor %}
       <li><a target="_blank" href="{{ E.element.supervisor.status }}?host={{ E.element }}">Vision Nagios</a></li>
+      {% if E.element.supervisor.graph %}
+       <li><a target="_blank" href="{{ E.element.supervisor.graph }}?host={{ E.element }}">Vision métrologie</a></li>
+      {% endif %}
      {% else %}
       <li><a class="disabled" data-content="Veuillez renseigner le superviseur" rel="popover" data-original-title="Superviseur non renseigné !" data-placement="left">Vision Nagios</a></li>
      {% endif %}

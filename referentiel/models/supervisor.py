@@ -3,11 +3,12 @@ from django.utils.timezone import now
 
 from sendim.exceptions import UnableToConnectNagios
 
-from urllib2 import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler, build_opener, install_opener, URLError
+from urllib2 import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler, build_opener, install_opener, URLError, HTTPError
 from socket import error,gaierror
 from datetime import datetime
 from HTMLParser import HTMLParser
 _htmlparser = HTMLParser()
+from email.mime.image import MIMEImage
 
 class SupervisorType(models.Model) :
     name = models.CharField(max_length=30)
@@ -41,6 +42,9 @@ class Supervisor(models.Model) :
         app_label = 'referentiel'
         ordering = ['name']
     
+    def __unicode__(self):
+        return self.name
+
     def getOpener(self):
         """
         Return a custom urllib2 opener for logged request to supervisor.
@@ -51,9 +55,6 @@ class Supervisor(models.Model) :
         opener = build_opener(authhandler)
         install_opener(opener)
         return opener
-
-    def __unicode__(self):
-        return self.name
 
     def checkNagios(self,timeout=2):
         """
@@ -206,3 +207,96 @@ class Supervisor(models.Model) :
                         if not A.event in Es_dict : Es_dict[A.event.pk] = []
                         Es_dict[A.event.pk].append(A.pk)
         return Es_dict
+
+    def get_graph_url(self, host=None, service=None, alert=None, prefix='image'):
+        """
+        Get a graph url for a couple Host & Service or an Alert.
+        If supervisor has no graph return ''.
+        prefix allow to use between list or graph URL.
+        """
+        if not self.graph :
+            return ''
+        # Read args
+        if alert :
+            host_name = alert.host.name.replace(' ','+')
+            service_name = alert.service.name.replace(' ','+').replace('Host+status','_HOST_')
+
+        else :
+            host_name = host.name.replace(' ','+')
+            if service :
+                service_name = service.name.replace(' ','+').replace('Host+status','_HOST_')
+            else :
+                service_name = '_HOST_'
+
+        # Treatment by graph type
+        if self.graph_type == u'N2RRD' :
+            if prefix == 'image' : 
+                url = self.graph+host_name+'_'+service_name+'_Daily.png'
+            else : 
+                url = self.index+'/cgi-bin/rrd2graph.cgi?hostname='+host_name+'&service='+service_name
+
+        elif self.graph_type == u'RRDTool' :
+            url = self.graph+prefix+'?host='+host_name+'&srv='+service_name+'&view=0' 
+
+        # CREATE AN EXCEPTION FOR NO GRAPH
+        else :
+            url = ''
+
+        return url
+
+    def get_graph_list(self, host, service=lambda:Service.objects.get(pk=1).name):
+        """
+        Get available graph for the given host and status.
+        By default service is 'Host status'.
+        Element of graph list is a tuple as below :
+        N2RRD : (number,name,source)
+        RRDTool : (name,number)
+        """
+        from re import match,search,sub
+
+        if not self.graph :
+            return []
+
+        # Try to open graph page
+        opener = self.getOpener()
+        try :
+            pagehandle = opener.open(self.get_graph_url(host, service, prefix='graph'))
+        except (HTTPError,ValueError), e :
+            return []
+        else :
+            # Get list of graph from page 
+            graphList = list()
+            if self.graph_type == u'N2RRD' :
+                for line in pagehandle.readlines() :
+                    if search(r'n2rrd_images_cache', line, flags=2) :
+                         graphList.append((
+                           len(graphList),
+                           sub(r".*alt=\"([^\"]*)\".*", r"\1", line, flags=2),
+                           sub(r".*src=\"([^\"]*)\".*", r"\1", line, flags=2)
+                         ))
+            # TEST
+            elif self.graph_type == u'RRDTool' :
+                for line in pagehandle.readlines() :
+                    if match(r'<td.*Datasource:[^\<]*', line) :
+                         graphList.append((
+                           sub(r".*Datasource: ([^\<]*).*", r"\1", line),
+                           len(graphList) 
+                         ))
+            return graphList
+        return []
+
+    def get_graph(self, alert, graph_url) :
+        """Get a graph from an Alert and his url."""
+        opener = self.getOpener()
+        url = self.get_graph_url(alert=alert, prefix='image')
+
+        if self.graph_type == u'N2RRD' :
+            return opener.retrieve(self.index+graph_url).read()
+        elif self.graph_type == u'RRDTool' :
+            img =  opener.open(url+'&source='+str(int(graph_url)))
+
+        # add header for attachement
+        attachement = MIMEImage(img.read())
+        attachement.add_header('Content-Disposition', 'attachment', filename='graph'+str(int(graph_url))+'.png')
+        attachement.add_header('Content-Type', 'image/png', filename='graph'+str(int(graph_url))+'.png')
+        return attachement

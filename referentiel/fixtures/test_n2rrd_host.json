@@ -1,0 +1,28 @@
+[
+  {
+   "pk": 1,
+   "model": "referentiel.host",
+   "fields": {
+    "name": "core.diglinks.com",
+    "host_type": "",
+    "supervisor": 3,
+    "glpi_id": 1
+   }
+  },
+
+  {
+   "pk": 1,
+   "model": "referentiel.service",
+   "fields": {"name": "Host status"}
+  },
+  {
+   "pk": 2,
+   "model": "referentiel.service",
+   "fields": {"name": "02_load"}
+  },
+  {
+   "pk": 3,
+   "model": "referentiel.service",
+   "fields": {"name": "03_PING"}
+  }
+]

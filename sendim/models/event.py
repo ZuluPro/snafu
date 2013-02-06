@@ -228,17 +228,20 @@ class Event(models.Model) :
         for pattern,string in SUBS :
             body = body.replace(pattern, string)
             subject = subject.replace(pattern, string)
+        # Add modified subject
         msg['Subject'] = msg.preamble = subject
-        msg.attach( MIMEText( body.encode('utf8') , 'plain' ) )
+        # Add modified body
+        msg.attach(MIMEText(body.encode('utf8'), 'plain'))
         
         # Add graph to mail
         if 'graphList' in POST :
-            graphList = POST.getlist('graphList')
-            for i in range(len(graphList)) :
-                pagehandle = opengraph(A, graphList[i])
+            graph_url_list = POST.getlist('graphList')
+            for i in range(len(graph_url_list)):
+                img = A.host.supervisor.get_graph(A, graph_url_list[i])
                 #pagehandle2 = opengraph(A, graphList[i][0])
-                msg.attach( MIMEImage( pagehandle ) )
-                #msg.attach( MIMEImage( pagehandle2 ) )
+                #img = MIMEImage(pagehandle)
+                msg.attach(img)
+
         return msg
 
     def send_mail(self,msg):

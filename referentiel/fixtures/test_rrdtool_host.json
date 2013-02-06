@@ -1,0 +1,28 @@
+[
+  {
+   "pk": 1,
+   "model": "referentiel.host",
+   "fields": {
+    "name": "c1-activedirectory-1",
+    "host_type": "",
+    "supervisor": 4,
+    "glpi_id": 1
+   }
+  },
+
+  {
+   "pk": 1,
+   "model": "referentiel.service",
+   "fields": {"name": "Host status"}
+  },
+  {
+   "pk": 2,
+   "model": "referentiel.service",
+   "fields": {"name": "win-mem physical"}
+  },
+  {
+   "pk": 3,
+   "model": "referentiel.service",
+   "fields": {"name": "win-mem virtual"}
+  }
+]
