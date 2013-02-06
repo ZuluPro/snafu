@@ -42,6 +42,12 @@ class Supervisor(models.Model) :
         app_label = 'referentiel'
         ordering = ['name']
     
+    class UnableToConnectNagios(Exception):
+        """
+        Unable to connect to Nagios website.
+        """
+        pass
+
     def __unicode__(self):
         return self.name
 

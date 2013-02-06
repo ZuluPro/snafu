@@ -5,7 +5,6 @@ from django.conf import settings
 from referentiel.models import Host, Status
 from sendim.models import MailTemplate
 from sendim.exceptions import UnableToConnectGLPI
-from sendim.defs import opengraph
 from sendim.connection import doLogin, doLogout, glpiServer
 from sendim.exceptions import UnableToConnectGLPI
 
@@ -238,8 +237,6 @@ class Event(models.Model) :
             graph_url_list = POST.getlist('graphList')
             for i in range(len(graph_url_list)):
                 img = A.host.supervisor.get_graph(A, graph_url_list[i])
-                #pagehandle2 = opengraph(A, graphList[i][0])
-                #img = MIMEImage(pagehandle)
                 msg.attach(img)
 
         return msg
@@ -279,8 +276,8 @@ class Event(models.Model) :
         # Walk on events and hold in memory ticket,mail and criticity
         Es = Event.objects.filter(pk__in=eventsPk).exclude(pk=self.pk)
         for E in Es :
-            if E.glpi : glpi = E.glpi
-            if E.mail : mail = True
+            if E.glpi and not self.glpi : glpi = E.glpi
+            if E.mail and not self.mail: mail = True
             if E.criticity == 'Majeur' : criticity = 'Majeur'
             E.get_alerts().update(isPrimary=False,event=self)
             E.delete()
