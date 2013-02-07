@@ -7,7 +7,7 @@ from django.core import management
 
 from referentiel.models import Host, Service, Status, Reference, Supervisor
 from sendim.models import Alert, Event
-from sendim.tests.defs import create_event, create_alert
+from sendim.tests.defs import create_event, create_alert, internet_is_on
 
 from datetime import datetime, timedelta
 
@@ -22,6 +22,7 @@ class Graph_TestCase(unittest.TestCase):
         Alert.objects.all().delete()
         Event.objects.all().delete()
 
+    @unittest.skipIf(not internet_is_on(), 'No internet connection available.')
     def test_RRDTool(self):
         """
         Test to get a list of graph from nagios.demo.netways.de
@@ -57,6 +58,7 @@ class Graph_TestCase(unittest.TestCase):
         self.assertEqual(200,response.getcode())
         self.assertIn('image/png', info['content-type'])
 
+    @unittest.skipIf(not internet_is_on(), 'No internet connection available.')
     def test_N2RDD(self):
         """                                                                                          
         Test to get a list of graph from sysnetmon.diglinks.com

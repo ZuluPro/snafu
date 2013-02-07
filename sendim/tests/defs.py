@@ -130,5 +130,13 @@ def end_event(E,number=3):
           _A.link()
     return E
 
-def get_static(template):
-    pass
+def internet_is_on():
+    """
+    Try to connect to ifconfig.me website.
+    """
+    from urllib2 import urlopen, URLError
+    try:
+        response = urlopen('http://82.94.164.162/',timeout=1)
+        return True
+    except URLError as err: 
+        return False

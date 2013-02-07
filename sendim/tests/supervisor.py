@@ -8,6 +8,7 @@ from django.utils.timezone import now
 
 from referentiel.models import Supervisor, Host, Service
 from sendim.models import Alert, Event, Downtime
+from sendim.tests.defs import internet_is_on
 
 class Supervisor_TestCase(unittest.TestCase):
     """
@@ -22,16 +23,19 @@ class Supervisor_TestCase(unittest.TestCase):
         Event.objects.all().delete()
         Downtime.objects.all().delete()
 
+    @unittest.skipIf(not internet_is_on(), 'No internet connection available.')
     def test_communication(self):
         """Test a simple HTTP communication with Supervisor."""
         response = self.supervisor.checkNagios()
         self.assertFalse(response)
 
+    @unittest.skipIf(not internet_is_on(), 'No internet connection available.')
     def test_logged_in_communication(self):
         """Test to access to a page which need login."""
         opener = self.supervisor.getOpener()
         opener.open(self.supervisor.index)
 
+    @unittest.skipIf(not internet_is_on(), 'No internet connection available.')
     def test_parsing(self):
         """Test to parse a supervisor."""
         self.supervisor.parse()
@@ -41,6 +45,7 @@ class Supervisor_TestCase(unittest.TestCase):
             self.assertNotEqual(Service.objects.count(), 0)
             self.assertEqual(self.supervisor.name, A.host.supervisor.name)
 
+    @unittest.skipIf(not internet_is_on(), 'No internet connection available.')
     def test_parsing_with_downtime(self):
         """
         Test to parse a supervisor.
