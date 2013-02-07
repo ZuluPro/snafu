@@ -65,9 +65,11 @@ class Customer_Client_TestCase(unittest.TestCase):
         [ E.delete() for E in Event.objects.all() ]
         [ T.delete() for T in TaskMeta.objects.all() ]
 
+    @unittest.skipIf(not internet_is_on(), 'No internet connection available.')
     def test_reload_alerts(self):
         response = self.client.post('/snafu/event/reloadAlerts')
         
+    @unittest.skipIf(not internet_is_on(), 'No internet connection available.')
     def test_treatment_without_reference(self):
         self.client.post('/snafu/event/reloadAlerts')
        

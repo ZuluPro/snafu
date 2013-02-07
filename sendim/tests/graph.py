@@ -34,7 +34,7 @@ class Graph_TestCase(unittest.TestCase):
         GRAPH_URL = 'https://nagios.demo.netways.de/pnp4nagios/image?host=c1-activedirectory-1&srv=win-mem+virtual&view=0'
         S = Supervisor.objects.get(name__icontains='Netways')
         opener = S.getOpener()
-        A = create_alert(service='win-mem virtual')
+        A = create_alert(host='c1-activedirectory-1', service='win-mem virtual')
        
         # Find graphs
         ## Test to get a graph list URL
