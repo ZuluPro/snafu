@@ -100,6 +100,7 @@ class Supervisor(models.Model) :
         REG_STATUS = re(r".*ALERT: [^;]*;[^;]*;([^;]*);.*$")
         REG_HOST_STATUS = re(r".*ALERT: [^;]*;([^;]*);.*$")
         REG_INFO = re(r".*ALERT: [^;]*;[^;]*;[^;]*;[^;]*;[^;]*;([^;]*)<br clear='all' />$")
+        REG_HOST_INFO = re(r".*ALERT: [^;]*;[^;]*;[^;]*;[^;]*;([^;]*)<br clear='all' />$")
         REG_DATE = re(r".*>\[([^\]]*)\].*")
         REG_DOWNTIME_START = re(r'DOWNTIME.*STARTED')
         REG_DOWNTIME_STOP = re(r'DOWNTIME.*STOPPED')
@@ -189,7 +190,7 @@ class Supervisor(models.Model) :
                                 host,
                                 "Host status",
                                 REG_HOST_STATUS.sub(r"\1", line),
-                                REG_INFO.sub(r"\1", line),
+                                REG_HOST_INFO.sub(r"\1", line),
                                 date
                             ])
 

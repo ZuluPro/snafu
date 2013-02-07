@@ -68,7 +68,7 @@ class Graph_TestCase(unittest.TestCase):
         GRAPH_URL = 'http://sysnetmon.diglinks.com/cgi-bin/n2rrd_images_cache/core.diglinks.com/core.diglinks.com_load_Daily.png'
         S = Supervisor.objects.get(name__icontains='SysNetmon')                                      
         opener = S.getOpener()
-        A = create_alert(service='02_load')                                                          
+        A = create_alert(host='core.diglinks.com', service='02_load')                                                          
         
         # Find graphs
         graph_list_url = S.get_graph_url(alert=A, prefix='graph')                                    

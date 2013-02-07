@@ -7,48 +7,6 @@ from django.conf import settings
 from sendim.connection import doLogin, doLogout, glpiServer
 from sendim.exceptions import UnableToConnectGLPI
 
-def getTicket(ticketId) :
-    """
-    Return a dictionnary with ticket's attributes.
-
-    Below, a short list of them :
-    - General :
-     - name
-     - content
-     - solution 
-     - status
-
-    - related to date :
-     - date
-     - date_mod
-
-    - Users and Groups:
-     - users_id_lastupdater
-     - users_name_lastupdater
-     - users_name_recipient
-     - users_id_recipient
-     - users :
-      - requester
-      - assign
-     - groups :
-      - requester
-      - assign
-
-    - Items :
-     - itemtype
-     - items_id
-     - items_name
-     - itemtype_name
-
-    - Category :
-     - type
-     - type_name
-     - ticketcategories_id
-     - ticketcategories_name
-    """
-    session = doLogin()['session']
-    return glpiServer.glpi.getTicket({'session':session, 'ticket':ticketId})
-
 def list_from_glpi(itemtype) :
     loginInfo = doLogin()
 

@@ -2,16 +2,9 @@ from django.db.models import Q
 from django.db import models
 from django.conf import settings
 
-from referentiel.models import Host, Status
-from sendim.models import MailTemplate
+from referentiel.models import Host
 from sendim.exceptions import UnableToConnectGLPI
 from sendim.connection import doLogin, doLogout, glpiServer
-from sendim.exceptions import UnableToConnectGLPI
-
-from smtplib import SMTP
-from email.mime.image import MIMEImage
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 class Event(models.Model) :
     element = models.ForeignKey(Host)
@@ -73,6 +66,10 @@ class Event(models.Model) :
             A.set_primary()
             return A
             
+    def get_reference(self):
+        """Return reference of primary alert."""
+    	return self.get_primary_alert().reference
+
     def create_ticket(self):
          """
          Create a GLPI ticket and add ticket number to self.glpi.
@@ -139,9 +136,15 @@ class Event(models.Model) :
               glpiServer.glpi.addTicketFollowup(content_to_add)
               doLogout()
 
-    def get_reference(self):
-        """Return reference of primary alert."""
-    	return self.get_primary_alert().reference
+    def get_ticket(self):
+        """Return a dictionnary with GLPI ticket's attributes."""
+        if self.glpi :
+            session = doLogin()['session']
+            ticket_info = glpiServer.glpi.getTicket({'session':session, 'ticket':self.glpi})
+        else :
+            ticket_info = dict()
+
+        return ticket_info
 
     def close(self, force=False):
         """
@@ -161,10 +164,10 @@ class Event(models.Model) :
             for host in hosts.keys() : 
                 for service in hosts[host] :
                     if service == 'Host status' :
-                        if not self.get_alerts().filter(host__name=host,service__name=service,status=Status.objects.get(name='UP') ) :
+                        if not self.get_alerts().filter(host__name=host,service__name=service,status__pk=6) :
                             notOK.append( (host,service) )
                     else :
-                        if not self.get_alerts().filter(host__name=host,service__name=service,status=Status.objects.get(name='OK') ) :
+                        if not self.get_alerts().filter(host__name=host,service__name=service,status__pk=5) :
                             notOK.append( (host,service) )
             if not notOK :
                 self.closed = True
@@ -176,6 +179,8 @@ class Event(models.Model) :
         Using Event and the chosen MailTemplate for create
         a dictionnary which contains all mail attributes.
         """
+        from sendim.models import MailTemplate
+
         R = self.get_primary_alert().reference
         if MailTemplate.objects.filter(chosen=True).exists() :
             MT = MailTemplate.objects.get(chosen=True)
@@ -198,6 +203,9 @@ class Event(models.Model) :
         for send an email.
         This function make all substitutions and return a Mail object.
         """
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
+        
         A = self.get_primary_alert()
         # Recherche du MailGroup correspondant
         R = A.reference
@@ -245,6 +253,8 @@ class Event(models.Model) :
         """
         Send given email objects with SNAFU settings.
         """
+        from smtplib import SMTP
+
         smtpObj = SMTP(settings.SNAFU['smtp-server'] , settings.SNAFU['smtp-port'] )
         # Use TLS if password is settled
         if 'smtp-password' in settings.SNAFU.keys() :
@@ -289,3 +299,57 @@ class Event(models.Model) :
         self.criticity = criticity
         self.save()
         return self
+
+    def get_ReferenceFormSet(self):
+        """
+        Return a reference forms list.
+        Used for ask References of Event's Alerts.
+        """
+        from referentiel.models import Service, Reference
+        from referentiel.forms import HostReferenceForm, ReferenceBigForm
+        from sendim.models import Alert
+
+        service_alerts = dict()
+        host_alerts = list()
+
+        # Sort missing references in a dict
+        for A in self.get_alerts() :
+            if A.service.name != 'Host status' :
+                # Create list of service if it doesn't exists
+                if not A.host.name in service_alerts :
+                    service_alerts[A.host.name] = []
+    
+                if not A.service.name in service_alerts[A.host.name] and (not Reference.objects.filter(host=A.host,service=A.service).exists()) :
+                    service_alerts[A.host.name].append(A.service.name)
+            else :
+                if (not A.host.name in host_alerts) and (not Reference.objects.filter(host=A.host,service=1).exists()) :
+                    host_alerts.append(A.host.name)
+    
+        # Create a From for each
+        form_list = list()
+        ## Treat service alerts
+        for host,services in service_alerts.items() :
+            for service in services :
+                data = dict()
+                data['host'] = Host.objects.get(name=host)
+                data['service'] = Service.objects.get(name=service)
+                data['glpi_source'] = 'Supervision'
+                data['form_type'] = 'big'
+                for status in ('warning','critical','unknown') :
+                    data[status+'_criticity'] = 1
+                    data[status+'_urgency'] = 3
+                    data[status+'_priority'] = 3
+                    data[status+'_impact'] = 3
+                form_list.append(ReferenceBigForm(data))
+        ## Treat host alerts
+        for host in host_alerts :
+            data = dict()
+            data['host'] = Host.objects.get(name=host)
+            data['service'] = 1
+            data['status'] = 4
+            data['glpi_source'] = 'Supervision'
+            form_list.append(HostReferenceForm(data))
+            data['form_type'] = 'host'
+    
+        return form_list
+    

@@ -32,6 +32,7 @@ def suite():
      'sendim.tests.views_configuration',
      'sendim.tests.webservices',
      'sendim.tests.glpi_webservices',
+     'sendim.tests.graph'
     )
     suite = unittest.TestSuite()
 

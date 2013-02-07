@@ -39,7 +39,7 @@ def events(request) :
         elif "treatment_q" in request.POST :
 	    if E.criticity == '?' or not E.get_primary_alert().reference : 
 		
-		Forms = getFormSet(E)
+		Forms = E.get_ReferenceFormSet()
 		return render(request, 'event/add-reference.html', {
 			'Forms':Forms, 'E':E,
         		'title':'Snafu - Ajout de Reference'

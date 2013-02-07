@@ -46,7 +46,9 @@ class Supervisor_TestCase(unittest.TestCase):
         Test to parse a supervisor.
         And re-test to parse with downtime
         """
-        first_count = len(self.supervisor.parse())
+        self.supervisor.parse()
+        first_count = Alert.objects.count()
+
         if Alert.objects.exists() :
 
             A = Alert.objects.exclude(service__name='Host status')[0]
@@ -57,4 +59,6 @@ class Supervisor_TestCase(unittest.TestCase):
             Alert.objects.all().delete()
             Event.objects.all().delete()
             new_count = len(self.supervisor.parse())
-            self.assertNotEqual(first_count,new_count)
+            new_count = Alert.objects.count()
+
+            self.assertGreater(first_count,new_count)

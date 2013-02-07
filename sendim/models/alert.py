@@ -2,10 +2,8 @@ from django.db import models
 from django.db.models import Q
 from django.utils.timezone import now
 
-from referentiel.models import Host, Service, Status, Reference, Black_reference, Translation, Supervisor
+from referentiel.models import Host, Service, Status, Reference, Translation
 from sendim.models import Event
-
-from datetime import datetime
 
 class Alert_Manager(models.Manager):
     """Custom manager for alerts which return an AlertQuerySet."""
@@ -23,6 +21,8 @@ class Alert_Manager(models.Manager):
         Create Alert and return it.
         supervisor arguments allow to link host to it.
         """
+        from referentiel.models import Supervisor
+
         # Try to find supervisor arg and corresponding object by name
         if Supervisor.objects.filter(name=kwargs.get('supervisor','')).exists() :
             S = Supervisor.objects.get(name=kwargs['supervisor'])
@@ -53,6 +53,8 @@ class AlertQuerySet(models.query.QuerySet):
         """
         Get day's alerts by date. By default return for today.
         """
+        from datetime import datetime
+
         if isinstance(date, datetime) :
             date = date.date()
         return self.filter(date=date)
@@ -85,6 +87,7 @@ class Alert(models.Model) :
 
     def save(self, *args, **kwargs):
         if 'supervisor' in dir(self) :
+            from referentiel.models import Host, Supervisor
             self.supervisor = Supervisor.objects.get(name=self.supervisor)
             if not Host.objects.get(pk=self.host.pk).supervisor :
                 Host.objects.filter(pk=self.host.pk).update(supervisor=self.supervisor)
@@ -100,6 +103,8 @@ class Alert(models.Model) :
         """
         Return True if this Alert corresponding to a Black_reference.
         """
+        from referentiel.models import Black_reference
+
         if Black_reference.objects.filter(host=self.host,service=self.service).exists() :
             return True
         else :
@@ -125,6 +130,8 @@ class Alert(models.Model) :
         Return a Reference which matching with the Alert.
         Searching parameters may be given with arguments.
         """ 
+        from referentiel.models import Reference
+
         if not self.reference :
             Rs = Reference.objects.all()
             if byHost : Rs = Rs.filter(host=self.host)
