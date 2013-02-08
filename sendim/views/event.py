@@ -1,16 +1,7 @@
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect
-from django.contrib import messages
-import django.utils.simplejson as json
 
-from sendim.defs import *
-from sendim.models import Alert,Event
-from sendim.forms import *
-from sendim.exceptions import UnableToConnectGLPI
-from referentiel.models import *
-from referentiel.forms import *
+from sendim.models import Event
 
 @login_required
 def events(request) :
@@ -22,6 +13,10 @@ def events(request) :
      - sendmail_q : Send a mail for a given event.
      - treatment_q : Make exploitation processes.
     """
+    from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+    from django.contrib import messages
+    from sendim.exceptions import UnableToConnectGLPI
+
     if request.method == 'POST' :
 
         if 'eventPk' in request.POST :
@@ -91,6 +86,10 @@ def EaddRef(request):
     In POST method only, else raise 403.
     This view is used by AJAX.
     """
+    import django.utils.simplejson as json
+    from django.http import HttpResponse, HttpResponseForbidden
+    from referentiel.forms import ReferenceBigForm, HostReferenceForm
+
     if request.method == 'GET' : raise HttpResponseForbidden
 
     E = Event.objects.get(pk=request.POST['eventPk'])

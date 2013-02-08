@@ -1,8 +1,7 @@
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator, EmptyPage
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponse
-from django.http import Http404
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 import django.utils.simplejson as json

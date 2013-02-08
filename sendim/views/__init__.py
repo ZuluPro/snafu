@@ -1,6 +1,6 @@
-from index import *
-from login import *
-from ajax import *
-from event import *
+from index import index, stat
+from login import snafu_login, snafu_logout
+from ajax import reload_alerts, eventHistory, eventReference, eventAlerts, eventsFiltered, choosePrimaryAlert, eventsAgr, closeEvents, followUp
+from event import events, EaddRef 
 from config import *
-from apropos import *
+from apropos import apropos

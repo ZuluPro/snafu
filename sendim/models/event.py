@@ -1,13 +1,10 @@
-from django.db.models import Q
 from django.db import models
-from django.conf import settings
 
-from referentiel.models import Host
 from sendim.exceptions import UnableToConnectGLPI
 from sendim.connection import doLogin, doLogout, glpiServer
 
 class Event(models.Model) :
-    element = models.ForeignKey(Host)
+    element = models.ForeignKey('referentiel.Host')
     date = models.DateTimeField()
     criticity = models.CharField(max_length=30)
     message = models.CharField(max_length=300)
@@ -25,22 +22,26 @@ class Event(models.Model) :
         return str(self.pk)+':'+self.element.name+' - '+self.message
 
     def get_alerts(self, isUp=True, withoutRef=False):
-        from sendim.models import Alert
         """
         Return a QuerySet of event's alerts.
         It is possible to filter with 2 arguments :
          - isUp : If False excludes UP/OK alerts.
          - withoutRef = If True excludes alerts without reference.
         """
+        from sendim.models import Alert
+
         As = Alert.objects.filter(event=self).order_by('-date')
-	if not isUp : As = As.exclude( Q(status__name__exact='OK') | Q(status__name__exact='UP') )
-	if withoutRef : As = As.filter(reference=None)
+	if not isUp :
+            As = As.exclude(status__pk__in=(5,6))
+	if withoutRef :
+            As = As.filter(reference=None)
         return As
 
     def get_last_alert(self, isUp=False):
         from sendim.models import Alert
+
         As = Alert.objects.filter(event=self).order_by('-date')
-	if not isUp : As = As.exclude( Q(status__name__exact='OK') | Q(status__name__exact='UP') )
+	if not isUp : As = As.exclude(status__pk__in=(5,6))
         return As[0]
 
     def get_primary_alert(self):
@@ -179,6 +180,7 @@ class Event(models.Model) :
         Using Event and the chosen MailTemplate for create
         a dictionnary which contains all mail attributes.
         """
+        from django.conf import settings
         from sendim.models import MailTemplate
 
         R = self.get_primary_alert().reference
@@ -203,6 +205,7 @@ class Event(models.Model) :
         for send an email.
         This function make all substitutions and return a Mail object.
         """
+        from django.conf import settings
         from email.mime.text import MIMEText
         from email.mime.multipart import MIMEMultipart
         
@@ -253,6 +256,7 @@ class Event(models.Model) :
         """
         Send given email objects with SNAFU settings.
         """
+        from django.conf import settings
         from smtplib import SMTP
 
         smtpObj = SMTP(settings.SNAFU['smtp-server'] , settings.SNAFU['smtp-port'] )
@@ -305,7 +309,7 @@ class Event(models.Model) :
         Return a reference forms list.
         Used for ask References of Event's Alerts.
         """
-        from referentiel.models import Service, Reference
+        from referentiel.models import Host, Service, Reference
         from referentiel.forms import HostReferenceForm, ReferenceBigForm
         from sendim.models import Alert
 

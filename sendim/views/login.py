@@ -1,14 +1,14 @@
 """
 Login and logout views.
 """
-from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from django.contrib import messages
-
 from sendim.forms import AuthForm
 
 def snafu_login(request) :
     """Website login view."""
+    from django.contrib.auth import authenticate, login
+    from django.contrib import messages
+
     if request.method == 'POST' :
         user = authenticate(username=request.POST['username'], password=request.POST['password'])
         if user is not None :
@@ -26,5 +26,7 @@ def snafu_logout(request) :
     Website logout view.
     Redirect to login.
     """
+    from django.contrib.auth import logout
+
     logout(request)
     return redirect('/snafu/login')

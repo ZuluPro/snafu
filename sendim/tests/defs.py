@@ -136,7 +136,7 @@ def internet_is_on():
     """
     from urllib2 import urlopen, URLError
     try:
-        response = urlopen('http://209.160.40.165/',timeout=1)
+        response = urlopen('http://209.160.40.165/',timeout=3)
         return True
     except URLError as err: 
         return False

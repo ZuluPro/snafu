@@ -1,7 +1,4 @@
 from django.db import models
-from django.utils import timezone
-
-from commands import getstatusoutput
 
 class Command(models.Model) :
     name = models.CharField(max_length=50)
@@ -11,9 +8,12 @@ class Command(models.Model) :
         app_label = 'sendim'
 
     def launch(self):
+        from django.utils.timezone import now
+        from commands import getstatusoutput
+
         status,out = getstatusoutput(self.string) 
         CL = CommandLog(
-          date=timezone.now(),
+          date=now(),
           command=self,
           stdin=self.string,
           status=-1

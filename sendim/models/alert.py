@@ -49,6 +49,13 @@ class AlertQuerySet(models.query.QuerySet):
         """Get OK or UP alerts."""
         return self.filter(status__pk__in=(5,6))
 
+    def get_without_reference(self):
+        """
+        Get alerts which reference is None and status is
+        WARNING, CRITICAL or UNKNOW.
+        """
+        return self.get_problem_alert().get_service_alert().filter(reference=None)
+
     def get_by_date(self, date=lambda:now().date()):
         """
         Get day's alerts by date. By default return for today.

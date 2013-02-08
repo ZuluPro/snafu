@@ -1,14 +1,6 @@
 from django.db import models
-from django.utils.timezone import now
 
 from sendim.exceptions import UnableToConnectNagios
-
-from urllib2 import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler, build_opener, install_opener, URLError, HTTPError
-from socket import error,gaierror
-from datetime import datetime
-from HTMLParser import HTMLParser
-_htmlparser = HTMLParser()
-from email.mime.image import MIMEImage
 
 class SupervisorType(models.Model) :
     name = models.CharField(max_length=30)
@@ -55,6 +47,8 @@ class Supervisor(models.Model) :
         """
         Return a custom urllib2 opener for logged request to supervisor.
         """
+        from urllib2 import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler, build_opener, install_opener
+
         passman = HTTPPasswordMgrWithDefaultRealm()
         passman.add_password(None, self.index, self.login, self.password)
         authhandler = HTTPBasicAuthHandler(passman)
@@ -67,6 +61,9 @@ class Supervisor(models.Model) :
         Make a connection test with Nagios opener.
         Return an HTML status code.
         """
+        from socket import error,gaierror
+        from urllib2 import URLError
+
         opener = self.getOpener()
         try :
             f = opener.open(self.index, timeout=timeout)
@@ -83,14 +80,18 @@ class Supervisor(models.Model) :
         
         If alert is an host alert, service will be 'Host status'.
         """
+        from django.utils.timezone import now
+
         from referentiel.models import Host,Service,Status
         from sendim.models import Alert, Downtime
+
         from re import compile as re
+        from datetime import datetime
 
         # Check if supervisor is foundable before everything
         check = self.checkNagios()
         if check :
-           raise UnableToConnectNagios(check)
+           raise self.UnableToConnectNagios(check)
         
         # Make Regex for parsing
         REG_ISNOTIFICATION = re(r"<img align='left'")
@@ -260,6 +261,7 @@ class Supervisor(models.Model) :
         RRDTool : (name,number)
         """
         from re import match,search,sub
+        from urllib2 import HTTPError
 
         if not self.graph :
             return []
@@ -294,6 +296,8 @@ class Supervisor(models.Model) :
 
     def get_graph(self, alert, graph_url) :
         """Get a graph from an Alert and his url."""
+        from email.mime.image import MIMEImage
+
         opener = self.getOpener()
         url = self.get_graph_url(alert=alert, prefix='image')
 

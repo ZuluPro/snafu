@@ -1,5 +1,5 @@
 from mail import MailTemplate
-from event import *
+from event import Event
 from alert import Alert
-from command import *
+from command import Command, CommandLog
 from downtime import Downtime

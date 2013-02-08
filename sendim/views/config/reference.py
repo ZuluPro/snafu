@@ -1,14 +1,9 @@
-from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
-import django.utils.simplejson as json
  
-from sendim.defs import *
 from sendim.models import Alert
-from sendim.forms import *
 from referentiel.models import Reference
-from referentiel.forms import *
+from referentiel.forms import ReferenceForm, HostReferenceForm, ReferenceBigForm
 
 @login_required
 def getReferences(request) :
@@ -20,6 +15,8 @@ def getReferences(request) :
 
     This view is used with AJAX and return references' tabs.
     """
+    from django.core.paginator import Paginator
+
     Rs = Reference.objects.all()
     if request.GET['q'] :
         Rs = list( (
@@ -57,9 +54,8 @@ def reference(request, ref_id, action="get") :
          
     return render(request, 'configuration/reference/tabs.html', {
         'Rs':Reference.objects.all(),
-        'AsWithoutRef':Alert.objects.filter( Q(reference=None), ~Q(status__name='OK'), ~Q(status__name='UP'), ~Q(status__name='DOWN') )
+        'AsWithoutRef':Alert.objects.get_without_reference()
     })
-
 
 @login_required
 def getAlertWithoutRef(request,alert_id) :
@@ -71,7 +67,7 @@ def getAlertWithoutRef(request,alert_id) :
 @login_required
 def getAsWithoutRef(request) :
     """Get references filtered by host and service."""
-    As = Alert.objects.filter( Q(reference=None), ~Q(status__name='OK'), ~Q(status__name='UP'), ~Q(status__name='DOWN') )
+    As = Alert.objects.get_without_reference()
     if request.GET['q'] :
         As = (
             set( As.filter(host__name__icontains=request.GET['q']) ) |
@@ -103,6 +99,9 @@ def addReference(request, ref_id=0) :
 
     This view is used with AJAX.
     """
+    import django.utils.simplejson as json
+    from django.http import HttpResponse
+
     if request.POST['form_type'] == 'simple' : Form = ReferenceForm(request.POST)
     elif request.POST['form_type'] == 'host' : Form = HostReferenceForm(request.POST)
     elif request.POST['form_type'] == 'big' : Form = ReferenceBigForm(request.POST)
@@ -116,7 +115,7 @@ def addReference(request, ref_id=0) :
          
     return render(request, 'configuration/reference/tabs.html', {
         'Rs':Reference.objects.all(),
-        'AsWithoutReference':Alert.objects.filter( Q(reference=None), ~Q(status__name='OK'), ~Q(status__name='UP'))
+        'AsWithoutReference':Alert.objects.get_without_reference()
     })
 
 
