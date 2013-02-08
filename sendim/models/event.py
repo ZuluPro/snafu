@@ -282,24 +282,33 @@ class Event(models.Model) :
          """
          self.add_follow_up(msg.as_string())
 
-    def aggregate(self, eventsPk, message, glpi=None, mail=False, criticity='?') :
+    def aggregate(self, eventsPk, message='', glpi=None, mail=False, criticity='?') :
         """
-        Aggregate several events in one.
+        Aggregate several events into this one.
         """
-        if len(eventsPk) < 2 : return None
+        if len(eventsPk) < 1 :
+            return None
+
         # Walk on events and hold in memory ticket,mail and criticity
         Es = Event.objects.filter(pk__in=eventsPk).exclude(pk=self.pk)
         for E in Es :
-            if E.glpi and not self.glpi : glpi = E.glpi
-            if E.mail and not self.mail: mail = True
-            if E.criticity == 'Majeur' : criticity = 'Majeur'
+            if E.glpi and not self.glpi :
+                glpi = E.glpi
+            if E.mail and not self.mail :
+                mail = True
+            if E.criticity in ('Mineur','Majeur') and not self.criticity in ('Mineur','Majeur') :
+                if E.criticity == 'Majeur' : 
+                    criticity = 'Majeur' 
+                else :
+                    criticity = 'Mineur' 
+
             E.get_alerts().update(isPrimary=False,event=self)
             E.delete()
 
-        # Apply ticket,mail and criticity
-        self.message = message
-        self.glpi = glpi
-        self.mail = mail
+        # Apply message, ticket,mail and criticity
+        self.message = message or self.message
+        self.glpi = glpi or self.glpi
+        self.mail = mail or self.mail
         self.criticity = criticity
         self.save()
         return self

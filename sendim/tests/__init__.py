@@ -2,6 +2,7 @@ from basic_alert import *
 from host_alert import *
 from service_alert import *
 from both_alert import *
+from event import *
 from supervisor import *
 from black_reference import *
 from reference import *
@@ -23,6 +24,7 @@ def suite():
      'sendim.tests.service_alert',
      'sendim.tests.host_alert',
      'sendim.tests.both_alert',
+     'sendim.tests.event',
      'sendim.tests.supervisor',
      'sendim.tests.black_reference',
      'sendim.tests.reference',
