@@ -33,7 +33,7 @@ class Supervisor_TestCase(unittest.TestCase):
     def test_logged_in_communication(self):
         """Test to access to a page which need login."""
         opener = self.supervisor.getOpener()
-        opener.open(self.supervisor.index)
+        response = opener.open(self.supervisor.index)
 
     @unittest.skipIf(not internet_is_on(), 'No internet connection available.')
     def test_parsing(self):

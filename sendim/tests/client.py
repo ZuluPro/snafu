@@ -7,7 +7,8 @@ from django.core import management
 from django.conf import settings
 from django.contrib.auth.models import User
 
-from djcelery.models import TaskMeta
+if 'djcelery' in settings.INSTALLED_APPS :
+    from djcelery.models import TaskMeta
 
 from sendim.models import Alert, Event
 from referentiel.models import Supervisor, Reference
@@ -61,9 +62,11 @@ class Customer_Client_TestCase(unittest.TestCase):
     def tearDown(self):
         self.client.logout()
         self.user.delete()
-        [ A.delete() for A in Alert.objects.all() ]
-        [ E.delete() for E in Event.objects.all() ]
-        [ T.delete() for T in TaskMeta.objects.all() ]
+        Alert.objects.all().delete()
+        Event.objects.all().delete()
+
+        if 'djcelery' in settings.INSTALLED_APPS :
+            TaskMeta.objects.all().delete()
 
     @unittest.skipIf(not internet_is_on(), 'No internet connection available.')
     def test_reload_alerts(self):

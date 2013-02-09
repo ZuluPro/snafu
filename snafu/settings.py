@@ -96,7 +96,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'south',
     'tracking',
-    'djcelery',
+    #'djcelery',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'referentiel',
@@ -156,3 +156,4 @@ if 'test' in argv :
         from settings_test import *
     except ImportError:
         pass
+

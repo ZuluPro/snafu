@@ -1,6 +1,8 @@
 from django.db import models
 
 from sendim.exceptions import UnableToConnectNagios
+import warnings
+warnings.filterwarnings("ignore",category=UserWarning, module='urllib2')
 
 class SupervisorType(models.Model) :
     name = models.CharField(max_length=30)
@@ -67,8 +69,10 @@ class Supervisor(models.Model) :
         opener = self.getOpener()
         try :
             f = opener.open(self.index, timeout=timeout)
-            if 'login' in f.url : nagiosStatus = True
-            else : nagiosStatus = False
+            if 'login' in f.url :
+                nagiosStatus = True
+            else :
+                nagiosStatus = False
         except (error,gaierror,URLError,ValueError), e :
             nagiosStatus = e
         return nagiosStatus

@@ -6,3 +6,4 @@ urlpatterns = patterns('',
     url(r'^snafu/', include('sendim.urls')),
     url(r'^admin/', include(admin.site.urls)),
 )
+
