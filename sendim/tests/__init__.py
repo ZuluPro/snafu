@@ -12,6 +12,7 @@ from views import *
 from views_configuration import *
 from webservices import *
 from glpi_webservices import *
+from glpi_manager import *
 from graph import *
 
 def suite():
@@ -34,6 +35,7 @@ def suite():
      'sendim.tests.views_configuration',
      'sendim.tests.webservices',
      'sendim.tests.glpi_webservices',
+     'sendim.tests.glpi_manager',
      'sendim.tests.graph'
     )
     suite = unittest.TestSuite()

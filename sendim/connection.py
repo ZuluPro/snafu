@@ -1,7 +1,6 @@
 from django.conf import settings
 
 import xmlrpclib
-from urllib2 import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler, build_opener, install_opener, URLError
 
 from socket import SocketType,error,gaierror
 from urlparse import urlsplit
@@ -9,8 +8,10 @@ from urlparse import urlsplit
 glpiServer = xmlrpclib.Server(settings.SNAFU['glpi-xmlrpc'], verbose=False, allow_none=True)
 
 def doLogin():
-    """Make login on GLPI webservice.
-    Return loginInfo."""
+    """
+	Make login on GLPI webservice.
+    Return loginInfo.
+	"""
     try :
        loginInfo = glpiServer.glpi.doLogin({
            'login_name':settings.SNAFU['glpi-login'],
@@ -25,8 +26,10 @@ def doLogout():
     glpiServer.glpi.doLogout()
 
 def checkGlpi():
-    """Make a connection socket test into GLPI webserver.
-    Return status code of SocketType.connect_ex()."""
+    """
+	Make a connection socket test into GLPI webserver.
+    Return status code of SocketType.connect_ex().
+	"""
     S = SocketType()
     S.settimeout(2)
     try : 
@@ -36,8 +39,10 @@ def checkGlpi():
     return glpiStatus
 
 def checkSmtp():
-    """Make a connection socket test into STMP server.
-    Return status code of SocketType.connect_ex()."""
+    """
+	Make a connection socket test into STMP server.
+    Return status code of SocketType.connect_ex().
+	"""
     try : 
         S = SocketType()
         S.settimeout(2)
