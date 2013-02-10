@@ -16,7 +16,6 @@ from django.http import HttpResponse, HttpResponseBadRequest
 if 'djcelery' in settings.INSTALLED_APPS :
     from sendim import tasks
 from sendim.models import *
-from sendim.defs import *
 from referentiel.models import *
 
 @login_required
@@ -177,7 +176,5 @@ def followUp(request) :
         if not E.glpi : 
             return HttpResponse(u"<center><h4>L'\xe9v\xe9nement n'a pas de num\xe9ro de ticket GLPI !<h4></center>")
 
-    return render(request, 'modal/glpi-followup.html', {
-      'E':E
-    })
+    return render(request, 'modal/glpi-followup.html', {'E':E})
    

@@ -1,7 +1,8 @@
 from django.db import models
 
 from sendim.exceptions import UnableToConnectGLPI
-from sendim.connection import doLogin, doLogout, glpiServer
+from sendim.glpi_manager import GLPI_manager
+GLPI_manager = GLPI_manager()
 
 class Event(models.Model) :
     element = models.ForeignKey('referentiel.Host')
@@ -75,10 +76,6 @@ class Event(models.Model) :
          """
          Create a GLPI ticket and add ticket number to self.glpi.
          """
-         loginInfo = doLogin()
-         if 'error' in loginInfo :
-             raise UnableToConnectGLPI
-     
          R = self.get_reference()
      
          # Creation du 1er contenu du ticket
@@ -99,7 +96,6 @@ class Event(models.Model) :
              impact = R.glpi_impact.glpi_id
 
          ticket = {
-             'session':loginInfo['session'],
              'type':1,
              'category': category,
              'title': self.element.name+' '+self.message,
@@ -112,39 +108,29 @@ class Event(models.Model) :
              'urgency':urgency,
              'impact':impact,
          }
-         ticketInfo = glpiServer.glpi.createTicket(ticket)
+         ticket_info = GLPI_manager.create_ticket(ticket)
          #logprint( "Ticket #"+str(ticketInfo['id'])+" created", 'green' )
      
          # Sauvegarde dans BDD
-         self.glpi = ticketInfo['id']
+         self.glpi = ticket_info['id']
          self.save()
          #logprint( "Ticket #"+str(ticketInfo['id'])+" associate to Event #"+str(self.pk), 'green')
      
-         doLogout()
-         return ticketInfo['id']
+         return ticket_info['id']
 
     def add_follow_up(self,content):
          """
          Add a content to the event's ticket.
          """
          if self.glpi :
-              loginInfo = doLogin()
-              content_to_add = {
-                'session':loginInfo['session'],
-                'ticket':self.glpi,
-                'content':content
-              }
-              glpiServer.glpi.addTicketFollowup(content_to_add)
-              doLogout()
+              GLPI_manager.add_follow_up(self.glpi,content)
 
     def get_ticket(self):
         """Return a dictionnary with GLPI ticket's attributes."""
         if self.glpi :
-            session = doLogin()['session']
-            ticket_info = glpiServer.glpi.getTicket({'session':session, 'ticket':self.glpi})
+            ticket_info = GLPI_manager.get_ticket(ticket_id=self.glpi)
         else :
             ticket_info = dict()
-
         return ticket_info
 
     def close(self, force=False):
