@@ -9,7 +9,6 @@ def events(request) :
     List events and do processing on them.
     
     Processes are in POST method :
-     - reloadAlert_q : Parse Nagios alert history page.
      - sendmail_q : Send a mail for a given event.
      - treatment_q : Make exploitation processes.
     """

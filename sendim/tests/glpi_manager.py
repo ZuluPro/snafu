@@ -5,12 +5,8 @@ from django.utils import unittest
 from django.core import management
 from django.conf import settings
 
-from referentiel.models import Host, Service, Status, Reference
-from sendim.models import Alert, Event
 from sendim.glpi_manager import GLPI_manager
 from sendim.tests.defs import create_event, create_alert
-
-from datetime import datetime, timedelta
 
 class GLPI_manager_TestCase(unittest.TestCase):
 	"""
@@ -19,12 +15,6 @@ class GLPI_manager_TestCase(unittest.TestCase):
 		management.call_command('loaddata', 'test_host.json', database='default', verbosity=0)
 		management.call_command('loaddata', 'test_reference.json', database='default', verbosity=0)
 		self.manager = GLPI_manager()
-		self.event = create_event(create_alert())
-
-	def tearDown(self):
-		self.event.delete()
-		Alert.objects.all().delete()
-		Event.objects.all().delete()
 
 	def test_objects_management(self):
 		"""

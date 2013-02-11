@@ -3,8 +3,8 @@
 from django.utils import unittest
 from django.core import management
 
-from sendim.tests.defs import *
-from referentiel.models import Host, Service, Status, Black_reference, Reference
+from sendim.tests.defs import create_alert
+from referentiel.models import Black_reference
 from sendim.models import Alert, Event
 
 class Black_reference_TestCase(unittest.TestCase):
@@ -20,8 +20,8 @@ class Black_reference_TestCase(unittest.TestCase):
         )
 
     def tearDown(self):
-        [ A.delete() for A in Alert.objects.all() ]
-        [ E.delete() for E in Event.objects.all() ]
+        Alert.objects.all().delete()
+        Event.objects.all().delete()
 
     def test_alert_link_to_event(self):
         """

@@ -1,18 +1,19 @@
-from basic_alert import *
-from host_alert import *
-from service_alert import *
-from both_alert import *
-from event import *
-from supervisor import *
-from black_reference import *
-from reference import *
-from translation import *
-from client import *
-from views import *
-from views_configuration import *
-from webservices import *
-from glpi_manager import *
-from graph import *
+from basic_alert import Basic_Alert_TestCase
+from host_alert import SingleHost_SingleAlert_TestCase, SingleHost_MultipleAlert_TestCase
+from service_alert import SingleService_SingleAlert_TestCase, SingleService_MultipleAlert_TestCase, MultipleService_MultipleAlert_TestCase 
+from both_alert import Host_and_service, Service_and_host
+from event import Event_TestCase
+from supervisor import Supervisor_TestCase
+from black_reference import Black_reference_TestCase
+from reference import Reference_TestCase
+from translation import Translation_TestCase
+from client import Login_TestCase, Customer_Client_TestCase
+from views import Views_TestCase
+from views_configuration import Views_Configuration_TestCase
+from webservices import Webservice_TestCase
+from glpi_manager import GLPI_manager_TestCase
+from graph import Graph_TestCase
+from commands import Commands_TestCase
 
 def suite():
     import doctest
@@ -34,7 +35,8 @@ def suite():
      'sendim.tests.views_configuration',
      'sendim.tests.webservices',
      'sendim.tests.glpi_manager',
-     'sendim.tests.graph'
+     'sendim.tests.graph',
+     'sendim.tests.commands'
     )
     suite = unittest.TestSuite()
 

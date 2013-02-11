@@ -4,7 +4,6 @@ Test to use a supervisor
 
 from django.utils import unittest
 from django.core import management
-from django.utils.timezone import now
 
 from referentiel.models import Supervisor, Host, Service
 from sendim.models import Alert, Event, Downtime

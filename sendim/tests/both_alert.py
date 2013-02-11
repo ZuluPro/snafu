@@ -3,72 +3,60 @@ Test to create alerts for a service status and host status.
 """
 
 from django.utils import unittest
-from django.utils.timezone import now
+from django.core import management
 
-from referentiel.models import Host, Service, Status, Reference
 from sendim.models import Alert, Event
-
-from datetime import timedelta
+from sendim.tests.defs import create_alert, create_alert_from
 
 class Host_and_service(unittest.TestCase):
-    """
-    Try to firstly create an host DOWN alert,
-    and after an service alert for this host.
-    Test if both alerts have the same Event.
-    """
-    def setUp(self):
-	self.host = Host.objects.create(name='host1')
-	self.service = Service.objects.create(name='host1')
-        self.h_alert = Alert.objects.create(host=self.host,service=self.service,status=Status.objects.get(pk=4),date=now(),info='Test - host alert')
-        self.s_alert = Alert.objects.create(host=self.host,service=self.service,status=Status.objects.get(pk=1),date=now()+timedelta(0,3),info='Test - service alert')
-        self.events = list()
+	"""
+	Try to firstly create an host DOWN alert,
+	and after an service alert for this host.
+	Test if both alerts have the same Event.
+	"""
+	def setUp(self):
+		management.call_command('loaddata', 'test_host.json', database='default', verbosity=0)
+		self.h_alert = create_alert(host='test host', service='Host status', status='DOWN')
+		self.h_alert.save()
+		self.s_alert = create_alert_from(self.h_alert, service='test service', status='WARNING') 
+		self.s_alert.save()
 
-    def tearDown(self):
-	self.host.delete()
-	self.service.delete()
-        [ A.delete() for A in Alert.objects.all() ]
-        [ E.delete() for E in Event.objects.all() ]
+	def tearDown(self):
+		Alert.objects.all().delete()
+		Event.objects.all().delete()
 
-    def test_auto_aggregation(self):
-        """
-        Test if an first host alert and a second service alert
-        will be linked in a same Event.
-        """
-        for A in Alert.objects.filter(event=None):
-            E = A.link()
-            if not E in self.events : self.events.append(E)
-        for E in self.events :
-            self.assertIsInstance(E, Event)
-        self.assertEqual(Event.objects.count(),1)
-        
+	def test_auto_aggregation(self):
+		"""
+		Test if an first host alert and a second service alert
+		will be linked in a same Event.
+		"""
+		for A in Alert.objects.filter(event=None):
+			E = A.link()
+		self.assertEqual(Event.objects.count(),1)
+		
 class Service_and_host(unittest.TestCase):
-    """
-    Try to firstly create an service WARNING alert,
-    and after an host DOWN alert.
-    Test if both alerts have the same Event.
-    """
-    def setUp(self):
-	self.host = Host.objects.create(name='host1')
-	self.service = Service.objects.create(name='host1')
-        self.h_alert = Alert.objects.create(host=self.host,service=self.service,status=Status.objects.get(pk=4),date=now()+timedelta(0,3),info='Test - host alert')
-        self.s_alert = Alert.objects.create(host=self.host,service=self.service,status=Status.objects.get(pk=1),date=now(),info='Test - service alert')
-        self.events = list()
+	"""
+	Try to firstly create an service WARNING alert,
+	and after an host DOWN alert.
+	Test if both alerts have the same Event.
+	"""
+	def setUp(self):
+		management.call_command('loaddata', 'test_host.json', database='default', verbosity=0)
+		self.s_alert = create_alert(host='test host', service='test service', status='WARNING') 
+		self.s_alert.save()
+		self.h_alert = create_alert_from(self.s_alert, service='Host status', status='DOWN')
+		self.h_alert.save()
 
-    def tearDown(self):
-	self.host.delete()
-	self.service.delete()
-        [ A.delete() for A in Alert.objects.all() ]
-        [ E.delete() for E in Event.objects.all() ]
+	def tearDown(self):
+		Alert.objects.all().delete()
+		Event.objects.all().delete()
 
-    def test_auto_aggregation(self):
-        """
-        Test if an first host alert and a second service alert
-        will be linked in a same Event.
-        """
-        for A in Alert.objects.filter(event=None):
-            E = A.link()
-            if not E in self.events : self.events.append(E)
-        for E in self.events :
-            self.assertIsInstance(E, Event)
-        self.assertEqual(Event.objects.count(),1)
-        
+	def test_auto_aggregation(self):
+		"""
+		Test if an first host alert and a second service alert
+		will be linked in a same Event.
+		"""
+		for A in Alert.objects.filter(event=None):
+			E = A.link()
+		self.assertEqual(Event.objects.count(),2)
+		

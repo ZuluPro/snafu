@@ -12,7 +12,7 @@ if 'djcelery' in settings.INSTALLED_APPS :
 
 from sendim.models import Alert, Event
 from referentiel.models import Supervisor, Reference
-from sendim.tests.defs import *
+from sendim.tests.defs import create_alert, create_event, internet_is_on
 
 class Login_TestCase(unittest.TestCase):
 	def setUp(self):

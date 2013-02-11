@@ -1,6 +1,7 @@
 from django.db import models
 
 from sendim.exceptions import UnableToConnectNagios
+
 import warnings
 warnings.filterwarnings("ignore",category=UserWarning, module='urllib2')
 
@@ -26,7 +27,7 @@ class Supervisor(models.Model) :
     status = models.CharField(max_length=300, verbose_name='URL de status', help_text=u"Index des status. (Exemple : http://www.nagios.lan/cgi-bin/status.cgi).")
     history = models.CharField(max_length=300, verbose_name="URL d'historique", help_text=u"Index de l'historique. (Exemple : http://www.nagios.lan/cgi-bin/history.cgi).")
     graph = models.CharField(max_length=300, null=True, blank=True, verbose_name=u'URL de m\xe9trologie', help_text=u"Index de la m\xe9trologie. (Exemple : http://www.nagios.lan/cgi-bin/rrd2graph.cgi).")
-    active = models.BooleanField(default=True, verbose_name='Actif')
+    active = models.BooleanField(default=False, verbose_name='Actif')
     interval = models.IntegerField(null=True, blank=True, verbose_name='Interval', help_text='Interval (en secondes) entre deux parsing')
 
     supervisor_type = models.ForeignKey(SupervisorType, default=1, verbose_name=u'Type de superviseur')
@@ -91,6 +92,8 @@ class Supervisor(models.Model) :
 
         from re import compile as re
         from datetime import datetime
+        from HTMLParser import HTMLParser
+        _htmlparser = HTMLParser()
 
         # Check if supervisor is foundable before everything
         check = self.checkNagios()

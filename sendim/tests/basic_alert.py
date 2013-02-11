@@ -6,10 +6,8 @@ from django.utils import unittest
 from django.utils.timezone import now
 from django.core import management
 
-from referentiel.models import Host, Service, Status, Reference
+from referentiel.models import Host, Service, Status
 from sendim.models import Alert, Event
-
-from datetime import datetime, timedelta
 
 class Basic_Alert_TestCase(unittest.TestCase):
     """

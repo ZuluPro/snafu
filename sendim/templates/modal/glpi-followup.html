@@ -4,12 +4,19 @@
 </div>
 
 <form method="POST" action="/snafu/event/followup">{% csrf_token %}
+
  <input type="hidden" name="eventPk" value="{{ E.pk }}">
-    <div class="modal-body" id="referenceModalBody">
-     <textarea type="textarea" name="content" placeholder="Suivi GLPI" style="width:95%"/>
-    </div>
-    <div class="modal-footer">
-        <input class="btn btn-primary" type="submit" value="Soumettre"></a>
-        <a href="#" class="btn" data-dismiss="modal">Annuler</a>
-    </div>
+ <div class="modal-body" id="referenceModalBody">
+  <h5>Nouveau suivi</h5>
+  <textarea type="textarea" name="content" placeholder="Suivi GLPI" style="width:95%"/>
+  {% for followup in followups %}
+  <h5 align="center">{{ followup.date }}</h5>
+  <textarea type="textarea" rows="5" disabled style="font-size:10px; width:95%">{{ followup.content }}</textarea>
+  {% endfor %}
+ </div>
+
+ <div class="modal-footer">
+  <input class="btn btn-primary" type="submit" value="Soumettre"></a>
+  <a href="#" class="btn" data-dismiss="modal">Annuler</a>
+ </div>
 </form>

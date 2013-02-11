@@ -1,14 +1,12 @@
 """
 """
 from django.utils import unittest
-from django.utils.timezone import now
 from django.test.client import Client
 from django.core import management
 from django.contrib.auth.models import User
 
-from sendim.tests.defs import *
+from sendim.tests.defs import create_alert, end_event
 from sendim.models import Alert, Event
-from referentiel.models import Host, Service, Status
 
 class Views_TestCase(unittest.TestCase):
     def setUp(self):
@@ -29,10 +27,8 @@ class Views_TestCase(unittest.TestCase):
     def tearDown(self):
         self.client.logout()
         self.user.delete()
-        del self.event1
-        del self.event2
-        [ A.delete() for A in Alert.objects.all() ] 
-        [ E.delete() for E in Event.objects.all() ] 
+        Alert.objects.all().delete()
+        Event.objects.all().delete() 
 
     def test_simple_GET(self):
         """

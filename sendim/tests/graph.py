@@ -2,14 +2,10 @@
 """
 
 from django.utils import unittest
-from django.utils.timezone import now
 from django.core import management
 
-from referentiel.models import Host, Service, Status, Reference, Supervisor
-from sendim.models import Alert, Event
+from referentiel.models import Supervisor
 from sendim.tests.defs import create_event, create_alert, internet_is_on
-
-from datetime import datetime, timedelta
 
 class Graph_TestCase(unittest.TestCase):
     """
@@ -19,8 +15,7 @@ class Graph_TestCase(unittest.TestCase):
         management.call_command('loaddata', 'test_supervisor.json', database='default', verbosity=0)
 
     def tearDown(self):
-        Alert.objects.all().delete()
-        Event.objects.all().delete()
+		pass
 
     @unittest.skipIf(not internet_is_on(), 'No internet connection available.')
     def test_RRDTool(self):
