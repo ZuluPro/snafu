@@ -14,7 +14,7 @@ def create_alert(host=None,service=None,status=None, isDown=True, supervisor='')
 	Attributes may be choose with arguments.
 	>>> from django.core import management
 	>>> management.call_command('loaddata', 'test_host.json', database='default', verbosity=0)
-	>>> A = create_alert()
+	>>> A = create_alert(host='test host')
 	>>> A.host.name
 	u'test host'
 	"""
@@ -52,7 +52,7 @@ def create_alert_from(alert, service=None, status=None, delta=1, isDown=True):
 	>>> from sendim.tests.defs import create_alert
 	>>> from sendim.models import Alert
 	>>> management.call_command('loaddata', 'test_host.json', database='default', verbosity=0)
-	>>> A = create_alert_from(create_alert())
+	>>> A = create_alert_from(create_alert(host='test host'))
 	>>> A.host.name
 	u'test host'
 	>>> [ A.delete for A in Alert.objects.all() ]

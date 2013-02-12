@@ -7,8 +7,26 @@ from sendim.models import *
 from sendim.glpi_manager import GLPI_manager
 from sendim.exceptions import UnableToConnectGLPI
 
-from common import logprint
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(message)s')
+sh = logging.StreamHandler()
+sh.setLevel(logging.INFO)
+sh.setFormatter(formatter)
+logger.addHandler(sh)
+
 GLPI_manager = GLPI_manager()
+
+def colorize(string='', color='default') :
+    colors = {
+        'default' : "0",
+        'red' : "0;31",
+        'green' : "0;32",
+        'yellow' : "0;33",
+        'pink' : "0;35"
+    }
+    return '\033['+colors[color]+'m'+string+'\033[0m'
 
 class Command(BaseCommand) :
     args = None
@@ -29,8 +47,9 @@ class Command(BaseCommand) :
                           glpi_id=host['id'],
                           host_type='computer'
                         )
-                        logprint('Add computer : "'+H.name +'"', 'green')
-                except IntegrityError : logprint('Computer ' +host['name']+ ' already exists', 'yellow')
+                        logger.info('Add computer : "'+H.name +'"')
+                except IntegrityError :
+					logger.warning('Computer "' +host['name']+ '" already exists')
 
             for host in GLPI_manager.list('networkequipment') :
                 try :
@@ -40,8 +59,9 @@ class Command(BaseCommand) :
                           glpi_id=host['id'],
                           host_type='networkequipment'
                         )
-                        logprint('Add computer : "'+H.name +'"', 'green')
-                except IntegrityError : logprint('Computer ' +host['name']+ ' already exists', 'yellow')
+                        logger.info('Add computer : "'+H.name +'"')
+                except IntegrityError :
+					logger.warning('Computer "' +host['name']+ '" already exists')
 
 #            for host in get_hosts_from_glpi() :
 #                try:
@@ -56,8 +76,9 @@ class Command(BaseCommand) :
                       name=user['name'].encode('latin-1').decode('utf-8'),
                       glpi_id=user['id']
                     )
-                    logprint('Add GLPI user : '+GU.name, 'green')
-                except IntegrityError : logprint('User "' +user['name']+ '" already exists', 'yellow')
+                    logger.info('Add GLPI user : '+GU.name)
+                except IntegrityError :
+					logger.warning('User "' +user['name']+ '" already exists')
 
             for group in GLPI_manager.list('group') :
                 try:
@@ -65,8 +86,9 @@ class Command(BaseCommand) :
                       name=group['name'].encode('latin-1').decode('utf-8'),
                       glpi_id=group['id']
                     )
-                    logprint('Add GLPI group : '+GG.name, 'green')
-                except IntegrityError : logprint('Group "' +group['name']+ '" already exists', 'yellow')
+                    logger.info('Add GLPI group : '+GG.name)
+                except IntegrityError :
+					logger.warning('Group "' +group['name']+ '" already exists')
 
             for supplier in GLPI_manager.list('supplier') :
                 try:
@@ -74,8 +96,9 @@ class Command(BaseCommand) :
                       name=supplier['name'].encode('latin-1').decode('utf-8'),
                       glpi_id=user['id']
                     )
-                    logprint('Add GLPI supplier : "' +supplier['name']+ '"', 'green')
-                except IntegrityError : logprint('Supplier "' +supplier['name']+ '" already exists', 'yellow')
+                    logger.info('Add GLPI supplier : "' +supplier['name']+ '"')
+                except IntegrityError :
+					logger.warning('Supplier "' +supplier['name']+ '" already exists')
 
             for category in GLPI_manager.list('ITILCategory') :
                 try:
@@ -83,8 +106,9 @@ class Command(BaseCommand) :
                       name=category['name'].encode('latin-1').decode('utf-8'),
                       glpi_id=user['id']
                     )
-                    logprint('Add GLPI ITIL category : "' +category['name']+ '"', 'green')
-                except IntegrityError : logprint('Category "' +category['name']+ '" already exists', 'yellow')
+                    logger.info('Add GLPI ITIL category : "' +category['name']+ '"')
+                except IntegrityError :
+					logger.warning('Category "' +category['name']+ '" already exists')
 
         except UnableToConnectGLPI, e :
-            logprint('Impossible to connect to GLPI : '+str(e.message), 'red')
+            logger.info('Impossible to connect to GLPI : '+str(e.message))
