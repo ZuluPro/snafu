@@ -1,3 +1,7 @@
+<script>
+ $("[rel=popover]").popover({trigger: 'hover'});
+</script>
+
 <div class="row">
  <h4 align="center">{{ H }}</h4>
 
@@ -19,6 +23,14 @@
    <button class="btn btn-danger" onclick="$.fn.snafu_object('del','host',{{ H.pk }})">Supprimer</button>
    <button class="btn btn-primary" data-toggle="button" onclick="$.fn.snafu_object('update','host',{{ H.pk }})">Modifier</button>
    <button class="btn" style="display:none;" onclick="$.fn.snafu_object('get','host',{{ H.pk }})">Annuler</button>
+     {% if H.supervisor %}
+	 <button class="btn" onclick="window.open('{{ H.supervisor.status }}?host={{ H }}')">Supervision</button>
+      {% if H.supervisor.graph %}
+       <button class="btn" onclick="window.open('{{ H.supervisor.graph }}?host={{ H }})')">Métrologie</button>
+      {% endif %}
+     {% else %}
+      <button class="btn disabled" data-content="Veuillez renseigner le superviseur" rel="popover" data-original-title="Superviseur non renseigné !" data-placement="left">Supervision</button>
+     {% endif %}
   </div>
  </div>
 
