@@ -11,7 +11,7 @@ from client import Login_TestCase, Customer_Client_TestCase
 from views import Views_TestCase
 from views_configuration import Views_Configuration_TestCase
 from webservices import Webservice_TestCase
-from glpi_manager import GLPI_manager_TestCase
+from glpi_manager import GLPI_Manager_TestCase
 from graph import Graph_TestCase
 from commands import Commands_TestCase
 

@@ -3,7 +3,7 @@ from django.conf import settings
 from xmlrpclib import ServerProxy
 from socket import SocketType,error,gaierror
 
-class GLPI_manager(ServerProxy):
+class GLPI_Manager(ServerProxy):
 
 	def __init__(self, *args, **kwargs) :
 		uri = settings.SNAFU['glpi-xmlrpc']

@@ -1,8 +1,8 @@
 from django.db import models
 
 from sendim.exceptions import UnableToConnectGLPI
-from sendim.glpi_manager import GLPI_manager
-GLPI_manager = GLPI_manager()
+from sendim.glpi_manager import GLPI_Manager
+GLPI_Manager = GLPI_Manager()
 
 class Event(models.Model) :
 	element = models.ForeignKey('referentiel.Host')
@@ -108,7 +108,7 @@ class Event(models.Model) :
 			 'urgency':urgency,
 			 'impact':impact,
 		 }
-		 ticket_info = GLPI_manager.create_ticket(ticket)
+		 ticket_info = GLPI_Manager.create_ticket(ticket)
 	 
 		 # Sauvegarde dans BDD
 		 self.glpi = ticket_info['id']
@@ -121,12 +121,12 @@ class Event(models.Model) :
 		 Add a content to the event's ticket.
 		 """
 		 if self.glpi :
-			  GLPI_manager.add_follow_up(self.glpi,content)
+			  GLPI_Manager.add_follow_up(self.glpi,content)
 
 	def get_ticket(self):
 		"""Return a dictionnary with GLPI ticket's attributes."""
 		if self.glpi :
-			ticket_info = GLPI_manager.get_ticket(ticket_id=self.glpi)
+			ticket_info = GLPI_Manager.get_ticket(ticket_id=self.glpi)
 		else :
 			ticket_info = dict()
 		return ticket_info

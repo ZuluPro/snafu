@@ -6,6 +6,7 @@ from django.core import management
 from django.contrib.auth.models import User
 
 from referentiel.models import Reference, Black_reference
+from sendim.tests.defs import create_alert
 
 class Views_Configuration_TestCase(unittest.TestCase):
 	def setUp(self):
@@ -124,3 +125,5 @@ class Views_Configuration_TestCase(unittest.TestCase):
 		self.assertEqual(response.status_code, 200)
 		self.assertIn('configuration/black_reference/form.html', [ t.name for t in response.templates ])
 
+	def test_alert_without_reference(self):
+		pass

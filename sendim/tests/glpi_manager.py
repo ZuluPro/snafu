@@ -5,16 +5,16 @@ from django.utils import unittest
 from django.core import management
 from django.conf import settings
 
-from sendim.glpi_manager import GLPI_manager
+from sendim.glpi_manager import GLPI_Manager
 from sendim.tests.defs import create_event, create_alert
 
-class GLPI_manager_TestCase(unittest.TestCase):
+class GLPI_Manager_TestCase(unittest.TestCase):
 	"""
 	"""
 	def setUp(self):
 		management.call_command('loaddata', 'test_host.json', database='default', verbosity=0)
 		management.call_command('loaddata', 'test_reference.json', database='default', verbosity=0)
-		self.manager = GLPI_manager()
+		self.manager = GLPI_Manager()
 
 	def test_objects_management(self):
 		"""

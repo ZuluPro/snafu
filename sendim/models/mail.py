@@ -14,6 +14,14 @@ class MailTemplate_Manager(models.Manager):
         """Return the chosen template."""
         return super(MailTemplate_Manager, self).get_query_set().get(chosen=True)
 
+	def web_filter(self, GET):
+		qset = self.get_query_set()
+		return list((
+		  set(qset.filter(subject__icontains=GET['q'])) |
+		  set(qset.filter(body__icontains=GET['q'])) |
+		  set(qset.filter(comment__icontains=GET['q']))
+		))
+
 class MailTemplate(models.Model) :
     """
     Used for save a standard mail.

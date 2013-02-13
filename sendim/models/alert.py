@@ -139,6 +139,36 @@ class Alert(models.Model) :
 		else:
 			return As
 
+	def get_ReferenceForm(self):
+		"""
+		Get a ReferenceForm or an HostReferenceForm.
+		"""
+		from referentiel.forms import HostReferenceForm, ReferenceForm
+		data = {
+		  'glpi_source':'Supervision',
+		  'host':self.host,
+		  'service':self.service,
+		  'status':self.status
+		}
+		if self.status.name == "DOWN" :
+			data['form_type'] = 'host'
+			form = HostReferenceForm
+		else :
+			data['form_type'] = 'simple'
+			form = ReferenceForm
+		return form(data=data)
+
+	def get_TranslationForm(self):
+		"""
+		Get a TranslationForm.
+		"""
+		from referentiel.forms import TranslationForm
+		data = {
+		  'service':self.service,
+		  'status':self.status
+		}
+		return TranslationForm(data=data)
+
 	def find_reference(self, update=True, byHost=True, byService=True, byStatus=True):
 		"""
 		Return a Reference which matching with the Alert.
