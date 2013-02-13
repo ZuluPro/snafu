@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Q
 from django.utils.timezone import now
 
 from referentiel.models import Host, Service, Status, Reference, Translation
@@ -32,6 +31,10 @@ class Alert_Manager(models.Manager):
 		return super(Alert_Manager, self).create(*args, **kwargs)
 
 	def reference_web_filter(self, GET):
+		"""
+		Return Alerts without reference filtered by
+		host's name and service's name.
+		"""
 		qset = self.get_query_set().filter(reference=None, status__pk__in=[1,2,3,4])
 		return list((
 			set(qset.filter(host__name__icontains=GET['q'])) |
@@ -39,6 +42,9 @@ class Alert_Manager(models.Manager):
 		))
 
 	def translation_web_filter(self, GET):
+		"""
+		Return Alerts without translation filtered by service's name.
+		"""
 		return self.get_query_set().filter(translation=None, service__name=GET['q'], status__pk__in=[4,5,6])
 
 class AlertQuerySet(models.query.QuerySet):
@@ -136,6 +142,7 @@ class Alert(models.Model) :
 
 	def get_similar(self, host_status=True, exclude_self=False):
 		"""Return alerts which have the same host and service."""
+		from django.db.models import Q
 		if host_status :
 			As = Alert.objects.filter(
 			  Q(host=self.host),

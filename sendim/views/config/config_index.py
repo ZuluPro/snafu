@@ -312,7 +312,9 @@ def confManager(request, action, model, object_id=0) :
 		else :
 			data = None
 			instance = None
-			if object_id != '0' : instance = Model.objects.get(pk=object_id)
+			if object_id != '0' :
+				instance = Model.objects.get(pk=object_id)
+				form = form(instance=instance)
 		return render(request, temp_dir+'form.html', {
 		  form_key : form
 		})
