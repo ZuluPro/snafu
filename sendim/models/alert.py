@@ -31,6 +31,16 @@ class Alert_Manager(models.Manager):
 				Host.objects.filter(pk=kwargs['host'].pk).update(supervisor=S)
 		return super(Alert_Manager, self).create(*args, **kwargs)
 
+	def reference_web_filter(self, GET):
+		qset = self.get_query_set().filter(reference=None, status__pk__in=[1,2,3,4])
+		return list((
+			set(qset.filter(host__name__icontains=GET['q'])) |
+			set(qset.filter(service__name__icontains=GET['q']))
+		))
+
+	def translation_web_filter(self, GET):
+		return self.get_query_set().filter(translation=None, service__name=GET['q'], status__pk__in=[4,5,6])
+
 class AlertQuerySet(models.query.QuerySet):
 	"""Custom QuerySet with methods adapted for alerts."""
 	def get_host_alert(self):

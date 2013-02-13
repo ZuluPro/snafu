@@ -279,10 +279,16 @@ def confManager(request, action, model, object_id=0) :
 		temp_file = 'ul.html'
 
 		# Use web_filter to get
-		try :
-			Objs = Model.objects.web_filter(request.GET)
-		except AttributeError :
-			Objs = Model.objects.filter(username__icontains=request.GET['q'])
+		if match(r"^a_(reference|translation)$", model) :
+			if model == 'a_reference' :
+				Objs = Alert.objects.reference_web_filter(request.GET)
+			elif model == 'a_translation' :
+				Objs = Alert.objects.translation_web_filter(request.GET)
+		else :
+			try :
+				Objs = Model.objects.web_filter(request.GET)
+			except AttributeError :
+				Objs = Model.objects.filter(username__icontains=request.GET['q'])
 
 		# Make Paginator
 		try :
