@@ -1,9 +1,14 @@
 from django.conf import settings
 
-from xmlrpclib import ServerProxy
+from xmlrpclib import ServerProxy, Fault
 from socket import SocketType,error,gaierror
 
 class GLPI_Manager(ServerProxy):
+	"""
+	Useful for use GLPI's XML-RPC server.
+	Manange itself session informations.
+	Base XML-Proxy is usable with GLPI_Manager.glpi.
+	"""
 
 	def __init__(self, *args, **kwargs) :
 		uri = settings.SNAFU['glpi-xmlrpc']
@@ -56,6 +61,7 @@ class GLPI_Manager(ServerProxy):
 
 	def list(self, itemtype) :
 		"""List a type of object."""
+		# For host itemtype, list computers and networkequipments
 		if itemtype == 'host' :
 			result = list()
 			for itemtype in ('computer','networkequipment') :
@@ -79,7 +85,7 @@ class GLPI_Manager(ServerProxy):
 
 	def delete(self, **kwargs) :
 		"""
-		Create objects from list of objects.
+		Delete objects from list of objects.
 		"""
 		data = {'session':self.session}
 		data['fields'] = dict()
