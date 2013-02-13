@@ -57,14 +57,12 @@ class Event(models.Model) :
 		except Alert.DoesNotExist :
 			if self.get_alerts() :
 				A = self.get_alerts()[0]
-				#logprint("Event #"+str(self.pk)+" had no primary alert, set to the first Alert #"+str(A.pk), 'red')
 				A.set_primary()
 				return A
 			else :
 				try : self.delete()
 				except AssertionError : pass
 				return None
-				#logprint("Event #"+str(self.pk)+" had no alert, it has been deleted", 'red')
 		except Alert.MultipleObjectsReturned :
 			A = self.get_alerts().filter(isPrimary=True)[0]
 			A.set_primary()
@@ -111,12 +109,10 @@ class Event(models.Model) :
 			 'impact':impact,
 		 }
 		 ticket_info = GLPI_manager.create_ticket(ticket)
-		 #logprint( "Ticket #"+str(ticketInfo['id'])+" created", 'green' )
 	 
 		 # Sauvegarde dans BDD
 		 self.glpi = ticket_info['id']
 		 self.save()
-		 #logprint( "Ticket #"+str(ticketInfo['id'])+" associate to Event #"+str(self.pk), 'green')
 	 
 		 return ticket_info['id']
 

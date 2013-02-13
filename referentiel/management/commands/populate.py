@@ -1,3 +1,7 @@
+"""
+Connect to GLPI server and import different objects.
+"""
+
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 from django.db.utils import IntegrityError
@@ -32,12 +36,6 @@ class Command(BaseCommand) :
     args = None
     def handle(self, *args, **options) :
 
-        if not MailTemplate.objects.filter(chosen=True).exists() :
-            if not MailTemplate.objects.all().exists() :
-                M = MailTemplate.objects.get(pk=1)
-                M.chosen = True
-                M.save()
-
         try :
             for host in GLPI_manager.list('computer') :
                 try :
@@ -62,13 +60,6 @@ class Command(BaseCommand) :
                         logger.info('Add computer : "'+H.name +'"')
                 except IntegrityError :
 					logger.warning('Computer "' +host['name']+ '" already exists')
-
-#            for host in get_hosts_from_glpi() :
-#                try:
-#                    H = Host(host=host['name'], glpi_id=host['id'], host_type='networkequipment' )
-#                    H.save()
-#                    logprint('Add network equipement '+H.host, 'green')
-#                except IntegrityError : logprint('Network equipement ' +H.host+ ' already exists', 'yellow')
 
             for user in GLPI_manager.list('user') :
                 try:
